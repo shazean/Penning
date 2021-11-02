@@ -1,17 +1,30 @@
 package bot.penning;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+
+import discord4j.core.event.domain.message.MessageCreateEvent;
+
 public class Battle {
 
 	int battleIndex;
 	int battleLength;
 	int battleStartTime;
 	Boolean complete = false;
+	ScheduledExecutorService schedule = Executors.newScheduledThreadPool(3);
+
 
 	public Battle() {
 	}
 
 	public Battle(int battleIndex) {
 		this.battleIndex = battleIndex;
+	}
+	
+	public Battle(int battleIndex, int length, int time) {
+		this.battleIndex = battleIndex;
+		setLength(length);
+		setStartTime(time);
 	}
 
 	public void setLength(int skirmishLength) {
@@ -43,5 +56,12 @@ public class Battle {
 		complete = true;
 	}
 
+	public void createMessage(MessageCreateEvent event, String message) {
+		event.getMessage().getChannel().block().createMessage(message).block();
+	}
+
+	public void runBattle(Battle battle, MessageCreateEvent event) {
+		//FIXME
+	}	
 	
 }

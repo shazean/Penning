@@ -13,8 +13,6 @@ public class Skirmish /*extends TimerTask*/ {
 	int skirmishIndex;
 	int skirmishLength;
 	int skirmishStartTime;
-	String skirmishStart = "Skirmish starts now! Good luck!";
-	String skirmishEnd = "Skirmish ends now! How'd you do?";
 	Boolean complete = false;
 	ScheduledExecutorService schedule = Executors.newScheduledThreadPool(3);
 
