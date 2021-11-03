@@ -33,7 +33,7 @@ public class Bot {
 		//				    .blockingTaskScheduler(Schedulers.boundedElastic())
 		//				    .build();
 
-		GatewayDiscordClient client = DiscordClientBuilder.create("ODQ2ODUwOTEyMjM2NjAxMzU1.YK1hXw.8I6FnQMKb8sjVsRh89-vZbBJrg0")
+		GatewayDiscordClient client = DiscordClientBuilder.create("ODQ2ODUwOTEyMjM2NjAxMzU1.YK1hXw.Kr3HvGszkw8Bs1S3GD-ipHeKQ-4")
 				//				  .setReactorResources(reactorResources)
 				.build()
 				.login()
@@ -241,7 +241,8 @@ public class Bot {
 			totalWords = Integer.parseInt(commandContent[2]);
 			String typeWritten = null;
 			
-			if (commandContent[3] != null) {
+			
+			if (commandContent.length == 4) {
 				
 				typeWritten = commandContent[3];
 				
