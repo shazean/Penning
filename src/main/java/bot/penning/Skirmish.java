@@ -1,5 +1,6 @@
 package bot.penning;
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
@@ -94,6 +95,17 @@ public class Skirmish /*extends TimerTask*/ {
 
 	}
 	
-	
+	public void printSkirmishSummary(Skirmish skirmish, MessageCreateEvent event, ArrayList writersSubmitted) {
+		int i;
+		
+		createMessage(event, "#" + skirmish.getIndex() + " Summary:");
+		for (i = 0; i < writersSubmitted.size(); i += 3) {
+			createMessage(event, writersSubmitted.get(i) + " wrote " + writersSubmitted.get(i + 1) + " " + writersSubmitted.get(i + 2) + " for an average of " + ((float)writersSubmitted.get(i + 1) / skirmish.getLength()) + " " + writersSubmitted.get(i + 2) + " per minute.");
+			
+			
+		}
+
+		
+	}
 	
 }

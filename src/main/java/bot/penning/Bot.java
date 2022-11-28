@@ -1,6 +1,9 @@
 package bot.penning;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -12,9 +15,13 @@ import java.util.concurrent.TimeUnit;
 import discord4j.common.ReactorResources;
 import discord4j.core.DiscordClientBuilder;
 import discord4j.core.GatewayDiscordClient;
+import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.event.domain.lifecycle.ReadyEvent;
 import discord4j.core.event.domain.message.MessageCreateEvent;
+import discord4j.core.object.command.ApplicationCommandOption;
 import discord4j.core.object.entity.User;
+import discord4j.discordjson.json.ApplicationCommandOptionData;
+import discord4j.discordjson.json.ApplicationCommandRequest;
 import reactor.core.scheduler.Schedulers;
 
 public class Bot {
@@ -25,7 +32,13 @@ public class Bot {
 	static ArrayList<Battle> battles = new ArrayList<Battle>();
 	static ArrayList<War> wars = new ArrayList<War>();
 	static ArrayList<Sprint> sprints = new ArrayList<Sprint>();
+	
+	static ArrayList<Object> writersEntered = new ArrayList<Object>();
+	
+	static Boolean canSubmit = true;
 
+
+	
 	public static void main(String[] args) {
 
 		//		  ReactorResources reactorResources = ReactorResources.builder()
@@ -33,12 +46,13 @@ public class Bot {
 		//				    .blockingTaskScheduler(Schedulers.boundedElastic())
 		//				    .build();
 
-		GatewayDiscordClient client = DiscordClientBuilder.create("ODQ2ODUwOTEyMjM2NjAxMzU1.YK1hXw.Kr3HvGszkw8Bs1S3GD-ipHeKQ-4")
+		GatewayDiscordClient client = DiscordClientBuilder.create("ODQ2ODUwOTEyMjM2NjAxMzU1.GqW0ye.nYT3RdQNuUerN3bs5ItHYY0zro9gOGkVo70GxM")
 				//				  .setReactorResources(reactorResources)
 				.build()
 				.login()
 				.block();
 
+		
 		client.getEventDispatcher().on(ReadyEvent.class)
 		.subscribe(event -> {
 			final User self = event.getSelf();
@@ -139,7 +153,7 @@ public class Bot {
 			}
 
 
-			System.out.println(writerIndex.values());
+//			System.out.println(writerIndex.values());
 
 		});
 		commands.put("resetgoal", event -> {
@@ -166,6 +180,11 @@ public class Bot {
 
 			event.getMessage().getChannel().block().createMessage("Progress updated! You have written " + writerIndex.get(event.getMember()).getProgress() + " " + writerIndex.get(event.getMember()).getGoalType() + " of " + writerIndex.get(event.getMember()).getGoal() + " " + writerIndex.get(event.getMember()).getGoalType()).block();
 
+			if (writerIndex.get(event.getMember()).getProgress() / writerIndex.get(event.getMember()).getGoal() == 0) {
+				
+			}
+						
+			
 		});
 
 		commands.put("add", event -> {
@@ -190,9 +209,14 @@ public class Bot {
 		});
 
 		commands.put("skirmish", event -> {
+			
+			System.out.println("warIndex: " + warIndex);
+			
 			int time = 0;
 			int start = 0;
+			ScheduledExecutorService schedule = Executors.newScheduledThreadPool(3);
 
+			
 			final String content = event.getMessage().getContent();
 			String[] commandContent = content.split(" ");
 
@@ -222,10 +246,18 @@ public class Bot {
 			skirmish.runSkirmish(skirmish, event);
 			skirmish.setComplete();
 			warIndex++;
+
+			schedule.schedule(() -> {
+
+				skirmish.printSkirmishSummary(skirmish, event, writersEntered);
+
+			}, skirmish.getLength() + skirmish.getStartTime(), TimeUnit.MINUTES);
+			
 		});
 
 		commands.put("total", event -> {
 
+			
 			final String content = event.getMessage().getContent();
 			String[] commandContent = content.split(" ");
 
@@ -235,12 +267,13 @@ public class Bot {
 			}
 
 			int totalWords;
-			int averageWords;
+			float averageWords;
 			int length = 1;
 			int index = Integer.parseInt(commandContent[1]);
 			totalWords = Integer.parseInt(commandContent[2]);
 			String typeWritten = null;
-			
+			ScheduledExecutorService schedule = Executors.newScheduledThreadPool(3);
+
 			
 			if (commandContent.length == 4) {
 				
@@ -248,37 +281,41 @@ public class Bot {
 				
 			}
 
-
-
 			System.out.println("index: " + index);
-			//			System.out.println("skirmishes.indexOf(index): " + skirmishes.indexOf(index));
 			System.out.println("skirmishes.get(index): " + skirmishes.get(index));
 
+			
 			try {
 
 				if (skirmishes.get(index) != null) {
 					if (skirmishes.get(index).isComplete())  {
 						length = skirmishes.get(index).getLength();
-						averageWords = totalWords / length; //FIXME integer division, maybe want 1 or 2 decimal points instead?
-
-						//FIXME
-						//if user hasn't set a goal, then getting their goal type doesn't work here
-						//changed it to just "words" for now
-						//            				event.getMessage().getChannel().block().createMessage("You have written " + totalWords + " " + writerIndex.get(event.getMember()).getGoalType() + " for an average of " + averageWords + " " + writerIndex.get(event.getMember()).getGoalTypeAvg()).block();
-//						event.getMessage().getChannel().block().createMessage("You have written " + totalWords + " words for an average of " + averageWords + " wpm.").block();
+						averageWords = (float)totalWords / (float)length;
+						DecimalFormat df = new DecimalFormat("##.#");
+						df.setRoundingMode(RoundingMode.DOWN);
+						averageWords = Float.parseFloat(df.format(averageWords));
+						
+						writersEntered.add(event.getMember());
+						writersEntered.add(totalWords);
 
 						if (writerIndex.containsKey(event.getMember())) { //if user has created a goal; updates goal progress
 							writerIndex.get(event.getMember()).addWords(totalWords);
 							event.getMessage().getChannel().block().createMessage("You have written " + totalWords + " " + writerIndex.get(event.getMember()).getGoalType() + " for an average of " + averageWords + " " + writerIndex.get(event.getMember()).getGoalTypeAvg()).block();
 							event.getMessage().getChannel().block().createMessage("Progress updated! You have written " + writerIndex.get(event.getMember()).getProgress() + " " + writerIndex.get(event.getMember()).getGoalType() + " of " + writerIndex.get(event.getMember()).getGoal() + " " + writerIndex.get(event.getMember()).getGoalType()).block();
+							writersEntered.add(writerIndex.get(event.getMember()).getGoalType());
 						} else if (typeWritten != null) { //if user does NOT have goal, and adds !total with a keyword (i.e. "lines");							
 							event.getMessage().getChannel().block().createMessage("You have written " + totalWords + " " + typeWritten + " for an average of " + averageWords + " " + typeWritten + " per minute.").block();
+							writersEntered.add(typeWritten);
 						} else { //if user does NOT have goal, and does not specify with keyword; defaults to words
 							event.getMessage().getChannel().block().createMessage("You have written " + totalWords + " words for an average of " + averageWords + " wpm.").block();
+							writersEntered.add("words");
 						}
+						
+					
 
+					} else if (!skirmishes.get(index).isComplete()) {
+						event.getMessage().getChannel().block().createMessage("Skirmish is incomplete!  Try again after it has finished.").block();						
 					}
-					//FIXME add else to prompt user to wait to add !total until skirmish has completed
 
 
 				} /*else if (battles.get(index) != null) {
@@ -307,6 +344,20 @@ public class Bot {
             			event.getMessage().getChannel().block().createMessage(commandContent[1] + " not found. Please try with a valid war ID#.").block();
 
             		}
+				
+				schedule.schedule(() -> {
+
+					
+					try {
+						canSubmit = false;
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						
+						e.printStackTrace();
+					}
+
+				}, 5, TimeUnit.MINUTES);
+
 
 
 			}
@@ -321,7 +372,48 @@ public class Bot {
 		});
 
 		commands.put("battle", event -> {
-
+			
+//			System.out.println("warIndex: " + warIndex);
+//			
+//			int timeHours = 0;
+//			int timeMinutes = 0;
+//			int start = 0;
+//			
+//			System.out.println("Battle created");
+//
+//			final String content = event.getMessage().getContent();
+//			String[] commandContent = content.split(" ");
+//
+//			if (commandContent.length > 4) {
+//				event.getMessage().getChannel().block().createMessage("Invalid number of arguments. Try again!").block();
+//				return;
+//			}
+//
+//			timeHours = Integer.parseInt(commandContent[1]);
+//			timeMinutes = Integer.parseInt(commandContent[2]);
+//			start = Integer.parseInt(commandContent[3]);
+//			
+//
+//			//stop user from creating a battle with length 0 (because calculating the average for total creates a divide by zero scenario)
+//			//not that anyone would do that, so really this is just to stop *me* from testing with length 0
+//			if (timeMinutes == 0 && timeHours == 0) {
+//				event.getMessage().getChannel().block().createMessage("Length of skirmish cannot be zero! Try again!");
+//				return;
+//			}
+//
+//			//Let's user know the length is too short
+//			/*if (timeHours == 0 && timeMinutes < 60) {
+//				event.getMessage().getChannel().block().createMessage("Length is too short! Try starting a word skirmish instead.").block();
+//				return;
+//			}*/
+//
+//			Battle battle = new Battle(warIndex, timeHours, timeMinutes, start);
+//			battles.add(battle.getIndex(), battle);
+//			
+//			
+//
+//			battle.setComplete();
+//			warIndex++; 
 
 		});
 

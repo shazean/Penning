@@ -7,6 +7,8 @@ public class Goal {
 	Boolean resetGoal = true;
 	int progress;
 	String goalAvg = "wpm";
+	double progressPercent;
+	Boolean goalComplete;
 
 	
 	public Goal() {	
@@ -39,6 +41,7 @@ public class Goal {
 	
 	public void setProgress(int progress) {
 		this.progress = progress;
+		
 	}
 	
 	public int getProgress() {
@@ -47,6 +50,7 @@ public class Goal {
 	
 	public void addWords(int progress) {
 		this.progress += progress;
+		
 	}
 	
 	public String getGoalTypeAvg() {
@@ -62,5 +66,16 @@ public class Goal {
 		
 		return goalAvg;
 	}
+	
+	public double goalPercent() {
+		this.progressPercent = (double)this.progress / (double)this.goal * 100.0;
+		
+		if (this.progressPercent == 100) {
+			goalComplete = true;
+		}
+		
+		return this.progressPercent;
+	}
+	
 	
 }
