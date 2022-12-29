@@ -1,4 +1,9 @@
+#Eclipse
+.classpath
+.project
+.settings
+
+#Other?
 /target/
-src/main/resources/config.json
 .env
 .DS_Store
