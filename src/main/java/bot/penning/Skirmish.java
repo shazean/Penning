@@ -7,13 +7,16 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.event.domain.message.MessageCreateEvent;
+import discord4j.core.object.component.ActionRow;
+import discord4j.core.object.component.Button;
 
 public class Skirmish /*extends TimerTask*/ {
 	
 	int skirmishIndex;
-	int skirmishLength;
-	int skirmishStartTime;
+	Long skirmishLength;
+	Long skirmishStartTime;
 	Boolean complete = false;
 	ScheduledExecutorService schedule = Executors.newScheduledThreadPool(3);
 
@@ -24,18 +27,18 @@ public class Skirmish /*extends TimerTask*/ {
 		this.skirmishIndex = skirmishIndex;
 	}
 	
-	public Skirmish(int skirmishIndex, int length, int start) {
+	public Skirmish(int skirmishIndex, Long length, Long start) {
 		this.skirmishIndex = skirmishIndex;
 		setLength(length);
 		setStartTime(start);
 	}
 
-	public void setLength(int skirmishLength) {
+	public void setLength(Long skirmishLength) {
 		this.skirmishLength = skirmishLength;
 
 	}
 
-	public int getLength() {
+	public Long getLength() {
 		return skirmishLength;
 	}
 	
@@ -43,11 +46,11 @@ public class Skirmish /*extends TimerTask*/ {
 		return skirmishIndex;
 	}
 
-	public void setStartTime(int startTime) {
+	public void setStartTime(Long startTime) {
 		skirmishStartTime = startTime;
 	}
 
-	public int getStartTime() {
+	public Long getStartTime() {
 		return skirmishStartTime;
 	}
 	
@@ -58,41 +61,57 @@ public class Skirmish /*extends TimerTask*/ {
 	public void setComplete() {
 		complete = true;
 	}
+	
+	public ScheduledExecutorService getSchedule() {
+		return schedule;
+	}
 
 	public void createMessage(MessageCreateEvent event, String message) {
 		event.getMessage().getChannel().block().createMessage(message).block();
 	}
 
-	public void runSkirmish(Skirmish skirmish, MessageCreateEvent event) {
+	public void runSkirmish(Skirmish skirmish, ChatInputInteractionEvent event) {
+		
+		
 		//message: skirmish created
 		//wait until skirmish starts
 		//start skirmish
 		//wait until skirmish ends
 		//end skirmish
 		//ask for total
-		int penningsWords;
-		Random random = new Random();
+		Long penningsWords;
+//		Random random = new Random();
 		penningsWords = Math.abs(29 * skirmish.getLength() + ((int)(Math.random() * (50- -50+1)+ -50)));
+		Button joinButton = Button.primary("join-button", "Join!");
+		Button totalButton = Button.primary("total-button", "Add your total!");
 		
 		
-		createMessage(event, "Skirmish #" + skirmish.getIndex() + " created for " + skirmish.getLength() + " minutes, and will start in " + skirmish.getStartTime() + " minutes.");
+		event.reply("Skirmish #" + skirmish.getIndex() + " created for " + skirmish.getLength() + " minutes, and will start in " + skirmish.getStartTime() + " minutes.")
+		.withComponents(ActionRow.of(joinButton));		
+//		createMessage(event, "Skirmish #" + skirmish.getIndex() + " created for " + skirmish.getLength() + " minutes, and will start in " + skirmish.getStartTime() + " minutes.");
 
+		
 		schedule.schedule(() -> {
 
-			createMessage(event, "Skirmish #" + skirmish.getIndex() + " starts now!");
+			event.createFollowup("Skirmish #" + skirmish.getIndex() + " starts now!");
+//			createMessage(event, "Skirmish #" + skirmish.getIndex() + " starts now!");
 
-		}, skirmish.getStartTime(), TimeUnit.MINUTES);
+		}, (long)skirmish.getStartTime(), TimeUnit.MINUTES);
 		
 		schedule.schedule(() -> {
 
-			createMessage(event, "Skirmish #" + skirmish.getIndex() + " ends now!");
-			createMessage(event, "How much did you write? I wrote " + penningsWords + " words.");
-			createMessage(event, "Use `'!total " + skirmish.getIndex() + " [amount written]'` to add your total.");
+			event.createFollowup("Skirmish #" + skirmish.getIndex() + " ends now!");
+			event.createFollowup("How much did you write? I wrote " + penningsWords + " words.");
+			event.createFollowup("Use `'!total " + skirmish.getIndex() + " [amount written]'` to add your total.")
+			.withComponents(ActionRow.of(totalButton));
 
 
 		}, skirmish.getLength() + skirmish.getStartTime(), TimeUnit.MINUTES);
 		
 
+		
+		
+		
 	}
 	
 	public void printSkirmishSummary(Skirmish skirmish, MessageCreateEvent event, ArrayList writersSubmitted) {

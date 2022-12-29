@@ -7,8 +7,12 @@ import discord4j.core.object.entity.Member;
 public class Writer {
 
 	String name;
-	Optional user;
+	Optional<Member> user;
 	Goal writerGoal;
+	Double averageWPM;
+	int totalXP;
+	Rank currentRank;
+	Boolean usingFlavorText = true;
 	
 	public Writer(Optional<Member> discordUser, Goal writerGoal) {
 		user = discordUser;
@@ -16,8 +20,25 @@ public class Writer {
 	}
 	
 	
-	public Optional getUser() {
+	public Optional<Member> getUser() {
 		return user;
 	}
 	
+	public void toggleFlavorText(Boolean flavorText) {
+		usingFlavorText = flavorText;
+	}
+	
+	public Boolean isUsingFlavorText() {
+		return usingFlavorText;
+	}
+	
+	
+	public int getXP() {
+		return totalXP;
+	}
+	
+	public void updateXP(int newXP) {
+		totalXP += newXP;
+	}
+		
 }

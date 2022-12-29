@@ -1,0 +1,36 @@
+{
+    "name": "goal",
+    "description": "Set a goal",
+    "options": [
+        {
+            "name": "target",
+            "description": "Your target goal",
+            "type": 4,
+            "required": true
+        },
+        {
+            "name": "type",
+            "description": "Your goal type",
+            "type": 3,
+            "required": false,
+            "choices": [
+            	{
+            		"name": "Words",
+            		"value": "words"
+            	},
+            	{
+            		"name": "Lines",
+            		"value": "lines"
+            	},
+            	{
+            		"name": "Pages",
+            		"value": "pages"
+            	},
+            	{
+            		"name": "Minutes",
+            		"value": "minutes"
+            	}
+            ]
+        }
+    ]
+}
