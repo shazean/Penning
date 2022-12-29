@@ -2,7 +2,7 @@ package bot.penning;
 
 public class Goal {
 
-	int goal;
+	Long goal;
 	String goalType = "words";
 	Boolean resetGoal = true;
 	int progress;
@@ -14,24 +14,24 @@ public class Goal {
 	public Goal() {	
 	}
 	
-	public Goal(int goalAmount) {
+	public Goal(Long goalAmount) {
 		setGoal(goalAmount);
 	}
 	
-	public Goal(int goalAmount, String goalType) {
+	public Goal(Long goalAmount, String goalType) {
 		setGoal(goalAmount, goalType);
 	}
 
-	public void setGoal(int goal, String goalType) {
+	public void setGoal(Long goal, String goalType) {
 		this.goal = goal;
 		this.goalType = goalType;
 	}
 
-	public void setGoal(int goal) {
+	public void setGoal(Long goal) {
 		this.goal = goal;
 	}
 
-	public int getGoal() {
+	public Long getGoal() {
 		return goal;
 	}
 
