@@ -67,8 +67,9 @@ public class Bot {
 //				.login()
 //				.block();
 		
+		String token = System.getenv("penning_token");
 		
-		final GatewayDiscordClient client = DiscordClientBuilder.create("ODQ2ODUwOTEyMjM2NjAxMzU1.GGeU3z.gdMg-KLdqfOCLiL8BWQUNnj9nQJsFxds8TerXU").build()
+		final GatewayDiscordClient client = DiscordClientBuilder.create(token).build()
 	            .login()
 	            .block();
 
