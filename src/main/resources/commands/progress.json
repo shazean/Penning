@@ -1,0 +1,12 @@
+{
+    "name": "progress",
+    "description": "Set a goal",
+    "options": [
+        {
+            "name": "words",
+            "description": "The total number of words, etc., written towards your goal.",
+            "type": 4,
+            "required": true
+        }
+    ]
+}

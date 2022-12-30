@@ -1,0 +1,12 @@
+{
+    "name": "add",
+    "description": "Add more words towards your goal!",
+    "options": [
+        {
+            "name": "words",
+            "description": "Number of words (or minutes, etc.) to add towards your goal.",
+            "type": 4,
+            "required": true
+        }
+    ]
+}

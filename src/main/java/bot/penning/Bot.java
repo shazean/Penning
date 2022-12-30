@@ -45,15 +45,15 @@ public class Bot {
 	static ArrayList<Battle> battles = new ArrayList<Battle>();
 	static ArrayList<War> wars = new ArrayList<War>();
 	static ArrayList<Sprint> sprints = new ArrayList<Sprint>();
-	
+
 	static ArrayList<Object> writersEntered = new ArrayList<Object>();
-	
+
 	static final Map<Optional, Goal> writerIndex = new HashMap<>();
-	
+
 	static Boolean canSubmit = true;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Bot.class);
-	
+
 	public static void main(String[] args) {
 
 		//		  ReactorResources reactorResources = ReactorResources.builder()
@@ -61,58 +61,58 @@ public class Bot {
 		//				    .blockingTaskScheduler(Schedulers.boundedElastic())
 		//				    .build();
 
-//		GatewayDiscordClient client = DiscordClientBuilder.create("ODQ2ODUwOTEyMjM2NjAxMzU1.GqW0ye.nYT3RdQNuUerN3bs5ItHYY0zro9gOGkVo70GxM")
-//				//				  .setReactorResources(reactorResources)
-//				.build()
-//				.login()
-//				.block();
-		
-		String token = System.getenv("penning_token");
-		
-		final GatewayDiscordClient client = DiscordClientBuilder.create(token).build()
-	            .login()
-	            .block();
+		//		GatewayDiscordClient client = DiscordClientBuilder.create("ODQ2ODUwOTEyMjM2NjAxMzU1.GqW0ye.nYT3RdQNuUerN3bs5ItHYY0zro9gOGkVo70GxM")
+		//				//				  .setReactorResources(reactorResources)
+		//				.build()
+		//				.login()
+		//				.block();
 
-	        /* Call our code to handle creating/deleting/editing our global slash commands.
+		String token = System.getenv("penning_token");
+
+		final GatewayDiscordClient client = DiscordClientBuilder.create(token).build()
+				.login()
+				.block();
+
+		/* Call our code to handle creating/deleting/editing our global slash commands.
 	        We have to hard code our list of command files since iterating over a list of files in a resource directory
 	         is overly complicated for such a simple demo and requires handling for both IDE and .jar packaging.
 	         Using SpringBoot we can avoid all of this and use their resource pattern matcher to do this for us.
-	         */
-	        List<String> commands = List.of("greet.json", "goal.json", "hey.json", "skirmish.json", "writing_prompt.json", "writers_block_prompt.json"); //, "ping.json"
-	        try {
-	            new GlobalCommandRegistrar(client.getRestClient()).registerCommands(commands);
-	        } catch (Exception e) {
-	            LOGGER.error("Error trying to register global slash commands", e);
-	        }
-	   
-	        
-	        //Register our listeners
-	        client.on(ChatInputInteractionEvent.class, SlashCommandListener::handle)
-	            .then(client.onDisconnect())
-	            .block(); // We use .block() as there is not another non-daemon thread and the jvm would close otherwise.
-	        
-	        client.on(ButtonInteractionEvent.class, ButtonListener::handle)
-	        	.doOnNext(button -> LOGGER.debug("Successfully handle buttons"))
-	        	.doOnError(e -> LOGGER.error("Failed to handle buttons", e))
-            	.then(client.onDisconnect())
-            	.block(); // We use .block() as there is not another non-daemon thread and the jvm would close otherwise.
-	        
-	        client.on(ButtonInteractionEvent.class, event -> {
-	            return event.reply("Testing testing");
-	        }).subscribe();
-	        
-	        
-	        
-	        
-	    }
+		 */
+		List<String> commands = List.of("add.json", "greet.json", "goal.json", "hey.json", "progress.json", "skirmish.json", "writing_prompt.json", "writers_block_prompt.json"); //, "ping.json"
+		try {
+			new GlobalCommandRegistrar(client.getRestClient()).registerCommands(commands);
+		} catch (Exception e) {
+			LOGGER.error("Error trying to register global slash commands", e);
+		}
+
+
+		//Register our listeners
+		client.on(ChatInputInteractionEvent.class, SlashCommandListener::handle)
+		.then(client.onDisconnect())
+		.block(); // We use .block() as there is not another non-daemon thread and the jvm would close otherwise.
+
+		client.on(ButtonInteractionEvent.class, ButtonListener::handle)
+		.doOnNext(button -> LOGGER.debug("Successfully handle buttons"))
+		.doOnError(e -> LOGGER.error("Failed to handle buttons", e))
+		.then(client.onDisconnect())
+		.block(); // We use .block() as there is not another non-daemon thread and the jvm would close otherwise.
+
+		client.on(ButtonInteractionEvent.class, event -> {
+			return event.reply("Testing testing");
+		}).subscribe();
+
+
+
+
 	}
-	
+}
+
 //	private static final Map<String, Command> commands = new HashMap<>();
 //	static final Map<warIndex, Battle> battleIndex = new HashMap<>();
 //	//	    static final Map<warIndex, Skirmish> skirmishIndex = new HashMap<>();
 //
 //
-	
+
 //
 //	static {		
 //		

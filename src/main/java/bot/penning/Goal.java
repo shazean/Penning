@@ -5,19 +5,19 @@ public class Goal {
 	Long goal;
 	String goalType = "words";
 	Boolean resetGoal = true;
-	int progress;
+	Long progress;
 	String goalAvg = "wpm";
 	double progressPercent;
 	Boolean goalComplete;
 
-	
+
 	public Goal() {	
 	}
-	
+
 	public Goal(Long goalAmount) {
 		setGoal(goalAmount);
 	}
-	
+
 	public Goal(Long goalAmount, String goalType) {
 		setGoal(goalAmount, goalType);
 	}
@@ -25,10 +25,12 @@ public class Goal {
 	public void setGoal(Long goal, String goalType) {
 		this.goal = goal;
 		this.goalType = goalType;
+		this.progress = 0L;
 	}
 
 	public void setGoal(Long goal) {
 		this.goal = goal;
+		this.progress = 0L;
 	}
 
 	public Long getGoal() {
@@ -38,21 +40,21 @@ public class Goal {
 	public String getGoalType() {
 		return goalType;
 	}
-	
-	public void setProgress(int progress) {
-		this.progress = progress;
-		
+
+	public void setProgress(Long words) {
+		this.progress = words;
+
 	}
-	
-	public int getProgress() {
+
+	public Long getProgress() {
 		return progress;
 	}
-	
-	public void addWords(int progress) {
-		this.progress += progress;
-		
+
+	public void addWords(Long words) {
+		this.progress += words;
+
 	}
-	
+
 	public String getGoalTypeAvg() {
 		if (goalType.equals("words")) {
 			goalAvg = "wpm";
@@ -63,19 +65,19 @@ public class Goal {
 		} else if (goalType.equals("minutes")) {
 			goalAvg = "minutes";
 		}
-		
+
 		return goalAvg;
 	}
-	
+
 	public double goalPercent() {
 		this.progressPercent = (double)this.progress / (double)this.goal * 100.0;
-		
+
 		if (this.progressPercent == 100) {
 			goalComplete = true;
 		}
-		
+
 		return this.progressPercent;
 	}
-	
-	
+
+
 }

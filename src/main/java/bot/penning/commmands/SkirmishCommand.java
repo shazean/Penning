@@ -73,7 +73,7 @@ public class SkirmishCommand implements SlashCommand {
 		}
 
 
-		
+
 
 		Button joinButton = Button.primary("join_button", "//FIXME!");
 
@@ -129,9 +129,9 @@ public class SkirmishCommand implements SlashCommand {
 
 						skirmish.createMessage(embedEvent, "Skirmish #" + skirmish.getIndex() + " ends now!");
 						skirmish.createMessage(embedEvent, "How much did you write? I wrote " + penningsWords + " words.");
-//						embedEvent.getMessage().getChannel().block().createMessage("Add your total!")
-//						.withComponents(ActionRow.of(TextInput.small("total-id", "Total?")))
-//						.block();
+						//						embedEvent.getMessage().getChannel().block().createMessage("Add your total!")
+						//						.withComponents(ActionRow.of(TextInput.small("total-id", "Total?")))
+						//						.block();
 
 						//						skirmish.createMessage(event, "Use `'!total " + skirmish.getIndex() + " [amount written]'` to add your total.");
 						//						.withComponents(ActionRow.of(totalButton));

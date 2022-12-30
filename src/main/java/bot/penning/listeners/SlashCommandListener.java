@@ -8,9 +8,11 @@ import reactor.core.publisher.Mono;
 import java.util.ArrayList;
 import java.util.List;
 
+import bot.penning.commmands.AddCommand;
 import bot.penning.commmands.GoalCommand;
 import bot.penning.commmands.GreetCommand;
 import bot.penning.commmands.HeyCommand;
+import bot.penning.commmands.ProgressCommand;
 import bot.penning.commmands.SkirmishCommand;
 import bot.penning.commmands.SlashCommand;
 import bot.penning.commmands.WritersBlockCommand;
@@ -24,9 +26,11 @@ public class SlashCommandListener {
         //We register our commands here when the class is initialized
 //        commands.add(new PingCommand());
 //    	commands.add(new GoalCommand());
+    	commands.add(new AddCommand());
         commands.add(new GreetCommand());
         commands.add(new GoalCommand());
         commands.add(new HeyCommand());
+        commands.add(new ProgressCommand());
         commands.add(new SkirmishCommand());
         commands.add(new WritingPromptCommand());
         commands.add(new WritersBlockCommand());

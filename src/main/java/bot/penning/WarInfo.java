@@ -17,22 +17,22 @@ public class WarInfo {
 	public static ArrayList<Sprint> sprints = new ArrayList<Sprint>();
 	public static final Map<Optional<Member>, Goal> writerIndex = new HashMap<>();
 
-	
+
 	public static ArrayList<Object> writersEntered = new ArrayList<Object>();
 
-	
+
 	static int warIndex = 0;
-	
+
 	public void setWarIndex(int index) {
 		warIndex = index;
 	}
-	
+
 	public static void incrementWarIndex() {
 		warIndex++;
 	}
-	
+
 	public static int getWarIndex() {
 		return warIndex;
 	}
-	
+
 }
