@@ -2,8 +2,8 @@
 .classpath
 .project
 .settings
+.eclipse
 
 #Other?
 /target/
-.env
 .DS_Store
