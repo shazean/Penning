@@ -1,4 +1,4 @@
-package bot.penning;
+package bot.penning.encounters;
 
 import java.util.Random;
 import java.util.concurrent.Executors;

@@ -5,25 +5,27 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import bot.penning.encounters.Encounter;
 import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.User;
 import reactor.core.publisher.Mono;
 
-public class WarInfo {
+public class EncounterInfo {
 
-	public static ArrayList<Skirmish> skirmishes = new ArrayList<Skirmish>();
-	public static ArrayList<Battle> battles = new ArrayList<Battle>();
-	public static ArrayList<War> wars = new ArrayList<War>();
-	public static ArrayList<Sprint> sprints = new ArrayList<Sprint>();
+//	public static ArrayList<Skirmish> skirmishes = new ArrayList<Skirmish>();
+//	public static ArrayList<Battle> battles = new ArrayList<Battle>();
+//	public static ArrayList<War> wars = new ArrayList<War>();
+//	public static ArrayList<Sprint> sprints = new ArrayList<Sprint>();
 	public static final Map<Optional<Member>, Goal> writerIndex = new HashMap<>();
+	public static Map<Long, Encounter> warRegistry = new HashMap<>();
 
 
 	public static ArrayList<Object> writersEntered = new ArrayList<Object>();
 
 
-	static int warIndex = 0;
+	static Long warIndex = 1L;
 
-	public void setWarIndex(int index) {
+	public void setWarIndex(Long index) {
 		warIndex = index;
 	}
 
@@ -31,7 +33,7 @@ public class WarInfo {
 		warIndex++;
 	}
 
-	public static int getWarIndex() {
+	public static Long getWarIndex() {
 		return warIndex;
 	}
 

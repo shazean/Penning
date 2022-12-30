@@ -1,27 +1,27 @@
-package bot.penning;
+package bot.penning.encounters;
 
-public class Sprint {
+public class War {
 
 	int index;
-	int goal;
+	int length;
 	int startTime;
 	Boolean complete = false;
 
-	public Sprint() {
+	public War() {
 	}
 
-	public Sprint(int index) {
+	public War(int index) {
 		this.index = index;
 	}
 
-	public void setGoal(int goal) {
-		this.goal = goal;
+	public void setLength(int length) {
+		this.length = length;
+
 	}
-	
-	public int getGoal() {
-		return goal;
+
+	public int getLength() {
+		return length;
 	}
-	
 	
 	public int getIndex() {
 		return index;
@@ -34,7 +34,6 @@ public class Sprint {
 	public int getStartTime() {
 		return startTime;
 	}
-
 	
 	public Boolean isComplete() {
 		return complete;

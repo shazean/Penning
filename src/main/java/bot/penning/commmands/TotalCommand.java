@@ -2,7 +2,8 @@ package bot.penning.commmands;
 
 import java.util.Optional;
 
-import bot.penning.WarInfo;
+import bot.penning.EncounterInfo;
+import bot.penning.encounters.Encounter;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.command.ApplicationCommandInteractionOption;
 import discord4j.core.object.command.ApplicationCommandInteractionOptionValue;
@@ -35,20 +36,25 @@ public class TotalCommand implements SlashCommand {
 
 		Optional<Member> user = event.getInteraction().getMember();
 
-		//TODO
-		//get skirmish/battle/etc information
-		//calculate WPM
+		if (EncounterInfo.warRegistry.get(ID % 50) == null) return event.reply("This encounter is invalid! Try again with a valid encounter ID.").withEphemeral(true);
 
-		//check if user has an established goal
-		if (WarInfo.writerIndex.containsKey(user)) {
-			//update goal
-			//TODO
+		Encounter currentEncounter = EncounterInfo.warRegistry.get(ID % 50);
+		Long length = currentEncounter.getLength();
+		Long wordsPerMin = totalWritten / length;
+
+		if (!currentEncounter.isComplete()) return event.reply("This encounter is incomplete! Try again after it has finished.").withEphemeral(true);
+		if (currentEncounter.isExpired()) return event.reply("This encounter is invalid! Try again with a valid encounter ID.").withEphemeral(true);
+
+		//check if user has an established goal and update it if so
+		if (EncounterInfo.writerIndex.containsKey(user)) {
+			EncounterInfo.writerIndex.get(user).addWords(totalWritten);
+
+			return event.reply("You have written " + totalWritten + " words for an average of " + wordsPerMin + " wpm.")
+					.then(event.createFollowup("Progress updated! You have written " + EncounterInfo.writerIndex.get(user).getProgress() + " " + EncounterInfo.writerIndex.get(user).getGoalType() + " of " + EncounterInfo.writerIndex.get(user).getGoal() + " " + EncounterInfo.writerIndex.get(user).getGoalType() + ".").then());
+		} else {
+			return event.reply("You have written " + totalWritten + " words for an average of " + wordsPerMin + " wpm.");
 		}
 
-
-
-		//TODO
-		//tell user what their WPM was
-		return event.reply("Total added!");
 	}
+
 }

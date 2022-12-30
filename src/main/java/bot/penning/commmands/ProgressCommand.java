@@ -2,7 +2,7 @@ package bot.penning.commmands;
 
 import java.util.Optional;
 
-import bot.penning.WarInfo;
+import bot.penning.EncounterInfo;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.command.ApplicationCommandInteractionOption;
 import discord4j.core.object.command.ApplicationCommandInteractionOptionValue;
@@ -26,13 +26,13 @@ public class ProgressCommand implements SlashCommand {
 
 		Optional<Member> user = event.getInteraction().getMember();
 
-		if (!WarInfo.writerIndex.containsKey(user)) { //if user hasn't created goal, alert them
+		if (!EncounterInfo.writerIndex.containsKey(user)) { //if user hasn't created goal, alert them
 			return event.reply("Create a goal first!").withEphemeral(true);
 		}	        
 
-		WarInfo.writerIndex.get(user).setProgress(words);
+		EncounterInfo.writerIndex.get(user).setProgress(words);
 
-		return event.reply("Progress updated! You have written " + WarInfo.writerIndex.get(user).getProgress() + " " + WarInfo.writerIndex.get(user).getGoalType() + " of " + WarInfo.writerIndex.get(user).getGoal() + " " + WarInfo.writerIndex.get(user).getGoalType() + ".");
+		return event.reply("Progress updated! You have written " + EncounterInfo.writerIndex.get(user).getProgress() + " " + EncounterInfo.writerIndex.get(user).getGoalType() + " of " + EncounterInfo.writerIndex.get(user).getGoal() + " " + EncounterInfo.writerIndex.get(user).getGoalType() + ".");
 	}
 
 

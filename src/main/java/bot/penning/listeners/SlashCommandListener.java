@@ -15,6 +15,7 @@ import bot.penning.commmands.HeyCommand;
 import bot.penning.commmands.ProgressCommand;
 import bot.penning.commmands.SkirmishCommand;
 import bot.penning.commmands.SlashCommand;
+import bot.penning.commmands.TotalCommand;
 import bot.penning.commmands.WritersBlockCommand;
 import bot.penning.commmands.WritingPromptCommand;
 
@@ -32,6 +33,7 @@ public class SlashCommandListener {
         commands.add(new HeyCommand());
         commands.add(new ProgressCommand());
         commands.add(new SkirmishCommand());
+        commands.add(new TotalCommand());
         commands.add(new WritingPromptCommand());
         commands.add(new WritersBlockCommand());
     }

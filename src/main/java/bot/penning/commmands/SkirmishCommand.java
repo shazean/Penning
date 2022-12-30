@@ -8,8 +8,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import bot.penning.Skirmish;
-import bot.penning.WarInfo;
+import bot.penning.EncounterInfo;
+import bot.penning.encounters.Skirmish;
 import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.interaction.ButtonInteractionEvent;
@@ -46,9 +46,9 @@ public class SkirmishCommand implements SlashCommand {
 				.get(); //This is warning us that we didn't check if its present, we can ignore this on required options
 
 		ScheduledExecutorService schedule = Executors.newScheduledThreadPool(3);
-		int warIndex = WarInfo.getWarIndex();
+		Long warIndex = EncounterInfo.getWarIndex();
 		Skirmish skirmish = new Skirmish(warIndex, duration, startTime);
-		WarInfo.skirmishes.add(skirmish.getIndex(), skirmish);
+		EncounterInfo.warRegistry.put(skirmish.getIndex() % 50, skirmish);
 		GatewayDiscordClient client = event.getClient();
 		Long finalTime;
 
@@ -72,29 +72,24 @@ public class SkirmishCommand implements SlashCommand {
 			finalTime = startTime * 60L;
 		}
 
+		//		Button joinButton = Button.primary("join_button", "//FIXME!");
 
+		EncounterInfo.incrementWarIndex();
 
-
-		Button joinButton = Button.primary("join_button", "//FIXME!");
-
-		event.reply("Skirmish #" + skirmish.getIndex() + " created for " + skirmish.getLength() + " minutes, and will start in " + skirmish.getStartTime() + " minutes.")
-		.withComponents(ActionRow.of(joinButton));		
-		WarInfo.incrementWarIndex();
-
-
-		client.on(ButtonInteractionEvent.class, embedEvent -> {
-			if (embedEvent.getCustomId().equals("join_button")) {
-				Optional<Member> writer = embedEvent.getInteraction().getMember();
-				writersEntered.add(writer);
-				return embedEvent.reply("You have joined the skirmish!");
-			}
-			else if (embedEvent.getCustomId().equals("total button")) {
-				return embedEvent.reply("Total! //FIXME"); //FIXME
-			}
-			else {
-				return embedEvent.reply("Else! //FIXME"); //FIXME
-			}
-		}).timeout(Duration.ofMinutes(startTime)).subscribe();
+		//FIXME if adding in a join button ping option
+		//		client.on(ButtonInteractionEvent.class, embedEvent -> {
+		//			if (embedEvent.getCustomId().equals("join_button")) {
+		//				Optional<Member> writer = embedEvent.getInteraction().getMember();
+		//				writersEntered.add(writer);
+		//				return embedEvent.reply("You have joined the skirmish!");
+		//			}
+		//			else if (embedEvent.getCustomId().equals("total button")) {
+		//				return embedEvent.reply("Total! //FIXME"); //FIXME
+		//			}
+		//			else {
+		//				return embedEvent.reply("Else! //FIXME"); //FIXME
+		//			}
+		//		}).timeout(Duration.ofMinutes(startTime)).subscribe();
 
 
 		//		String pingList = ""; //FIXME
@@ -127,15 +122,17 @@ public class SkirmishCommand implements SlashCommand {
 
 					schedule.schedule(() -> {
 
+						skirmish.setComplete();
 						skirmish.createMessage(embedEvent, "Skirmish #" + skirmish.getIndex() + " ends now!");
 						skirmish.createMessage(embedEvent, "How much did you write? I wrote " + penningsWords + " words.");
 						//						embedEvent.getMessage().getChannel().block().createMessage("Add your total!")
 						//						.withComponents(ActionRow.of(TextInput.small("total-id", "Total?")))
 						//						.block();
 
-						//						skirmish.createMessage(event, "Use `'!total " + skirmish.getIndex() + " [amount written]'` to add your total.");
+						skirmish.createMessage(embedEvent, "Use `/total` " + skirmish.getIndex() + " to add your total.");
 						//						.withComponents(ActionRow.of(totalButton));
 
+						printSummary(embedEvent, skirmish);
 
 					}, skirmish.getLength(), TimeUnit.MINUTES);		
 
@@ -143,6 +140,28 @@ public class SkirmishCommand implements SlashCommand {
 			}
 			return null;
 		}).timeout(Duration.ofMinutes(75)).subscribe();
+
+		return null;
+	}
+
+	public Mono<Void> printSummary(MessageCreateEvent event, Skirmish skirmish) {
+		//FIXME
+		//wait 5 minutes
+		//compile skirmish info into string
+		//print to channel
+		//mark skirmish as expired
+		ScheduledExecutorService schedule = skirmish.getSchedule();
+		String summary;
+
+		schedule.schedule(() -> {
+
+			//compile skirmish info
+			skirmish.setExpired();
+			skirmish.createMessage(event, "Summary here //FIXME");
+
+
+		}, 5, TimeUnit.MINUTES);		
+
 
 		return null;
 	}

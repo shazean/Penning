@@ -1,4 +1,42 @@
 {
     "name": "total",
-    "description": "Add a total!"
+    "description": "Add your total to a completed encounter",
+    "options": [
+        {
+            "name": "id",
+            "description": "The ID # of the encounter",
+            "type": 4,
+            "required": true
+        },
+        {
+            "name": "total",
+            "description": "The number of words, lines, etc., you wrote for this encounter",
+            "type": 4,
+            "required": true
+        },
+        {
+            "name": "type",
+            "description": "Your goal type",
+            "type": 3,
+            "required": false,
+            "choices": [
+            	{
+            		"name": "Words",
+            		"value": "words"
+            	},
+            	{
+            		"name": "Lines",
+            		"value": "lines"
+            	},
+            	{
+            		"name": "Pages",
+            		"value": "pages"
+            	},
+            	{
+            		"name": "Minutes",
+            		"value": "minutes"
+            	}
+            ]
+        }
+    ]
 }

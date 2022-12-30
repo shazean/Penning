@@ -3,7 +3,7 @@ package bot.penning.commmands;
 import java.util.Optional;
 
 import bot.penning.Goal;
-import bot.penning.WarInfo;
+import bot.penning.EncounterInfo;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.command.ApplicationCommandInteractionOption;
 import discord4j.core.object.command.ApplicationCommandInteractionOptionValue;
@@ -40,15 +40,15 @@ public class GoalCommand implements SlashCommand {
 		//If the writerIndex map contains an object with the key of the user who called the command,
 		//then the object is completely cleared.
 		//this makes it so creating a new goal replaces the last one, and a person can not have 2 goals at once.
-		if (WarInfo.writerIndex.containsKey(user)) {
-			WarInfo.writerIndex.remove(user);
+		if (EncounterInfo.writerIndex.containsKey(user)) {
+			EncounterInfo.writerIndex.remove(user);
 		}
 
 		if (type != null) { //type was specified FIXME?
 
 			Goal writerGoal = new Goal(target, type);
 
-			WarInfo.writerIndex.put(user, writerGoal);
+			EncounterInfo.writerIndex.put(user, writerGoal);
 
 			return event.reply("Goal of " + writerGoal.getGoal() + " " + writerGoal.getGoalType() + " set!");
 
@@ -56,7 +56,7 @@ public class GoalCommand implements SlashCommand {
 		else { //type was not specified, only target was
 			Goal writerGoal = new Goal(target);
 
-			WarInfo.writerIndex.put(user, writerGoal);
+			EncounterInfo.writerIndex.put(user, writerGoal);
 			return event.reply("Goal of " + writerGoal.getGoal() + " " + writerGoal.getGoalType() + " set!");
 
 		}
