@@ -5,6 +5,6 @@
 .eclipse
 
 #Other?
-/target/
+target/
 .DS_Store
-src/main/.DS_Store
+.vscode/

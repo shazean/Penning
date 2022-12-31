@@ -1,0 +1,9 @@
+.git/
+.github/
+target/
+.classpath
+.project
+.gitignore
+.gitattributes
+.settings/
+.DS_Store
