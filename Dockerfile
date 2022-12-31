@@ -10,7 +10,7 @@ RUN ls -la target
 FROM openjdk:11
 
 RUN mkdir -p /app
-COPY --from=build target/*.jar /app/penning.jar
+COPY --from=build target/bot.penning.*-jar-with-dependencies.jar /app/penning.jar
 RUN ls -la /app
 
 ENV PENNING_TOKEN="unset"
