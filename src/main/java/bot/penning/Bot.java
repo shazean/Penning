@@ -60,7 +60,7 @@ public class Bot {
 
 	public static void main(String[] args) {
 
-		String token = System.getenv("penning_token");
+		String token = System.getenv("PENNING_TOKEN");
 
 		final GatewayDiscordClient client = DiscordClientBuilder.create(token).build()
 				.login()
