@@ -9,7 +9,7 @@
   <artifactId>bot.penning.maven.eclipse</artifactId>
   <version>0.0.1-SNAPSHOT</version>
 
-  <name>bot.penning.maven.eclipse</name>
+  <name>Penning</name>
   <url>http://www.vogella.com</url>
 
   <properties>
