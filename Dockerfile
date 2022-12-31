@@ -13,7 +13,7 @@ RUN mkdir -p /app
 COPY --from=build target/bot.penning.*-jar-with-dependencies.jar /app/penning.jar
 RUN ls -la /app
 
-ENV PENNING_TOKEN="unset"
+ENV DISCORD_TOKEN="unset"
 
 WORKDIR /app
 CMD [ "java", "-jar", "/app/penning.jar" ]
