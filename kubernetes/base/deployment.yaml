@@ -20,6 +20,7 @@ spec:
       labels:
         app: penning
     spec:
+      serviceAccountName: penning
       containers:
         - name: app
           image: ghcr.io/shazean/penning:latest
