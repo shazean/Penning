@@ -56,21 +56,11 @@ public class Bot {
 	
 	public static void main(String[] args) {
 
-		//		  ReactorResources reactorResources = ReactorResources.builder()
-		//				    .timerTaskScheduler(Schedulers.newParallel("my-scheduler"))
-		//				    .blockingTaskScheduler(Schedulers.boundedElastic())
-		//				    .build();
+		String token = System.getenv("penning_token");
 
-//		GatewayDiscordClient client = DiscordClientBuilder.create("ODQ2ODUwOTEyMjM2NjAxMzU1.GqW0ye.nYT3RdQNuUerN3bs5ItHYY0zro9gOGkVo70GxM")
-//				//				  .setReactorResources(reactorResources)
-//				.build()
-//				.login()
-//				.block();
-		
-		
-		final GatewayDiscordClient client = DiscordClientBuilder.create("ODQ2ODUwOTEyMjM2NjAxMzU1.GGeU3z.gdMg-KLdqfOCLiL8BWQUNnj9nQJsFxds8TerXU").build()
-	            .login()
-	            .block();
+		final GatewayDiscordClient client = DiscordClientBuilder.create(token).build()
+				.login()
+				.block();
 
 	        /* Call our code to handle creating/deleting/editing our global slash commands.
 	        We have to hard code our list of command files since iterating over a list of files in a resource directory
