@@ -6,7 +6,7 @@ public class Goal {
 	String goalType = "words";
 	Boolean resetGoal = true;
 	Long progress;
-	String goalAvg = "wpm";
+	String goalAbbr = "wpm";
 	double progressPercent;
 	Boolean goalComplete;
 
@@ -55,18 +55,18 @@ public class Goal {
 
 	}
 
-	public String getGoalTypeAvg() {
+	public String getGoalTypeAbbr() {
 		if (goalType.equals("words")) {
-			goalAvg = "wpm";
+			goalAbbr = "wpm";
 		} else if (goalType.equals("lines")) {
-			goalAvg = "lpm";
+			goalAbbr = "lpm";
 		} else if (goalType.equals("pages")) {
-			goalAvg = "ppm";
+			goalAbbr = "ppm";
 		} else if (goalType.equals("minutes")) {
-			goalAvg = "minutes";
+			goalAbbr = "minutes";
 		}
 
-		return goalAvg;
+		return goalAbbr;
 	}
 
 	public double goalPercent() {

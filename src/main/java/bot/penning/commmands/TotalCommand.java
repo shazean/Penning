@@ -33,15 +33,27 @@ public class TotalCommand implements SlashCommand {
 				.flatMap(ApplicationCommandInteractionOption::getValue)
 				.map(ApplicationCommandInteractionOptionValue::asString)
 				.orElse("words");
+		String goalType;
+		String goalTypeAbbr;
 
 		Optional<Member> user = event.getInteraction().getMember();
-
+		
 		if (EncounterInfo.warRegistry.get(ID % 50) == null) return event.reply("This encounter is invalid! Try again with a valid encounter ID.").withEphemeral(true);
 
 		Encounter currentEncounter = EncounterInfo.warRegistry.get(ID % 50);
 		Long length = currentEncounter.getLength();
-		Long wordsPerMin = totalWritten / length;
-
+		Double wordsPerMin = (double) (totalWritten / length);
+		
+		if (EncounterInfo.writerIndex.containsKey(user)) {
+			goalType = EncounterInfo.writerIndex.get(user).getGoalType();
+			goalTypeAbbr = EncounterInfo.writerIndex.get(user).getGoalTypeAbbr();
+		} else {
+			goalType = "words";
+			goalTypeAbbr = "wpm";
+		}
+		
+		currentEncounter.createParticipant(user.get().getDisplayName(), totalWritten, wordsPerMin, goalType, goalTypeAbbr);
+		
 		if (!currentEncounter.isComplete()) return event.reply("This encounter is incomplete! Try again after it has finished.").withEphemeral(true);
 		if (currentEncounter.isExpired()) return event.reply("This encounter is invalid! Try again with a valid encounter ID.").withEphemeral(true);
 

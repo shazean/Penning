@@ -1,5 +1,6 @@
 package bot.penning.encounters;
 
+import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -13,11 +14,18 @@ public class Encounter {
 	Boolean complete = false;
 	Boolean expired = false;
 	ScheduledExecutorService schedule = Executors.newScheduledThreadPool(3);
+	public static ArrayList<Participant> enteredParticipants = new ArrayList<Participant>();
+	String participantSummary;
 
-	
+
+	public Encounter(Long index, Long length, Long start) {
+		this.index = index;
+		setLength(length);
+		setStartTime(start);
+	}
+
 	public void setLength(Long length) {
 		this.length = length;
-
 	}
 
 	public Long getLength() {
@@ -58,6 +66,42 @@ public class Encounter {
 
 	public void createMessage(MessageCreateEvent event, String message) {
 		event.getMessage().getChannel().block().createMessage(message).block();
+	}
+	
+	public void createParticipant(String nickname, Long totalWords, Double averageWPM, String writtenType, String writtenTypeAbbr) {
+		Participant participant = new Participant(nickname, totalWords, averageWPM, writtenType, writtenTypeAbbr);
+		enteredParticipants.add(participant);
+	}
+	
+	public String createParticipantSummary() {
+		participantSummary = "**Summary:**\n\n";
+		for (Participant i : enteredParticipants) {
+			participantSummary += (i + "\n");
+		}
+		
+		return participantSummary;
+	}	
+	
+	public class Participant {
+		String nickname;
+		Long totalWords;
+		Double averageWPM;
+		String writtenType;
+		String writtenTypeAbbr;
+		
+		public Participant(String nickname, Long totalWords, Double averageWPM, String writtenType, String writtenTypeAbbr) {
+			this.nickname = nickname;
+			this.totalWords = totalWords;
+			this.averageWPM = averageWPM;
+			this.writtenType = writtenType;
+			this.writtenTypeAbbr = writtenTypeAbbr;
+		}
+		
+		public String toString() {
+			return nickname + ": " + totalWords + " " + writtenType + " (" + averageWPM + " " + writtenTypeAbbr + "0";
+			
+		}
+		
 	}
 	
 }

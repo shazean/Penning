@@ -2,9 +2,6 @@ package bot.penning.commmands;
 
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -12,15 +9,11 @@ import bot.penning.EncounterInfo;
 import bot.penning.encounters.Skirmish;
 import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
-import discord4j.core.event.domain.interaction.ButtonInteractionEvent;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.command.ApplicationCommandInteractionOption;
 import discord4j.core.object.command.ApplicationCommandInteractionOptionValue;
-import discord4j.core.object.component.ActionRow;
 import discord4j.core.object.component.Button;
-import discord4j.core.object.component.TextInput;
-import discord4j.core.object.entity.Member;
 import reactor.core.publisher.Mono;
 
 public class SkirmishCommand implements SlashCommand {
@@ -45,7 +38,6 @@ public class SkirmishCommand implements SlashCommand {
 				.map(ApplicationCommandInteractionOptionValue::asLong)
 				.get(); //This is warning us that we didn't check if its present, we can ignore this on required options
 
-		ScheduledExecutorService schedule = Executors.newScheduledThreadPool(3);
 		Long warIndex = EncounterInfo.getWarIndex();
 		Skirmish skirmish = new Skirmish(warIndex, duration, startTime);
 		EncounterInfo.warRegistry.put(skirmish.getIndex() % 50, skirmish);
@@ -107,7 +99,7 @@ public class SkirmishCommand implements SlashCommand {
 	}
 
 
-	public Mono<Void> runSkirmish(ChatInputInteractionEvent event, Long startTime, Skirmish skirmish) {
+	public void runSkirmish(ChatInputInteractionEvent event, Long startTime, Skirmish skirmish) {
 		GatewayDiscordClient client = event.getClient();
 		Snowflake guildID = event.getInteraction().getGuildId().get();
 
@@ -129,7 +121,7 @@ public class SkirmishCommand implements SlashCommand {
 						//						.withComponents(ActionRow.of(TextInput.small("total-id", "Total?")))
 						//						.block();
 
-						skirmish.createMessage(embedEvent, "Use `/total` " + skirmish.getIndex() + " to add your total.");
+						skirmish.createMessage(embedEvent, "Use `/total " + skirmish.getIndex() + "` to add your total.");
 						//						.withComponents(ActionRow.of(totalButton));
 
 						printSummary(embedEvent, skirmish);
@@ -138,32 +130,23 @@ public class SkirmishCommand implements SlashCommand {
 
 				}	
 			}
-			return null;
+			return Mono.empty();
 		}).timeout(Duration.ofMinutes(75)).subscribe();
 
-		return null;
 	}
 
-	public Mono<Void> printSummary(MessageCreateEvent event, Skirmish skirmish) {
-		//FIXME
-		//wait 5 minutes
-		//compile skirmish info into string
-		//print to channel
-		//mark skirmish as expired
+	public void printSummary(MessageCreateEvent event, Skirmish skirmish) {
 		ScheduledExecutorService schedule = skirmish.getSchedule();
 		String summary;
 
 		schedule.schedule(() -> {
 
-			//compile skirmish info
+			//compile skirmish info TODO
 			skirmish.setExpired();
-			skirmish.createMessage(event, "Summary here //FIXME");
+			skirmish.createMessage(event, skirmish.createParticipantSummary());
 
 
 		}, 5, TimeUnit.MINUTES);		
-
-
-		return null;
 	}
 
 }

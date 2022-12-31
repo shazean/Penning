@@ -1,49 +1,13 @@
 package bot.penning.encounters;
 
-public class Sprint {
+public class Sprint extends Encounter {
 
-	int index;
-	int goal;
-	int startTime;
-	Boolean complete = false;
-
-	public Sprint() {
-	}
-
-	public Sprint(int index) {
-		this.index = index;
-	}
-
-	public void setGoal(int goal) {
-		this.goal = goal;
-	}
-	
-	public int getGoal() {
-		return goal;
-	}
-	
-	
-	public int getIndex() {
-		return index;
-	}
-
-	public void setStartTime(int startTime) {
-		startTime = startTime;
-	}
-
-	public int getStartTime() {
-		return startTime;
+	public Sprint(Long index, Long length, Long start) {
+		super(index, length, start);
+		// TODO Auto-generated constructor stub
 	}
 
 	
-	public Boolean isComplete() {
-		return complete;
-	}
 	
-	public void setComplete() {
-		complete = true;
-	}
-
-
 	
 }
