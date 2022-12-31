@@ -25,7 +25,7 @@ spec:
             - configMapRef:
                 name: penning-env
             - secretRef:
-                name: penning
+                name: credentials
           env: []
           resources:
             requests:
