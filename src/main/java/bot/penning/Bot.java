@@ -44,11 +44,11 @@ import bot.penning.listeners.SlashCommandListener;
 public class Bot {
 
 	//	static HashMap writers = new HashMap();
-	static int warIndex = 0;
-	static ArrayList<Skirmish> skirmishes = new ArrayList<Skirmish>();
-	static ArrayList<Battle> battles = new ArrayList<Battle>();
-	static ArrayList<War> wars = new ArrayList<War>();
-	static ArrayList<Sprint> sprints = new ArrayList<Sprint>();
+//	static int warIndex = 0;
+//	static ArrayList<Skirmish> skirmishes = new ArrayList<Skirmish>();
+//	static ArrayList<Battle> battles = new ArrayList<Battle>();
+//	static ArrayList<War> wars = new ArrayList<War>();
+//	static ArrayList<Sprint> sprints = new ArrayList<Sprint>();
 
 	static ArrayList<Object> writersEntered = new ArrayList<Object>();
 
@@ -59,17 +59,6 @@ public class Bot {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Bot.class);
 
 	public static void main(String[] args) {
-
-		//		  ReactorResources reactorResources = ReactorResources.builder()
-		//				    .timerTaskScheduler(Schedulers.newParallel("my-scheduler"))
-		//				    .blockingTaskScheduler(Schedulers.boundedElastic())
-		//				    .build();
-
-		//		GatewayDiscordClient client = DiscordClientBuilder.create("ODQ2ODUwOTEyMjM2NjAxMzU1.GqW0ye.nYT3RdQNuUerN3bs5ItHYY0zro9gOGkVo70GxM")
-		//				//				  .setReactorResources(reactorResources)
-		//				.build()
-		//				.login()
-		//				.block();
 
 		String token = System.getenv("penning_token");
 
