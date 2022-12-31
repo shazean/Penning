@@ -44,6 +44,9 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
             type=sha
+      - name: Set POM version
+        run: |
+          mvn versions:set -DnewVersion=${{ steps.meta.outputs.tag }}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
