@@ -1,43 +1,17 @@
 package bot.penning;
 
-import java.math.RoundingMode;
-
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
-import discord4j.common.ReactorResources;
 import discord4j.core.DiscordClientBuilder;
 import discord4j.core.GatewayDiscordClient;
-import discord4j.core.event.EventDispatcher;
-import discord4j.core.event.domain.interaction.ApplicationCommandInteractionEvent;
 import discord4j.core.event.domain.interaction.ButtonInteractionEvent;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
-import discord4j.core.event.domain.lifecycle.ReadyEvent;
-import discord4j.core.event.domain.message.MessageCreateEvent;
-import discord4j.core.object.command.ApplicationCommandOption;
-import discord4j.core.object.entity.Message;
-import discord4j.core.object.entity.User;
-import discord4j.discordjson.json.ApplicationCommandOptionData;
-import discord4j.discordjson.json.ApplicationCommandRequest;
-import reactor.core.scheduler.Schedulers;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import bot.penning.encounters.Battle;
-import bot.penning.encounters.Skirmish;
-import bot.penning.encounters.Sprint;
-import bot.penning.encounters.War;
-import bot.penning.events.SkirmishEvent;
 import bot.penning.listeners.ButtonListener;
 import bot.penning.listeners.SlashCommandListener;
 
@@ -75,8 +49,8 @@ public class Bot {
 		 * Using SpringBoot we can avoid all of this and use their resource pattern
 		 * matcher to do this for us.
 		 */
-		List<String> commands = List.of("add.json", "greet.json", "goal.json", "hey.json", "progress.json",
-				"skirmish.json", "total.json", "writing_prompt.json", "writers_block_prompt.json"); // , "ping.json"
+		List<String> commands = List.of("add.json", "greet.json", "goal.json", "hey.json", "onslaught.json", "progress.json",
+				"skirmish.json", "total.json", "war.json", "writing_prompt.json", "writers_block_prompt.json"); // , "ping.json"
 		try {
 			new GlobalCommandRegistrar(client.getRestClient()).registerCommands(commands);
 		} catch (Exception e) {
