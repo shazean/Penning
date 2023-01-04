@@ -21,6 +21,8 @@ spec:
         app: penning
     spec:
       serviceAccountName: penning
+      imagePullSecrets:
+        - name: penning-registry
       containers:
         - name: app
           image: ghcr.io/shazean/penning:latest
