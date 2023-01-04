@@ -117,12 +117,8 @@ public class SkirmishCommand implements SlashCommand {
 						skirmish.setComplete();
 						skirmish.createMessage(embedEvent, "Skirmish #" + skirmish.getIndex() + " ends now!");
 						skirmish.createMessage(embedEvent, "How much did you write? I wrote " + penningsWords + " words.");
-						//						embedEvent.getMessage().getChannel().block().createMessage("Add your total!")
-						//						.withComponents(ActionRow.of(TextInput.small("total-id", "Total?")))
-						//						.block();
 
 						skirmish.createMessage(embedEvent, "Use `/total " + skirmish.getIndex() + "` to add your total.");
-						//						.withComponents(ActionRow.of(totalButton));
 
 						printSummary(embedEvent, skirmish);
 

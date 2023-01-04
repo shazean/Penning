@@ -16,7 +16,9 @@ public class EncounterInfo {
 //	public static ArrayList<Battle> battles = new ArrayList<Battle>();
 //	public static ArrayList<War> wars = new ArrayList<War>();
 //	public static ArrayList<Sprint> sprints = new ArrayList<Sprint>();
-	public static final Map<Optional<Member>, Goal> writerIndex = new HashMap<>();
+	public static final Map<Optional<Member>, Goal> writerIndexTemp = new HashMap<>();
+	
+	public static final Map<Optional<Member>, Writer> writerIndex = new HashMap<>();
 	public static Map<Long, Encounter> warRegistry = new HashMap<>();
 	public static Boolean warRunning = false;
 

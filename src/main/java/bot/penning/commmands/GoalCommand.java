@@ -3,6 +3,7 @@ package bot.penning.commmands;
 import java.util.Optional;
 
 import bot.penning.Goal;
+import bot.penning.Writer;
 import bot.penning.EncounterInfo;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.command.ApplicationCommandInteractionOption;
@@ -36,29 +37,33 @@ public class GoalCommand implements SlashCommand {
 				.orElse("words");	        
 
 		Optional<Member> user = event.getInteraction().getMember();
+		Goal writerGoal;
+		Writer writer;
 
 		//If the writerIndex map contains an object with the key of the user who called the command,
 		//then the object is completely cleared.
 		//this makes it so creating a new goal replaces the last one, and a person can not have 2 goals at once.
-		if (EncounterInfo.writerIndex.containsKey(user)) {
-			EncounterInfo.writerIndex.remove(user);
-		}
+//		if (EncounterInfo.writerIndex.containsKey(user)) {
+//			EncounterInfo.writerIndex.remove(user);
+//		}
 
 		if (type != null) { //type was specified FIXME?
-
-			Goal writerGoal = new Goal(target, type);
-
-			EncounterInfo.writerIndex.put(user, writerGoal);
-
-			return event.reply("Goal of " + writerGoal.getGoal() + " " + writerGoal.getGoalType() + " set!");
-
+		
+			writerGoal = new Goal(target, type);
+			writer = new Writer(user, writerGoal);
+			EncounterInfo.writerIndex.put(user, writer);
+			EncounterInfo.writerIndex.get(user).updateGoal(writerGoal);
+			
 		}
 		else { //type was not specified, only target was
-			Goal writerGoal = new Goal(target);
 
-			EncounterInfo.writerIndex.put(user, writerGoal);
-			return event.reply("Goal of " + writerGoal.getGoal() + " " + writerGoal.getGoalType() + " set!");
+			writerGoal = new Goal(target);
+			writer = new Writer(user, writerGoal);
+			EncounterInfo.writerIndex.put(user, writer);
+			EncounterInfo.writerIndex.get(user).updateGoal(writerGoal);
 
 		}
+		
+		return event.reply("Goal of " + writerGoal.getGoal() + " " + writerGoal.getGoalType() + " set!");
 	}
 }

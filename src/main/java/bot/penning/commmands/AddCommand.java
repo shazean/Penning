@@ -3,6 +3,7 @@ package bot.penning.commmands;
 import java.util.Optional;
 
 import bot.penning.Goal;
+import bot.penning.Writer;
 import bot.penning.EncounterInfo;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.command.ApplicationCommandInteractionOption;
@@ -26,16 +27,23 @@ public class AddCommand implements SlashCommand {
 				.get(); //This is warning us that we didn't check if its present, we can ignore this on required options
 
 		Optional<Member> user = event.getInteraction().getMember();
+		Writer writer = EncounterInfo.writerIndex.get(user);
 
-		if (!EncounterInfo.writerIndex.containsKey(user)) { //if user hasn't created goal, alert them
+		if (writer == null || !writer.hasGoalSet()) { //if user hasn't created a goal, alert them
 			return event.reply("Create a goal first!").withEphemeral(true);
 		}	        
 
-		EncounterInfo.writerIndex.get(user).addWords(words);
+		writer.getGoal().addWords(words);
+		
+		if (writer.hasQuest()) {
+			writer.updateQuests(words);
+		}
 
-		return event.reply("Progress updated! You have written " + EncounterInfo.writerIndex.get(user).getProgress() + " " + EncounterInfo.writerIndex.get(user).getGoalType() + " of " + EncounterInfo.writerIndex.get(user).getGoal() + " " + EncounterInfo.writerIndex.get(user).getGoalType() + ".");
+		if (writer.hasQuest() && writer.getQuest().getQuestGoal().isComplete()) {
+			return event.reply("Progress updated! You have written " + writer.getGoal().getProgress() + " " + writer.getGoal().getGoalType() + " of " + writer.getGoalNum() + " " + writer.getGoal().getGoalType() + ".").then(event.createFollowup("Quest completed!").then());
+
+		} else {
+			return event.reply("Progress updated! You have written " + writer.getGoal().getProgress() + " " + writer.getGoal().getGoalType() + " of " + writer.getGoalNum() + " " + writer.getGoal().getGoalType() + ".");
+		}
 	}
-
-
-
 }

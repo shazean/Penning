@@ -8,7 +8,7 @@ public class Goal {
 	Long progress;
 	String goalAbbr = "wpm";
 	double progressPercent;
-	Boolean goalComplete;
+	Boolean goalComplete = false;
 
 
 	public Goal() {	
@@ -43,16 +43,24 @@ public class Goal {
 
 	public void setProgress(Long words) {
 		this.progress = words;
-
+		if (this.progress > goal) {
+			goalComplete = true;
+		}
 	}
 
 	public Long getProgress() {
 		return progress;
 	}
+	
+	public Long getRemaining() {
+		return goal - progress;
+	}
 
 	public void addWords(Long words) {
 		this.progress += words;
-
+		if (this.progress > goal) {
+			goalComplete = true;
+		}
 	}
 
 	public String getGoalTypeAbbr() {
@@ -78,6 +86,9 @@ public class Goal {
 
 		return this.progressPercent;
 	}
-
+	
+	public Boolean isComplete() {
+		return goalComplete;
+	}
 
 }
