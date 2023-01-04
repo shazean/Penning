@@ -74,7 +74,7 @@ public class Encounter {
 	}
 	
 	public String createParticipantSummary() {
-		participantSummary = "**Summary:**\n\n";
+		participantSummary = "**Summary:**\n";
 		for (Participant i : enteredParticipants) {
 			participantSummary += (i + "\n");
 		}
@@ -88,6 +88,7 @@ public class Encounter {
 		Double averageWPM;
 		String writtenType;
 		String writtenTypeAbbr;
+		Long timeToGoal;
 		
 		public Participant(String nickname, Long totalWords, Double averageWPM, String writtenType, String writtenTypeAbbr) {
 			this.nickname = nickname;
@@ -97,10 +98,19 @@ public class Encounter {
 			this.writtenTypeAbbr = writtenTypeAbbr;
 		}
 		
+		public Participant(String nickname, Long totalWords, Double averageWPM, Long timeToGoal) {
+			this.nickname = nickname;
+			this.timeToGoal = timeToGoal;
+		}
+		
 		public String toString() {
-			return nickname + ": " + totalWords + " " + writtenType + " (" + averageWPM + " " + writtenTypeAbbr + "0";
+			return nickname + ": " + totalWords + " " + writtenType + " (" + averageWPM + " " + writtenTypeAbbr + ")";
 			
 		}
+		
+		public String onslaughtToString() {
+			return nickname + ": " + timeToGoal + " minutes (" + averageWPM + " wpm)";
+ 		}
 		
 	}
 	

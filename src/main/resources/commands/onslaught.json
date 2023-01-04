@@ -1,0 +1,18 @@
+{
+    "name": "onslaught",
+    "description": "Create an onslaught and race to write the set number of words as fast as possible!",
+    "options": [
+        {
+            "name": "target",
+            "description": "Set how many words to write.",
+            "type": 4,
+            "required": true
+        },
+        {
+            "name": "start",
+            "description": "Set how many minutes out the onslaught should begin. Max 15 minutes.",
+            "type": 4,
+            "required": true
+        }
+    ]
+}

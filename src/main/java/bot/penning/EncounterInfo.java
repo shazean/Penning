@@ -18,6 +18,7 @@ public class EncounterInfo {
 //	public static ArrayList<Sprint> sprints = new ArrayList<Sprint>();
 	public static final Map<Optional<Member>, Goal> writerIndex = new HashMap<>();
 	public static Map<Long, Encounter> warRegistry = new HashMap<>();
+	public static Boolean warRunning = false;
 
 
 	public static ArrayList<Object> writersEntered = new ArrayList<Object>();
@@ -35,6 +36,14 @@ public class EncounterInfo {
 
 	public static Long getWarIndex() {
 		return warIndex;
+	}
+	
+	public static Boolean isWarRunning() {
+		return warRunning;
+	}
+	
+	public static void setWarRunning(Boolean stateOfWar) {
+		warRunning = stateOfWar;
 	}
 
 }

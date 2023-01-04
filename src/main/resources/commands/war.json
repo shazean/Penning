@@ -1,0 +1,24 @@
+{
+    "name": "war",
+    "description": "Create a war—a series of skirmishes with a set amount of time between!",
+    "options": [
+        {
+            "name": "time",
+            "description": "Set how long (in minutes) each skirmish should run for.",
+            "type": 4,
+            "required": true
+        },
+        {
+            "name": "start",
+            "description": "Set how many minutes between each skirmish.",
+            "type": 4,
+            "required": true
+        },
+        {
+            "name": "quantity",
+            "description": "Set how many skirmishes should be included in this war.",
+            "type": 4,
+            "required": true
+        }
+    ]
+}

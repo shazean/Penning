@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 
 import bot.penning.encounters.Battle;
 import bot.penning.encounters.Skirmish;
-import bot.penning.encounters.Sprint;
+import bot.penning.encounters.Onslaught;
 import bot.penning.encounters.War;
 import bot.penning.events.SkirmishEvent;
 import bot.penning.listeners.ButtonListener;
@@ -71,8 +71,8 @@ public class Bot {
 	         is overly complicated for such a simple demo and requires handling for both IDE and .jar packaging.
 	         Using SpringBoot we can avoid all of this and use their resource pattern matcher to do this for us.
 		 */
-		List<String> commands = List.of("add.json", "greet.json", "goal.json", "hey.json", "progress.json", 
-				"skirmish.json", "total.json", "writing_prompt.json", "writers_block_prompt.json"); //, "ping.json"
+		List<String> commands = List.of("add.json", "battle.json", "greet.json", "goal.json", "hey.json", "onslaught.json", "progress.json", 
+				"skirmish.json", "total.json", "war.json", "writing_prompt.json", "writers_block_prompt.json"); //, "ping.json"
 		try {
 			new GlobalCommandRegistrar(client.getRestClient()).registerCommands(commands);
 		} catch (Exception e) {

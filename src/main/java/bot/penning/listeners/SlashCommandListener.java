@@ -9,13 +9,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bot.penning.commmands.AddCommand;
+import bot.penning.commmands.BattleCommand;
 import bot.penning.commmands.GoalCommand;
 import bot.penning.commmands.GreetCommand;
 import bot.penning.commmands.HeyCommand;
+import bot.penning.commmands.OnslaughtCommand;
 import bot.penning.commmands.ProgressCommand;
 import bot.penning.commmands.SkirmishCommand;
 import bot.penning.commmands.SlashCommand;
 import bot.penning.commmands.TotalCommand;
+import bot.penning.commmands.WarCommand;
 import bot.penning.commmands.WritersBlockCommand;
 import bot.penning.commmands.WritingPromptCommand;
 
@@ -28,12 +31,15 @@ public class SlashCommandListener {
 //        commands.add(new PingCommand());
 //    	commands.add(new GoalCommand());
     	commands.add(new AddCommand());
+    	commands.add(new BattleCommand());
         commands.add(new GreetCommand());
         commands.add(new GoalCommand());
         commands.add(new HeyCommand());
+        commands.add(new OnslaughtCommand());
         commands.add(new ProgressCommand());
         commands.add(new SkirmishCommand());
         commands.add(new TotalCommand());
+        commands.add(new WarCommand());
         commands.add(new WritingPromptCommand());
         commands.add(new WritersBlockCommand());
     }

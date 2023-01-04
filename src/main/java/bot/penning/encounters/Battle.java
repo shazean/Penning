@@ -5,6 +5,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import bot.penning.encounters.Encounter.Participant;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 
 public class Battle extends Encounter {
@@ -13,26 +14,27 @@ public class Battle extends Encounter {
 	private Long battleLengthMinutes;
 	private Long battleLengthTotalMinutes;
 
-	public Battle(Long index, Long lengthHours, Long start) {
-		this(index, lengthHours, (Long) 0L, start);
+	public Battle(Long index, Double lengthHours, Long start) {
+		super(index, (long) (lengthHours * 60), start);
 	}
 
-
-	public Battle(Long index, Long lengthHours, Long lengthMinutes, Long startTime) {
-		super(index, lengthHours * 60 + lengthMinutes, startTime);
-		this.index = index;
-		setLength(lengthHours, lengthMinutes);
-		setStartTime(startTime);
+	@Override
+	public String createParticipantSummary() {
+		participantSummary = "**Battle Summary:**\n\n";
+		for (Participant i : enteredParticipants) {
+			participantSummary += (i + "\n");
+		}
+		return participantSummary;
 	}
 	
-
-	public void setLength(Long skirmishLengthHours, Long skirmishLengthMinutes) {
-		this.battleLengthHours = skirmishLengthHours;
-		this.battleLengthMinutes = skirmishLengthMinutes;
-		
-		this.battleLengthTotalMinutes = (battleLengthHours * 60) + battleLengthMinutes;
+	public Long getLengthHours() {
+		return (long) Math.floor(getLength() / 60);
 	}
-
+	
+	public Long getLengthMinutes() {
+		return getLength() % 60;
+	}
+ 
 //	public void runBattle(Battle battle, MessageCreateEvent event) {
 //		//FIXME
 //		
