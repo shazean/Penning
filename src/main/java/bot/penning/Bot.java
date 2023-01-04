@@ -50,7 +50,7 @@ public class Bot {
 		 * matcher to do this for us.
 		 */
 		List<String> commands = List.of("add.json", "greet.json", "goal.json", "hey.json", "onslaught.json", "progress.json",
-				"skirmish.json", "total.json", "war.json", "writing_prompt.json", "writers_block_prompt.json"); // , "ping.json"
+				"quest.json", "skirmish.json", "total.json", "war.json", "writing_prompt.json", "writers_block_prompt.json");
 		try {
 			new GlobalCommandRegistrar(client.getRestClient()).registerCommands(commands);
 		} catch (Exception e) {

@@ -12,6 +12,7 @@ public class Writer {
 	Double averageWPM;
 	int totalXP;
 	Rank currentRank;
+	Long bestGoal;
 	Boolean usingFlavorText = true;
 	
 	public Writer(Optional<Member> discordUser, Goal writerGoal) {
@@ -24,7 +25,7 @@ public class Writer {
 		return user;
 	}
 	
-	public void toggleFlavorText(Boolean flavorText) {
+	public void setFlavorText(Boolean flavorText) {
 		usingFlavorText = flavorText;
 	}
 	
@@ -40,5 +41,6 @@ public class Writer {
 	public void updateXP(int newXP) {
 		totalXP += newXP;
 	}
+	
 		
 }
