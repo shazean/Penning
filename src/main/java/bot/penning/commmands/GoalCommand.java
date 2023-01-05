@@ -43,17 +43,18 @@ public class GoalCommand implements SlashCommand {
 		//If the writerIndex map contains an object with the key of the user who called the command,
 		//then the object is completely cleared.
 		//this makes it so creating a new goal replaces the last one, and a person can not have 2 goals at once.
-//		if (EncounterInfo.writerIndex.containsKey(user)) {
-//			EncounterInfo.writerIndex.remove(user);
-//		}
+		//		if (EncounterInfo.writerIndex.containsKey(user)) {
+		//			EncounterInfo.writerIndex.remove(user);
+		//		}
+		//FIXME check to see if a user has a goal, and tell them if they want to replace it to clear the old goal first
 
 		if (type != null) { //type was specified FIXME?
-		
+
 			writerGoal = new Goal(target, type);
 			writer = new Writer(user, writerGoal);
 			EncounterInfo.writerIndex.put(user, writer);
 			EncounterInfo.writerIndex.get(user).updateGoal(writerGoal);
-			
+
 		}
 		else { //type was not specified, only target was
 
@@ -63,7 +64,7 @@ public class GoalCommand implements SlashCommand {
 			EncounterInfo.writerIndex.get(user).updateGoal(writerGoal);
 
 		}
-		
-		return event.reply("Goal of " + writerGoal.getGoal() + " " + writerGoal.getGoalType() + " set!");
+
+		return event.reply("Goal of " + writerGoal.getGoal() + " " + writerGoal.getGoalType() + " created!");
 	}
 }

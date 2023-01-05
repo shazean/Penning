@@ -35,15 +35,23 @@ public class AddCommand implements SlashCommand {
 
 		writer.getGoal().addWords(words);
 		
+
+		
+		
 		if (writer.hasQuest()) {
 			writer.updateQuests(words);
 		}
 
 		if (writer.hasQuest() && writer.getQuest().getQuestGoal().isComplete()) {
-			return event.reply("Progress updated! You have written " + writer.getGoal().getProgress() + " " + writer.getGoal().getGoalType() + " of " + writer.getGoalNum() + " " + writer.getGoal().getGoalType() + ".").then(event.createFollowup("Quest completed!").then());
+			System.out.println("WRITER QUEST: " + writer.hasQuest() + " " + writer.getQuest().getQuestGoal().isComplete());
+			System.out.println("WRITER QUEST: " + writer.hasQuest() + " " + writer.getQuest().getQuestGoal().isComplete());
+			System.out.println("WRITER QUEST: " + writer.hasQuest() + " " + writer.getQuest().getQuestGoal().isComplete());
+			System.out.println("WRITER QUEST: " + writer.hasQuest() + " " + writer.getQuest().getQuestGoal().isComplete());
+			System.out.println("WRITER QUEST: " + writer.hasQuest() + " " + writer.getQuest().getQuestGoal().isComplete());
+			return event.reply("Progress updated! You have written " + writer.getGoal().getProgress() + " " + writer.getGoal().getGoalType() + " out of " + writer.getGoalNum() + " " + writer.getGoal().getGoalType() + ".").then(event.createFollowup("Quest completed!").then());
 
 		} else {
-			return event.reply("Progress updated! You have written " + writer.getGoal().getProgress() + " " + writer.getGoal().getGoalType() + " of " + writer.getGoalNum() + " " + writer.getGoal().getGoalType() + ".");
+			return event.reply("Progress updated! You have written " + writer.getGoal().getProgress() + " " + writer.getGoal().getGoalType() + " out of " + writer.getGoalNum() + " " + writer.getGoal().getGoalType() + ".");
 		}
 	}
 }

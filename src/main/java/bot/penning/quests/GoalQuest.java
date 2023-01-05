@@ -30,7 +30,7 @@ public class GoalQuest extends Quest {
 			questObjective = goal.getRemaining();
 		} else { 
 			//else, 15% to 40% of goal total is quest
-			questObjective = goal.getGoal() * (rand.nextInt(25) + 15);
+			questObjective = (long) (goal.getGoal() * ((rand.nextInt(25) + 15.0) / 100.0));
 		}
 	}
 

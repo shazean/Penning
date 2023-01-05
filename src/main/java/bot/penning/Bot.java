@@ -42,7 +42,7 @@ public class Bot {
 		
 		//Call our code to handle creating/deleting/editing our global slash commands.
 		List<String> commands = List.of("add.json", "battle.json", "clear.json", "greet.json", "goal.json", "hey.json",
-				"onslaught.json", "progress.json", "quest.json", "skirmish.json", "total.json", "war.json",
+				"info.json", "onslaught.json", "progress.json", "quest.json", "skirmish.json", "total.json", "war.json",
 				"writing_prompt.json", "writers_block_prompt.json");
 		try {
 			new GlobalCommandRegistrar(client.getRestClient()).registerCommands(commands);
@@ -55,6 +55,5 @@ public class Bot {
 				.then(client.onDisconnect())
 				.block(); // We use .block() as there is not another non-daemon thread and the jvm would
 							// close otherwise.
-
 	}
 }

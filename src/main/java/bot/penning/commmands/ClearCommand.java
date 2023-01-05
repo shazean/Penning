@@ -20,17 +20,17 @@ public class ClearCommand implements SlashCommand {
 
 	@Override
 	public Mono<Void> handle(ChatInputInteractionEvent event) {
-		
+
 		Optional<Member> user = event.getInteraction().getMember();
 		Writer writer = EncounterInfo.writerIndex.get(user);
-		
+
 		if (writer == null) {
 			return event.reply("You don't have a goal to clear!  Create a goal first!").withEphemeral(true);
 		}
-		
+
 		writer.clearGoal();
-		
-		
+
+
 		return event.reply("Goal cleared!");
 	}
 }

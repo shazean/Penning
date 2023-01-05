@@ -14,6 +14,7 @@ import bot.penning.commmands.ClearCommand;
 import bot.penning.commmands.GoalCommand;
 import bot.penning.commmands.GreetCommand;
 import bot.penning.commmands.HeyCommand;
+import bot.penning.commmands.InfoCommand;
 import bot.penning.commmands.OnslaughtCommand;
 import bot.penning.commmands.ProgressCommand;
 import bot.penning.commmands.QuestCommand;
@@ -36,6 +37,7 @@ public class SlashCommandListener {
         commands.add(new GreetCommand());
         commands.add(new GoalCommand());
         commands.add(new HeyCommand());
+        commands.add(new InfoCommand());
         commands.add(new OnslaughtCommand());
         commands.add(new ProgressCommand());
         commands.add(new QuestCommand());

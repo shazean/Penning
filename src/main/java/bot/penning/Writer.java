@@ -1,9 +1,14 @@
 package bot.penning;
 
+import java.time.Duration;
 import java.util.Optional;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import bot.penning.quests.Quest;
 import discord4j.core.object.entity.Member;
+import reactor.core.publisher.Mono;
 
 public class Writer {
 
@@ -49,7 +54,7 @@ public class Writer {
 	public Long getGoalNum() {
 		return writerGoal.getGoal();
 	}
-	
+
 	public void clearGoal() {
 		writerGoal = null;
 	}
@@ -77,20 +82,22 @@ public class Writer {
 	public void addQuest(Quest quest) {
 		currentQuest = quest;
 		hasQuest = true;
-		System.out.println("Quest added! Quest is: " + quest.toString());
 	}
-	
+
 	public void updateQuests(Long words) {
 		currentQuest.getQuestGoal().addWords(words);
 		if (currentQuest.getQuestGoal().isComplete()) {
-			hasQuest = false;
+			ScheduledExecutorService schedule = Executors.newScheduledThreadPool(1);
+			schedule.schedule(() -> {
+				hasQuest = false;
+			}, 1, TimeUnit.SECONDS);		
 		}
 	}
-	
+
 	public Quest getQuest() {
 		return currentQuest;
 	}
-	
+
 	public Boolean hasQuest() {
 		return hasQuest;
 	}

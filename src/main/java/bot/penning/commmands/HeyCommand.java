@@ -10,21 +10,21 @@ import discord4j.core.object.entity.User;
 import reactor.core.publisher.Mono;
 
 public class HeyCommand implements SlashCommand {
-	  @Override
-	    public String getName() {
-	        return "hey";
-	    }
-
-	    @Override
-	    public Mono<Void> handle(ChatInputInteractionEvent event) {
-
-	    	
-	    	
-	        //Reply to the slash command, with the name the user supplied
-	    	return event.reply("Hello!");
-	        //return event.replyEphemeral("Pong!");
-//	        return  event.reply()
-//	            .withEphemeral(true)
-//	            .withContent("Hello, " + name);
-	    }
+	@Override
+	public String getName() {
+		return "hey";
 	}
+
+	@Override
+	public Mono<Void> handle(ChatInputInteractionEvent event) {
+
+
+
+		//Reply to the slash command, with the name the user supplied
+		return event.reply("Hello!");
+		//return event.replyEphemeral("Pong!");
+		//	        return  event.reply()
+		//	            .withEphemeral(true)
+		//	            .withContent("Hello, " + name);
+	}
+}

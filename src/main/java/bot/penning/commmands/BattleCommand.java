@@ -111,7 +111,7 @@ public class BattleCommand implements SlashCommand {
 				if (botMessage.equals("Battle #" + battle.getIndex() + " starts now!")) {
 
 					Long penningsWords = Math.abs(19 * battle.getLength() + ((int)(Math.random() * (50- -50+1)+ -50)));
-//					Button totalButton = Button.primary("total-button", "Add your total!");
+					//					Button totalButton = Button.primary("total-button", "Add your total!");
 					ScheduledExecutorService schedule = battle.getSchedule();
 
 					schedule.schedule(() -> {
