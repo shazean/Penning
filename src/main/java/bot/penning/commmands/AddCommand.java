@@ -43,11 +43,6 @@ public class AddCommand implements SlashCommand {
 		}
 
 		if (writer.hasQuest() && writer.getQuest().getQuestGoal().isComplete()) {
-			System.out.println("WRITER QUEST: " + writer.hasQuest() + " " + writer.getQuest().getQuestGoal().isComplete());
-			System.out.println("WRITER QUEST: " + writer.hasQuest() + " " + writer.getQuest().getQuestGoal().isComplete());
-			System.out.println("WRITER QUEST: " + writer.hasQuest() + " " + writer.getQuest().getQuestGoal().isComplete());
-			System.out.println("WRITER QUEST: " + writer.hasQuest() + " " + writer.getQuest().getQuestGoal().isComplete());
-			System.out.println("WRITER QUEST: " + writer.hasQuest() + " " + writer.getQuest().getQuestGoal().isComplete());
 			return event.reply("Progress updated! You have written " + writer.getGoal().getProgress() + " " + writer.getGoal().getGoalType() + " out of " + writer.getGoalNum() + " " + writer.getGoal().getGoalType() + ".").then(event.createFollowup("Quest completed!").then());
 
 		} else {

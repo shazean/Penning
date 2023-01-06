@@ -27,11 +27,11 @@ public class GoalQuest extends Quest {
 		if (goal.goalPercent() > .75 && goal.goalPercent() < .85 && (rand.nextInt(2) == 0)) {
 			//if goal has between 15% and 25% remaining
 			//33% chance of getting remaining goal as quest
-			questObjective = goal.getRemaining();
+			questObjective = goal.getRemaining();		
 		} else { 
 			//else, 15% to 40% of goal total is quest
 			questObjective = (long) (goal.getGoal() * ((rand.nextInt(25) + 15.0) / 100.0));
 		}
+		questGoal.setGoal(questObjective);
 	}
-
 }

@@ -27,7 +27,7 @@ public class InfoCommand implements SlashCommand {
 		}
 
 		if (writer.hasGoalSet()) {
-			goalInfo = "Current goal: " + writer.getGoal().getProgress() + " " + writer.getGoal().getGoalType() + " of " + writer.getGoalNum() + writer.getGoal().getGoalType();
+			goalInfo = "Current goal: " + writer.getGoal().getProgress() + " " + writer.getGoal().getGoalType() + " of " + writer.getGoalNum() + " " + writer.getGoal().getGoalType();
 		}
 		if (writer.hasQuest()) {
 			questInfo = "Current quest: " + writer.getQuest().getQuestGoal().getProgress() + " words of " + writer.getQuest().getQuestGoal().getGoal();

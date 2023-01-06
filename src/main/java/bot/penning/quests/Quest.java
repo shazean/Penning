@@ -30,7 +30,9 @@ public class Quest {
 	
 	public void generateQuest() {
 		Random rand = new Random();
-		questObjective = rand.nextInt(400) + 100L;
+		int randNum = rand.nextInt(400);
+		questObjective = randNum + 100L;
+		questGoal.setGoal(questObjective);
 	}
 	
 	public void generateQuest(Goal goal) {

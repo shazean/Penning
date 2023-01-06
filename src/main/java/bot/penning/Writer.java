@@ -58,6 +58,11 @@ public class Writer {
 	public void clearGoal() {
 		writerGoal = null;
 	}
+	
+	public void addGoal(Goal goal) {
+		this.writerGoal = goal;
+		hasGoal = true;
+	}
 
 	public void setFlavorText(Boolean flavorText) {
 		usingFlavorText = flavorText;

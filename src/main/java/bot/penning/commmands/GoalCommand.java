@@ -38,30 +38,36 @@ public class GoalCommand implements SlashCommand {
 
 		Optional<Member> user = event.getInteraction().getMember();
 		Goal writerGoal;
-		Writer writer;
+		Writer writer = EncounterInfo.writerIndex.get(user);
 
-		//If the writerIndex map contains an object with the key of the user who called the command,
-		//then the object is completely cleared.
-		//this makes it so creating a new goal replaces the last one, and a person can not have 2 goals at once.
-		//		if (EncounterInfo.writerIndex.containsKey(user)) {
-		//			EncounterInfo.writerIndex.remove(user);
-		//		}
-		//FIXME check to see if a user has a goal, and tell them if they want to replace it to clear the old goal first
+		//FIXME or TODO?
+		//perhaps add a confirmation message with a button about whether or not the user wants to overwrite their old goal
+		//instead of forcing them to use the /clear command
+		
+		if (writer != null && writer.hasGoalSet()) {
+			event.reply("Please clear your old goal before you create a new one! Use `/clear`");
+		}
 
 		if (type != null) { //type was specified FIXME?
-
 			writerGoal = new Goal(target, type);
-			writer = new Writer(user, writerGoal);
-			EncounterInfo.writerIndex.put(user, writer);
-			EncounterInfo.writerIndex.get(user).updateGoal(writerGoal);
-
+			if (writer == null) {
+				writer = new Writer(user, writerGoal);
+				EncounterInfo.writerIndex.put(user, writer);
+				EncounterInfo.writerIndex.get(user).updateGoal(writerGoal);
+			} else {
+				writer.addGoal(writerGoal);
+			}
 		}
 		else { //type was not specified, only target was
-
 			writerGoal = new Goal(target);
-			writer = new Writer(user, writerGoal);
-			EncounterInfo.writerIndex.put(user, writer);
-			EncounterInfo.writerIndex.get(user).updateGoal(writerGoal);
+
+			if (writer == null) {
+				writer = new Writer(user, writerGoal);
+				EncounterInfo.writerIndex.put(user, writer);
+				EncounterInfo.writerIndex.get(user).updateGoal(writerGoal);
+			} else {
+				writer.addGoal(writerGoal);
+			}
 
 		}
 

@@ -59,7 +59,11 @@ public class Goal {
 	public void addWords(Long words) {
 		this.progress += words;
 		System.out.println("PROGRESS " + this.progress + " GOAL " + this.goal);
+		System.out.println("PROGRESS " + this.progress + " GOAL " + this.goal);
+		System.out.println("PROGRESS " + this.progress + " GOAL " + this.goal);
 		if (this.progress > goal) {
+			System.out.println("GOAL COMPLETE");
+			System.out.println("GOAL COMPLETE");
 			System.out.println("GOAL COMPLETE");
 			goalComplete = true;
 		}
