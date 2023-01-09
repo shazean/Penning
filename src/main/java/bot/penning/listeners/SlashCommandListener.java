@@ -10,6 +10,7 @@ import java.util.List;
 
 import bot.penning.commmands.AddCommand;
 import bot.penning.commmands.BattleCommand;
+import bot.penning.commmands.ChallengeCommand;
 import bot.penning.commmands.ClearCommand;
 import bot.penning.commmands.GoalCommand;
 import bot.penning.commmands.GreetCommand;
@@ -33,6 +34,7 @@ public class SlashCommandListener {
         //We register our commands here when the class is initialized
     	commands.add(new AddCommand());
     	commands.add(new BattleCommand());
+    	commands.add(new ChallengeCommand());
     	commands.add(new ClearCommand());
         commands.add(new GreetCommand());
         commands.add(new GoalCommand());

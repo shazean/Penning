@@ -41,11 +41,29 @@ public class AddCommand implements SlashCommand {
 		if (writer.hasQuest()) {
 			writer.updateQuests(words);
 		}
+		
+		if (writer.hasChallengeQuest() && !writer.getChallengeQuest().isTimed()) {
+			writer.updateChallengeQuests(false, words);
+		}
 
 		if (writer.hasQuest() && writer.getQuest().getQuestGoal().isComplete()) {
-			return event.reply("Progress updated! You have written " + writer.getGoal().getProgress() + " " + writer.getGoal().getGoalType() + " out of " + writer.getGoalNum() + " " + writer.getGoal().getGoalType() + ".").then(event.createFollowup("Quest completed!").then());
+			//quest is complete
+			return event.reply("Progress updated! You have written " + writer.getGoal().getProgress() + " " + writer.getGoal().getGoalType() + " out of " + writer.getGoalNum() + " " + writer.getGoal().getGoalType() + ".")
+					.then(event.createFollowup("Quest completed!").then());
 
-		} else {
+		} else if (writer.hasChallengeQuest() && writer.getChallengeQuest().getQuestGoal().isComplete()) {
+			//challenge quest is complete
+			return event.reply("Progress updated! You have written " + writer.getGoal().getProgress() + " " + writer.getGoal().getGoalType() + " out of " + writer.getGoalNum() + " " + writer.getGoal().getGoalType() + ".")
+					.then(event.createFollowup("Challenge quest completed!").then());
+			
+		} else if (writer.hasQuest() && writer.getQuest().getQuestGoal().isComplete() && writer.hasChallengeQuest() && writer.getChallengeQuest().getQuestGoal().isComplete()) {
+			//quest and challenge quest complete
+			return event.reply("Progress updated! You have written " + writer.getGoal().getProgress() + " " + writer.getGoal().getGoalType() + " out of " + writer.getGoalNum() + " " + writer.getGoal().getGoalType() + ".")
+					.then(event.createFollowup("Quest completed!")
+					.then(event.createFollowup("Challenge quest completed!").then()));
+		}
+		else {
+			//no quests or they aren't complete
 			return event.reply("Progress updated! You have written " + writer.getGoal().getProgress() + " " + writer.getGoal().getGoalType() + " out of " + writer.getGoalNum() + " " + writer.getGoal().getGoalType() + ".");
 		}
 	}

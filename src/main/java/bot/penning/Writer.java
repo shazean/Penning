@@ -6,6 +6,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import bot.penning.quests.ChallengeQuest;
 import bot.penning.quests.Quest;
 import discord4j.core.object.entity.Member;
 import reactor.core.publisher.Mono;
@@ -22,13 +23,16 @@ public class Writer {
 	Boolean usingFlavorText = true;
 	Boolean hasGoal = false;
 	Quest currentQuest;
+	ChallengeQuest currentChallengeQuest;
 	Boolean hasQuest;
+	Boolean hasChallengeQuest;
 
 
 	public Writer(Optional<Member> discordUser) {
 		user = discordUser;
 		hasGoal = false;
 		hasQuest = false;
+		hasChallengeQuest = false;
 	}
 
 	public Writer(Optional<Member> discordUser, Goal writerGoal) {
@@ -36,6 +40,7 @@ public class Writer {
 		this.writerGoal = writerGoal;
 		hasGoal = true;
 		hasQuest = false;
+		hasChallengeQuest = false;
 	}
 
 
@@ -58,7 +63,7 @@ public class Writer {
 	public void clearGoal() {
 		writerGoal = null;
 	}
-	
+
 	public void addGoal(Goal goal) {
 		this.writerGoal = goal;
 		hasGoal = true;
@@ -105,6 +110,41 @@ public class Writer {
 
 	public Boolean hasQuest() {
 		return hasQuest;
+	}
+
+	public void addChallengeQuest(ChallengeQuest quest) {
+		currentChallengeQuest = quest;
+		hasChallengeQuest = true;
+	}
+
+	public void updateChallengeQuests(Boolean isTimed, Long words) {
+		if (isTimed) { //assume we only get this far if the words were written in the needed time frame
+			if (words > currentChallengeQuest.getQuestGoal().getGoal()) { //quest only updated if needed words were written
+				currentChallengeQuest.getQuestGoal().addWords(words);
+				if (currentChallengeQuest.getQuestGoal().isComplete()) {
+					ScheduledExecutorService schedule = Executors.newScheduledThreadPool(1);
+					schedule.schedule(() -> {
+						hasChallengeQuest = false;
+					}, 1, TimeUnit.SECONDS);		
+				}
+			}
+		} else { //untimed quest, can just update the words & mark completed like regular quest
+			currentChallengeQuest.getQuestGoal().addWords(words);
+			if (currentChallengeQuest.getQuestGoal().isComplete()) {
+				ScheduledExecutorService schedule = Executors.newScheduledThreadPool(1);
+				schedule.schedule(() -> {
+					hasChallengeQuest = false;
+				}, 1, TimeUnit.SECONDS);		
+			}
+		}
+	}
+
+	public ChallengeQuest getChallengeQuest() {
+		return currentChallengeQuest;
+	}
+
+	public Boolean hasChallengeQuest() {
+		return hasChallengeQuest;
 	}
 
 }
