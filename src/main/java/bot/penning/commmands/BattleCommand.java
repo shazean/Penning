@@ -44,7 +44,7 @@ public class BattleCommand implements SlashCommand {
 		EncounterInfo.warRegistry.put(battle.getIndex() % 50, battle);
 		GatewayDiscordClient client = event.getClient();
 		Long finalTime;
-
+		
 		//stop user from creating a battle with length 0 (because calculating the average for total creates a divide by zero scenario)
 		if (duration == 0) {
 			return event.reply("Length of battle cannot be zero! Try again!").withEphemeral(true);

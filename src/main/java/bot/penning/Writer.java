@@ -1,6 +1,6 @@
 package bot.penning;
 
-import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -9,15 +9,16 @@ import java.util.concurrent.TimeUnit;
 import bot.penning.quests.ChallengeQuest;
 import bot.penning.quests.Quest;
 import discord4j.core.object.entity.Member;
-import reactor.core.publisher.Mono;
 
 public class Writer {
 
 	String name;
 	Optional<Member> user;
 	Goal writerGoal;
-	Double averageWPM;
+	ArrayList<Double> averageWPM;
+	int averageWPMIndex;
 	int totalXP;
+	int maxWPMsRecord = 20;
 	Rank currentRank;
 	Long bestGoal;
 	Boolean usingFlavorText = true;
@@ -27,13 +28,15 @@ public class Writer {
 	Boolean hasQuest;
 	Boolean hasChallengeQuest;
 
-
 	public Writer(Optional<Member> discordUser) {
 		user = discordUser;
 		hasGoal = false;
 		hasQuest = false;
 		hasChallengeQuest = false;
+		averageWPM = new ArrayList<Double>(10);
+		averageWPMIndex = 0;
 	}
+
 
 	public Writer(Optional<Member> discordUser, Goal writerGoal) {
 		user = discordUser;
@@ -41,11 +44,39 @@ public class Writer {
 		hasGoal = true;
 		hasQuest = false;
 		hasChallengeQuest = false;
+		averageWPM = new ArrayList<Double>(10);
+		averageWPMIndex = 0;
 	}
-
 
 	public Optional<Member> getUser() {
 		return user;
+	}
+
+	public void updateAverageWPM(Double averageWPM) {
+		if (this.averageWPM.size() >= maxWPMsRecord) {
+			this.averageWPM.set(averageWPMIndex, averageWPM);
+			averageWPMIndex++;
+			if (averageWPMIndex >= maxWPMsRecord) {
+				averageWPMIndex = 0;
+			}
+		} else {
+			this.averageWPM.add(averageWPM);
+		}
+	}
+
+	public int getAverageWPM() {
+		if (averageWPM.size() < 5) { //if we haven't established at least 5 average wpms
+			return 12;
+		}
+
+		int tempAverageWPM = 0;
+
+		for(int i = 0; i < this.averageWPM.size(); i++) {
+			tempAverageWPM += this.averageWPM.get(i);
+		}
+		tempAverageWPM = tempAverageWPM / this.averageWPM.size();
+
+		return tempAverageWPM;
 	}
 
 	public void updateGoal(Goal newGoal) {
