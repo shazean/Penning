@@ -162,8 +162,8 @@ public class TotalCommand implements SlashCommand {
 					.then(event.createFollowup("Quest completed!").then())
 					.then(event.createFollowup("Challenge quest completed!").then());
 		default: //assume no goal, no quest, no challenge quest
-			return event.reply(wordsPerMin + "!").then(event.createFollowup(writer.getAverageWPM() + "!").then());			
-//			return event.reply("You have written " + totalWritten + " words for an average of " + wordsPerMin + " wpm.");
+//			return event.reply(wordsPerMin + "!").then(event.createFollowup(writer.getAverageWPM() + "!").then());			
+			return event.reply("You have written " + totalWritten + " words for an average of " + wordsPerMin + " wpm.");
 		}
 
 
