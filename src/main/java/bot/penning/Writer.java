@@ -2,6 +2,7 @@ package bot.penning;
 
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.TimeZone;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -27,6 +28,7 @@ public class Writer {
 	ChallengeQuest currentChallengeQuest;
 	Boolean hasQuest;
 	Boolean hasChallengeQuest;
+	TimeZone timeZone;
 
 	public Writer(Optional<Member> discordUser) {
 		user = discordUser;
@@ -176,6 +178,14 @@ public class Writer {
 
 	public Boolean hasChallengeQuest() {
 		return hasChallengeQuest;
+	}
+	
+	public void setTimezone(TimeZone timeZone) {
+		timeZone = this.timeZone;
+	}
+	
+	public TimeZone getTimeZone() {
+		return timeZone;
 	}
 
 }

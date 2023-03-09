@@ -53,17 +53,28 @@ public class TotalCommand implements SlashCommand {
 		Long length = currentEncounter.getLength();
 		Double wordsPerMin = (double) (totalWritten / length);
 
-		//get goal if writer has one, else assume they're writing in words
-		if (writer.hasGoalSet()) {
-			goalType = writer.getGoal().getGoalType();
-			goalTypeAbbr = writer.getGoal().getGoalTypeAbbr();
+		goalType = type;
+		if (goalType == "lines") {
+			goalTypeAbbr = "lpm";
+		} else if (goalType == "minutes") {
+			goalTypeAbbr = "minutes";
+		} else if (goalType == "pages") {
+			goalTypeAbbr = "ppm";
 		} else {
-			goalType = "words";
 			goalTypeAbbr = "wpm";
 		}
+		
+//		//get goal if writer has one, else assume they're writing in words
+//		if (writer.hasGoalSet()) {
+//			goalType = writer.getGoal().getGoalType();
+//			goalTypeAbbr = writer.getGoal().getGoalTypeAbbr();
+//		} else {
+//			goalType = "words";
+//			goalTypeAbbr = "wpm";
+//		}
 
 
-		//can only use a completed, & un-expired War ID
+		//can only use a completed, & non-expired War ID
 		if (!currentEncounter.isComplete()) return event.reply("This encounter is incomplete! Try again after it has finished.").withEphemeral(true);
 		if (currentEncounter.isExpired()) return event.reply("This encounter is invalid! Try again with a valid encounter ID.").withEphemeral(true);
 
@@ -73,13 +84,14 @@ public class TotalCommand implements SlashCommand {
 
 		
 		/* NOTE: to whoever looks at this code, including future me
-		 * I originally had this all in a bunch of nested if/else-if/else statements
+		 * I originally had this all in a bunch of nested if/else-if/else statements,
 		 * looking one at a time at if the writer had a goal, had a quest, if the quest was complete,
-		 * has a challenge quest, and if the challenge quest was complete
+		 * has a challenge quest, and if the challenge quest was complete, etc.,
 		 * but even before checking if the quests are complete, that's 8 possible outcomes
-		 * so I decided to try this instead
-		 * it individually checks for goal, quest, and challenge quests (and if the latter two are completed)
-		 * and any that come back true assign a value into the array whichToDo
+		 * and the if/else nest was gonna get ugly real fast.
+		 * So I decided to try this instead.
+		 * It individually checks for goal, quest, and challenge quests (and if the latter two are completed)
+		 * and any that come back true assigns a value into the array whichToDo
 		 * they're all specific numbers that no matter how they're added up, the sum is a unique number
 		 * then it runs the sum through a switch statement for each unique option*/
 		int[] whichToDo = new int[] {0,0,0,0,0}; //false values: 0,0,0,0,0 | true values: 1,2,5,11,21
@@ -108,97 +120,63 @@ public class TotalCommand implements SlashCommand {
 		
 		switch (totalToDo) {
 		case(0): //no goal, no quest, no challenge quest
-			return event.reply("You have written " + totalWritten + " words for an average of " + wordsPerMin + " wpm.");
+			return event.reply("You have written " + totalWritten + " " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".");
 		case(1): //has goal, no quest, no challenge quest
-			return event.reply("You have written " + totalWritten + " words for an average of " + wordsPerMin + " wpm.")
-					.then(event.createFollowup("Progress updated! You have written " + EncounterInfo.writerIndex.get(user).getGoal().getProgress() + " " + EncounterInfo.writerIndex.get(user).getGoal().getGoalType() + " of " + EncounterInfo.writerIndex.get(user).getGoalNum() + " " + EncounterInfo.writerIndex.get(user).getGoal().getGoalType() + ".").then());
+			return event.reply("You have written " + totalWritten + " " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".")
+					.then(event.createFollowup("Progress updated! You have written " + writer.getGoal().getProgress() + " " + goalType + " of " + writer.getGoalNum() + " " + goalType + ".").then());
 		case(2): //no goal, has incomplete quest, no challenge quest
-			return event.reply("You have written " + totalWritten + " words for an average of " + wordsPerMin + " wpm.");
+			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".");
 		case(3): //has goal, has incomplete quest, no challenge quest
-			return event.reply("You have written " + totalWritten + " words for an average of " + wordsPerMin + " wpm.")
-					.then(event.createFollowup("Progress updated! You have written " + EncounterInfo.writerIndex.get(user).getGoal().getProgress() + " " + EncounterInfo.writerIndex.get(user).getGoal().getGoalType() + " of " + EncounterInfo.writerIndex.get(user).getGoalNum() + " " + EncounterInfo.writerIndex.get(user).getGoal().getGoalType() + ".").then());
+			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".")
+					.then(event.createFollowup("Progress updated! You have written " + writer.getGoal().getProgress() + " " + goalType + " of " + writer.getGoalNum() + " " + goalType + ".").then());
 		case(5): //no goal, no quest, has incomplete challenge quest
-			return event.reply("You have written " + totalWritten + " words for an average of " + wordsPerMin + " wpm.");
+			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".");
 		case(6): //has goal, no quest, has incomplete challenge quest
-			return event.reply("You have written " + totalWritten + " words for an average of " + wordsPerMin + " wpm.")
-					.then(event.createFollowup("Progress updated! You have written " + EncounterInfo.writerIndex.get(user).getGoal().getProgress() + " " + EncounterInfo.writerIndex.get(user).getGoal().getGoalType() + " of " + EncounterInfo.writerIndex.get(user).getGoalNum() + " " + EncounterInfo.writerIndex.get(user).getGoal().getGoalType() + ".").then());
+			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".")
+					.then(event.createFollowup("Progress updated! You have written " + writer.getGoal().getProgress() + " " + goalType + " of " + writer.getGoalNum() + " " + goalType + ".").then());
 		case(7): //no goal, has incomplete quest, has incomplete challenge quest
-			return event.reply("You have written " + totalWritten + " words for an average of " + wordsPerMin + " wpm.");
+			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".");
 		case(8): //has goal, has incomplete quest, has incomplete challenge quest	
-			return event.reply("You have written " + totalWritten + " words for an average of " + wordsPerMin + " wpm.")
-					.then(event.createFollowup("Progress updated! You have written " + EncounterInfo.writerIndex.get(user).getGoal().getProgress() + " " + EncounterInfo.writerIndex.get(user).getGoal().getGoalType() + " of " + EncounterInfo.writerIndex.get(user).getGoalNum() + " " + EncounterInfo.writerIndex.get(user).getGoal().getGoalType() + ".").then());
+			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".")
+					.then(event.createFollowup("Progress updated! You have written " + writer.getGoal().getProgress() + " " + goalType + " of " + writer.getGoalNum() + " " + goalType + ".").then());
 		case(13): //no goal, has complete quest, no challenge quest
-			return event.reply("You have written " + totalWritten + " words for an average of " + wordsPerMin + " wpm.")
+			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".")
 					.then(event.createFollowup("Quest completed!").then());
 		case(14): //has goal, has complete quest, no challenge quest
-			return event.reply("You have written " + totalWritten + " words for an average of " + wordsPerMin + " wpm.")
-					.then(event.createFollowup("Progress updated! You have written " + EncounterInfo.writerIndex.get(user).getGoal().getProgress() + " " + EncounterInfo.writerIndex.get(user).getGoal().getGoalType() + " of " + EncounterInfo.writerIndex.get(user).getGoalNum() + " " + EncounterInfo.writerIndex.get(user).getGoal().getGoalType() + ".").then())
+			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".")
+					.then(event.createFollowup("Progress updated! You have written " + writer.getGoal().getProgress() + " " + goalType + " of " + writer.getGoalNum() + " " + goalType + ".").then())
 					.then(event.createFollowup("Quest completed!").then());
 		case(16): //has goal, has complete quest, has incomplete challenge
-			return event.reply("You have written " + totalWritten + " words for an average of " + wordsPerMin + " wpm.")
-					.then(event.createFollowup("Progress updated! You have written " + EncounterInfo.writerIndex.get(user).getGoal().getProgress() + " " + EncounterInfo.writerIndex.get(user).getGoal().getGoalType() + " of " + EncounterInfo.writerIndex.get(user).getGoalNum() + " " + EncounterInfo.writerIndex.get(user).getGoal().getGoalType() + ".").then())
+			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".")
+					.then(event.createFollowup("Progress updated! You have written " + writer.getGoal().getProgress() + " " + goalType + " of " + writer.getGoalNum() + " " + goalType + ".").then())
 					.then(event.createFollowup("Quest completed!").then());
 		case(18): //no goal, has complete quest, has incomplete challenge
-			return event.reply("You have written " + totalWritten + " words for an average of " + wordsPerMin + " wpm.")
+			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".")
 					.then(event.createFollowup("Quest completed!").then());
 		case(27): //has goal, no quest, has complete challenge
-			return event.reply("You have written " + totalWritten + " words for an average of " + wordsPerMin + " wpm.")
-					.then(event.createFollowup("Progress updated! You have written " + EncounterInfo.writerIndex.get(user).getGoal().getProgress() + " " + EncounterInfo.writerIndex.get(user).getGoal().getGoalType() + " of " + EncounterInfo.writerIndex.get(user).getGoalNum() + " " + EncounterInfo.writerIndex.get(user).getGoal().getGoalType() + ".").then())
+			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".")
+					.then(event.createFollowup("Progress updated! You have written " + writer.getGoal().getProgress() + " " + goalType + " of " + writer.getGoalNum() + " " + goalType + ".").then())
 					.then(event.createFollowup("Challenge quest completed!").then());
 		case(28): //no goal, has incomplete quest, has complete challenge
-			return event.reply("You have written " + totalWritten + " words for an average of " + wordsPerMin + " wpm.")
+			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".")
 					.then(event.createFollowup("Challenge quest completed!").then());
 		case(29): //has goal, has incomplete quest, has complete challenge
-			return event.reply("You have written " + totalWritten + " words for an average of " + wordsPerMin + " wpm.")
-					.then(event.createFollowup("Progress updated! You have written " + EncounterInfo.writerIndex.get(user).getGoal().getProgress() + " " + EncounterInfo.writerIndex.get(user).getGoal().getGoalType() + " of " + EncounterInfo.writerIndex.get(user).getGoalNum() + " " + EncounterInfo.writerIndex.get(user).getGoal().getGoalType() + ".").then())
+			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".")
+					.then(event.createFollowup("Progress updated! You have written " + writer.getGoal().getProgress() + " " + goalType + " of " + writer.getGoalNum() + " " + goalType + ".").then())
 					.then(event.createFollowup("Challenge quest completed!").then());
 		case(39): //no goal, has complete quest, has complete challenge
-			return event.reply("You have written " + totalWritten + " words for an average of " + wordsPerMin + " wpm.")
+			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".")
 					.then(event.createFollowup("Quest completed!").then())
 					.then(event.createFollowup("Challenge quest completed!").then());
 		case(40): //has goal, has complete quest, has complete challenge
-			return event.reply("You have written " + totalWritten + " words for an average of " + wordsPerMin + " wpm.")
-					.then(event.createFollowup("Progress updated! You have written " + EncounterInfo.writerIndex.get(user).getGoal().getProgress() + " " + EncounterInfo.writerIndex.get(user).getGoal().getGoalType() + " of " + EncounterInfo.writerIndex.get(user).getGoalNum() + " " + EncounterInfo.writerIndex.get(user).getGoal().getGoalType() + ".").then())
+			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".")
+					.then(event.createFollowup("Progress updated! You have written " + writer.getGoal().getProgress() + " " + writer.getGoal().getGoalType() + " of " + writer.getGoalNum() + " " + goalType + ".").then())
 					.then(event.createFollowup("Quest completed!").then())
 					.then(event.createFollowup("Challenge quest completed!").then());
 		default: //assume no goal, no quest, no challenge quest
-//			return event.reply(wordsPerMin + "!").then(event.createFollowup(writer.getAverageWPM() + "!").then());			
-			return event.reply("You have written " + totalWritten + " words for an average of " + wordsPerMin + " wpm.");
+			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".");
 		}
 
-
-		//				if (writer.hasGoalSet()) { //writer has a goal
-		//					writer.getGoal().addWords(totalWritten);
-		//					if (writer.hasQuest()) { //writer also has a quest
-		//						writer.updateQuests(totalWritten);
-		//						if (writer.getQuest().getQuestGoal().isComplete()) {
-		//							//if writer has a goal, has a quest, and quest is also completed
-		//							return event.reply("You have written " + totalWritten + " words for an average of " + wordsPerMin + " wpm.")
-		//									.then(event.createFollowup("Progress updated! You have written " + EncounterInfo.writerIndex.get(user).getGoal().getProgress() + " " + EncounterInfo.writerIndex.get(user).getGoal().getGoalType() + " of " + EncounterInfo.writerIndex.get(user).getGoalNum() + " " + EncounterInfo.writerIndex.get(user).getGoal().getGoalType() + ".").then());
-		//						} else {
-		//							return event.reply("You have written " + totalWritten + " words for an average of " + wordsPerMin + " wpm.")
-		//									.then(event.createFollowup("Progress updated! You have written " + EncounterInfo.writerIndex.get(user).getGoal().getProgress() + " " + EncounterInfo.writerIndex.get(user).getGoal().getGoalType() + " of " + EncounterInfo.writerIndex.get(user).getGoalNum() + " " + EncounterInfo.writerIndex.get(user).getGoal().getGoalType() + ".").then());
-		//						}
-		//					} else if (writer.hasChallengeQuest()) { //writer has challenge quest
-		//						if (writer.getChallengeQuest().isTimed()) { //timed challenge quest
-		//							if (writer.getChallengeQuest().getTimeLimit() < currentEncounter.getLength()) { //current encounter is long enough to qualify for timed quest
-		//								writer.updateChallengeQuests(true, totalWritten);
-		//								if (writer.getChallengeQuest().getQuestGoal().isComplete()) { //successfully finished challenge quest
-		//									return event.reply("You have written " + totalWritten + " words for an average of " + wordsPerMin + " wpm.")
-		//											.then(event.createFollowup("Progress updated! You have written " + EncounterInfo.writerIndex.get(user).getGoal().getProgress() + " " + EncounterInfo.writerIndex.get(user).getGoal().getGoalType() + " of " + EncounterInfo.writerIndex.get(user).getGoalNum() + " " + EncounterInfo.writerIndex.get(user).getGoal().getGoalType() + ".").then());
-		//								}
-		//							}
-		//						}
-		//					} else if (writer.hasQuest() && writer.hasChallengeQuest()) { //writer has quest and challenge quest 
-		//						return event.reply(""); //FIXME
-		//					}
-		//					else { //writer has no quests
-		//						return event.reply("You have written " + totalWritten + " words for an average of " + wordsPerMin + " wpm.")
-		//								.then(event.createFollowup("Progress updated! You have written " + EncounterInfo.writerIndex.get(user).getGoal().getProgress() + " " + EncounterInfo.writerIndex.get(user).getGoal().getGoalType() + " of " + EncounterInfo.writerIndex.get(user).getGoalNum() + " " + EncounterInfo.writerIndex.get(user).getGoal().getGoalType() + ".").then());
-		//					}
-		//				} else { //writer has no set goal
-		//					return event.reply("You have written " + totalWritten + " words for an average of " + wordsPerMin + " wpm.");
-		//				}
 
 	}
 

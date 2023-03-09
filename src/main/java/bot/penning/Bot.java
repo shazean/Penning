@@ -55,5 +55,11 @@ public class Bot {
 				.then(client.onDisconnect())
 				.block(); // We use .block() as there is not another non-daemon thread and the jvm would
 							// close otherwise.
+		
+		//"listen" for midnight.
+		//every hour check if anyone is in the registered timezone
+		//and trigger the appropriate responses if applicable.
+		
+		
 	}
 }
