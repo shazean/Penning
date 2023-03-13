@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import bot.penning.quests.ChallengeQuest;
 import bot.penning.quests.Quest;
 import discord4j.core.object.entity.Member;
+import discord4j.core.object.entity.channel.Channel;
 
 public class Writer {
 
@@ -29,6 +30,8 @@ public class Writer {
 	Boolean hasQuest;
 	Boolean hasChallengeQuest;
 	TimeZone timeZone;
+	int dailyRewards;
+	Channel preferedChannel;
 
 	public Writer(Optional<Member> discordUser) {
 		user = discordUser;
@@ -52,6 +55,14 @@ public class Writer {
 
 	public Optional<Member> getUser() {
 		return user;
+	}
+	
+	public void setPreferedChannel(Channel channel) {
+		preferedChannel = channel;
+	}
+	
+	public Channel getPreferredChannel() {
+		return preferedChannel;
 	}
 
 	public void updateAverageWPM(Double averageWPM) {
@@ -95,6 +106,7 @@ public class Writer {
 
 	public void clearGoal() {
 		writerGoal = null;
+		hasGoal = false;
 	}
 
 	public void addGoal(Goal goal) {
@@ -178,6 +190,21 @@ public class Writer {
 
 	public Boolean hasChallengeQuest() {
 		return hasChallengeQuest;
+	}
+	
+	public int calculateRewards() {
+		Goal goal = getGoal();
+	
+		if (goal == null) return 0;
+
+		Double percent = goal.getGoalPercent();
+		if (percent < 50) { //no rewards if less than 50% completed
+			return 0;
+		}
+		if (percent > 100) {
+			return 75;
+		}
+		return (int) (percent / 2);
 	}
 	
 	public void setTimezone(TimeZone timeZone) {

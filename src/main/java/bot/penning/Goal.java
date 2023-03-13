@@ -83,12 +83,12 @@ public class Goal {
 		return goalAbbr;
 	}
 
-	public double goalPercent() {
+	public double getGoalPercent() {
 		this.progressPercent = (double)this.progress / (double)this.goal * 100.0;
 
-		if (this.progressPercent == 100) {
-			goalComplete = true;
-		}
+//		if (this.progressPercent == 100) {
+//			goalComplete = true;
+//		}
 
 		return this.progressPercent;
 	}

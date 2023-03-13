@@ -70,6 +70,8 @@ public class GoalCommand implements SlashCommand {
 			}
 
 		}
+		
+		EncounterInfo.writerIndex.get(user).setPreferedChannel(event.getInteraction().getChannel().block());
 
 		return event.reply("Goal of " + writerGoal.getGoal() + " " + writerGoal.getGoalType() + " created!");
 	}

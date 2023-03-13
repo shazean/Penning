@@ -12,6 +12,7 @@ import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import bot.penning.listeners.MidnightListener;
 import bot.penning.listeners.SlashCommandListener;
 
 public class Bot {
@@ -50,11 +51,21 @@ public class Bot {
 			LOGGER.error("Error trying to register global slash commands", e);
 		}
 
+		try {
+			MidnightListener midnight = new MidnightListener(client);
+			LOGGER.debug("Midnight successfully initialized*******");
+			midnight.begin();
+		} catch (Exception e) {
+			LOGGER.error("Midnight not initialized", e);
+		}
+		
 		// Register our listeners
 		client.on(ChatInputInteractionEvent.class, SlashCommandListener::handle)
 				.then(client.onDisconnect())
 				.block(); // We use .block() as there is not another non-daemon thread and the jvm would
 							// close otherwise.
+		
+		
 		
 		//"listen" for midnight.
 		//every hour check if anyone is in the registered timezone
