@@ -44,12 +44,9 @@ public class MidnightListener {
 	public void begin() {
 
 		int offset = doInitialOffset();
-		System.out.println("Initial offset calculated.  Offset is: " + offset + "*********");
 		schedule.schedule(() -> {
 
 			beginListening();
-			System.out.println("Listening begun.*******");
-
 
 		}, offset + 1, TimeUnit.MINUTES);
 	}
@@ -72,12 +69,9 @@ public class MidnightListener {
 		rightNow = Calendar.getInstance(currentTimeZone);
 		Date date = rightNow.getTime();
 		int currentHour = date.getHours();
-		System.out.println("Current hour is: " + currentHour + "*********");
-
 
 		
-		if (currentHour == 17) {
-			System.out.println("Current hour is 14.******");
+		if (currentHour == 00) {
 
 			grantRewards();
 
