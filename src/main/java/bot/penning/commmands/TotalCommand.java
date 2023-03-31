@@ -23,17 +23,17 @@ public class TotalCommand implements SlashCommand {
 		Long ID = event.getOption("id")
 				.flatMap(ApplicationCommandInteractionOption::getValue)
 				.map(ApplicationCommandInteractionOptionValue::asLong)
-				.get(); //This is warning us that we didn't check if its present, we can ignore this on required options
+				.get();
 
 		Long totalWritten = event.getOption("total")
 				.flatMap(ApplicationCommandInteractionOption::getValue)
 				.map(ApplicationCommandInteractionOptionValue::asLong)
-				.get(); //This is warning us that we didn't check if its present, we can ignore this on required options
+				.get();
 
 		String type = event.getOption("type")
 				.flatMap(ApplicationCommandInteractionOption::getValue)
 				.map(ApplicationCommandInteractionOptionValue::asString)
-				.orElse("words");
+				.orElse("words"); //assume if writer didn't specify type, then they're writing words
 
 		String goalType;
 		String goalTypeAbbr;
@@ -51,18 +51,25 @@ public class TotalCommand implements SlashCommand {
 
 		Encounter currentEncounter = EncounterInfo.warRegistry.get(ID % 50);
 		Long length = currentEncounter.getLength();
-		Double wordsPerMin = (double) (totalWritten / length);
+		Double wordsPerMin = (totalWritten / (double) length);
 
 		goalType = type;
-		if (goalType == "lines") {
+		if (goalType.toUpperCase().equals("LINES")) {
 			goalTypeAbbr = "lpm";
-		} else if (goalType == "minutes") {
+		} else if (goalType.toUpperCase().equals("MINUTES")) {
 			goalTypeAbbr = "minutes";
-		} else if (goalType == "pages") {
+		} else if (goalType.toUpperCase().equals("PAGES")) {
 			goalTypeAbbr = "ppm";
 		} else {
 			goalTypeAbbr = "wpm";
 		}
+		
+		System.out.println("goalType = " + goalType);
+		System.out.println("goalType = " + goalType);
+		System.out.println("goalType = " + goalType.toUpperCase());
+		System.out.println("goalType = " + goalType.toUpperCase());
+		System.out.println("goalTypeAbbr = " + goalTypeAbbr);
+		System.out.println("goalTypeAbbr = " + goalTypeAbbr);
 		
 //		//get goal if writer has one, else assume they're writing in words
 //		if (writer.hasGoalSet()) {
@@ -83,20 +90,24 @@ public class TotalCommand implements SlashCommand {
 		currentEncounter.createParticipant(user.get().getDisplayName(), totalWritten, wordsPerMin, goalType, goalTypeAbbr);
 
 		
-		/* NOTE: to whoever looks at this code, including future me
+		/* NOTE: to whoever looks at this code, including future me:
 		 * I originally had this all in a bunch of nested if/else-if/else statements,
 		 * looking one at a time at if the writer had a goal, had a quest, if the quest was complete,
-		 * has a challenge quest, and if the challenge quest was complete, etc.,
-		 * but even before checking if the quests are complete, that's 8 possible outcomes
-		 * and the if/else nest was gonna get ugly real fast.
+		 * had a challenge quest, if the challenge quest was complete, etc.,
+		 * but even before checking if the quests are complete, that's 8 possible outcomes,
+		 * and the if/else nest was gonna get ugly really fast.
 		 * So I decided to try this instead.
-		 * It individually checks for goal, quest, and challenge quests (and if the latter two are completed)
-		 * and any that come back true assigns a value into the array whichToDo
-		 * they're all specific numbers that no matter how they're added up, the sum is a unique number
-		 * then it runs the sum through a switch statement for each unique option*/
+		 * We now individually check for goal, quest, and challenge quests (and if the latter two are completed)
+		 * and anything that comes back true assigns a specific value into the array whichToDo.
+		 * All of said values are specific numbers that have a unique sum no matter how they're added up.
+		 * Then we run the sum through a switch statement for each unique option.
+		 * It's still lengthy, but I think it's easier to follow.*/
+		
 		int[] whichToDo = new int[] {0,0,0,0,0}; //false values: 0,0,0,0,0 | true values: 1,2,5,11,21
+		//[0] = goal, [1] = quest, [2] = quest completed, [3] = challenge quest, [4] = challenge quest completed
 
 		if (writer.hasGoalSet()) whichToDo[0] = 1;
+		
 		if (writer.hasQuest()) {
 			whichToDo[1] = 2;
 			writer.updateQuests(totalWritten);
@@ -104,6 +115,7 @@ public class TotalCommand implements SlashCommand {
 				whichToDo[3] = 11;
 			}
 		}
+		
 		if (writer.hasChallengeQuest()) {
 			whichToDo[2] = 5;
 			if (writer.getChallengeQuest().isTimed() && writer.getChallengeQuest().getTimeLimit() <= currentEncounter.getLength()) { //current encounter is long enough to qualify for timed quest
@@ -115,8 +127,6 @@ public class TotalCommand implements SlashCommand {
 			}
 		}
 		int totalToDo = whichToDo[0] + whichToDo[1] + whichToDo[2] + whichToDo[3] + whichToDo[4];
-		
-		totalToDo = 70;
 		
 		switch (totalToDo) {
 		case(0): //no goal, no quest, no challenge quest

@@ -14,7 +14,7 @@ public class Encounter {
 	Boolean complete = false;
 	Boolean expired = false;
 	ScheduledExecutorService schedule = Executors.newScheduledThreadPool(3);
-	public static ArrayList<Participant> enteredParticipants = new ArrayList<Participant>();
+	public ArrayList<Participant> enteredParticipants = new ArrayList<Participant>();
 	String participantSummary;
 
 

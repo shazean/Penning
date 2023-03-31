@@ -117,7 +117,6 @@ public class SkirmishCommand implements SlashCommand {
 						skirmish.setComplete();
 						skirmish.createMessage(embedEvent, "Skirmish #" + skirmish.getIndex() + " ends now!");
 						skirmish.createMessage(embedEvent, "How much did you write? I wrote " + penningsWords + " words.");
-
 						skirmish.createMessage(embedEvent, "Use `/total " + skirmish.getIndex() + "` to add your total.");
 
 						printSummary(embedEvent, skirmish);
@@ -133,14 +132,12 @@ public class SkirmishCommand implements SlashCommand {
 
 	public void printSummary(MessageCreateEvent event, Skirmish skirmish) {
 		ScheduledExecutorService schedule = skirmish.getSchedule();
-		String summary;
 
 		schedule.schedule(() -> {
 
 			//compile skirmish info TODO
 			skirmish.setExpired();
 			skirmish.createMessage(event, skirmish.createParticipantSummary());
-
 
 		}, 5, TimeUnit.MINUTES);		
 	}
