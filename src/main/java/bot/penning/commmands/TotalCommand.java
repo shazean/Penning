@@ -51,7 +51,7 @@ public class TotalCommand implements SlashCommand {
 
 		Encounter currentEncounter = EncounterInfo.warRegistry.get(ID % 50);
 		Long length = currentEncounter.getLength();
-		Double wordsPerMin = (totalWritten / (double) length);
+		Double wordsPerMin = Math.round((totalWritten / (double) length) * 100.0) / 100.0;
 
 		goalType = type;
 		if (goalType.toUpperCase().equals("LINES")) {
