@@ -6,3 +6,4 @@ resources:
   - service-account.yaml
   - configmaps.yaml
   - deployment.yaml
+  - service-entries.yaml
