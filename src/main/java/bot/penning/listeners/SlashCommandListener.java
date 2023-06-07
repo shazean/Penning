@@ -36,9 +36,9 @@ public class SlashCommandListener {
     	commands.add(new BattleCommand());
     	commands.add(new ChallengeCommand());
     	commands.add(new ClearCommand());
-        commands.add(new GreetCommand());
+//        commands.add(new GreetCommand());
         commands.add(new GoalCommand());
-        commands.add(new HeyCommand());
+//        commands.add(new HeyCommand());
         commands.add(new InfoCommand());
         commands.add(new OnslaughtCommand());
         commands.add(new ProgressCommand());

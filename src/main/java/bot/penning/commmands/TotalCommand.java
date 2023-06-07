@@ -63,14 +63,7 @@ public class TotalCommand implements SlashCommand {
 		} else {
 			goalTypeAbbr = "wpm";
 		}
-		
-		System.out.println("goalType = " + goalType);
-		System.out.println("goalType = " + goalType);
-		System.out.println("goalType = " + goalType.toUpperCase());
-		System.out.println("goalType = " + goalType.toUpperCase());
-		System.out.println("goalTypeAbbr = " + goalTypeAbbr);
-		System.out.println("goalTypeAbbr = " + goalTypeAbbr);
-		
+				
 //		//get goal if writer has one, else assume they're writing in words
 //		if (writer.hasGoalSet()) {
 //			goalType = writer.getGoal().getGoalType();

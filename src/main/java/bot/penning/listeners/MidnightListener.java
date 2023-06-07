@@ -95,14 +95,14 @@ public class MidnightListener {
 				return;
 			}
 
-			if (writerRewards > 0) { //grant rewards
-				String nickname = writer.getUser().get().getDisplayName();
-				Snowflake channelID = writer.getPreferredChannel().getId();
-
-				entry.getValue().updateXP(writerRewards);
-
-				client.getChannelById(channelID).ofType(MessageChannel.class).flatMap(channel -> channel.createMessage(nickname + ", you have earned " + writerRewards + " XP!"))
-				.subscribe();
+			if (writerRewards > 0) { //grant rewards FIXME?
+//				String nickname = writer.getUser().get().getDisplayName();
+//				Snowflake channelID = writer.getPreferredChannel().getId();
+//
+//				entry.getValue().updateXP(writerRewards);
+//
+//				client.getChannelById(channelID).ofType(MessageChannel.class).flatMap(channel -> channel.createMessage(nickname + ", you have earned " + writerRewards + " XP!"))
+//				.subscribe();
 
 			} else {
 				return; //don't send a message with writer rewards if reward is 0
