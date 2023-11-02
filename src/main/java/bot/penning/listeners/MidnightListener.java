@@ -73,7 +73,8 @@ public class MidnightListener {
 		
 		if (currentHour == 00) {
 
-			grantRewards();
+//			grantRewards();
+			clearGoals();
 
 		}
 
@@ -107,6 +108,15 @@ public class MidnightListener {
 			} else {
 				return; //don't send a message with writer rewards if reward is 0
 			}
+
+		}
+
+	}
+	
+	public void clearGoals() {
+		for (Entry<Optional<Member>, Writer> entry : EncounterInfo.writerIndex.entrySet()) { //all of the writers that have interacted with the bot
+			Writer writer = entry.getValue();
+			writer.clearGoal(); //TODO when multiple goals are added, change this to only clear the daily goal.
 
 		}
 

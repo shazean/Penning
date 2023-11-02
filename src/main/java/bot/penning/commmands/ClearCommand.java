@@ -15,7 +15,7 @@ public class ClearCommand implements SlashCommand {
 
 	@Override
 	public String getName() {
-		return "reset";
+		return "clear";
 	}
 
 	@Override
@@ -29,7 +29,6 @@ public class ClearCommand implements SlashCommand {
 		}
 
 		writer.clearGoal();
-
 
 		return event.reply("Goal cleared!");
 	}

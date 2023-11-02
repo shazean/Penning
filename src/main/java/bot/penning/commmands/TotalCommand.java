@@ -79,6 +79,10 @@ public class TotalCommand implements SlashCommand {
 		if (currentEncounter.isExpired()) return event.reply("This encounter is invalid! Try again with a valid encounter ID.").withEphemeral(true);
 
 		writer.updateAverageWPM(wordsPerMin);
+		
+		if (writer.hasGoalSet() && writer.getGoal().getGoalType() == type) {
+			writer.getGoal().addWords(totalWritten);
+		}
 
 		currentEncounter.createParticipant(user.get().getDisplayName(), totalWritten, wordsPerMin, goalType, goalTypeAbbr);
 
@@ -99,7 +103,7 @@ public class TotalCommand implements SlashCommand {
 		int[] whichToDo = new int[] {0,0,0,0,0}; //false values: 0,0,0,0,0 | true values: 1,2,5,11,21
 		//[0] = goal, [1] = quest, [2] = quest completed, [3] = challenge quest, [4] = challenge quest completed
 
-		if (writer.hasGoalSet()) whichToDo[0] = 1;
+		if (writer.hasGoalSet() && writer.getGoal().getGoalType() == type) whichToDo[0] = 1; //has goal and it's a relevant goal to the war
 		
 		if (writer.hasQuest()) {
 			whichToDo[1] = 2;
