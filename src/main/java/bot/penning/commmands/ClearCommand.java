@@ -20,7 +20,7 @@ public class ClearCommand implements SlashCommand {
 
 	@Override
 	public Mono<Void> handle(ChatInputInteractionEvent event) {
-
+		
 		Optional<Member> user = event.getInteraction().getMember();
 		Writer writer = EncounterInfo.writerIndex.get(user);
 

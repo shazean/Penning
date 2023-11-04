@@ -35,9 +35,6 @@ public class AddCommand implements SlashCommand {
 
 		writer.getGoal().addWords(words);
 		
-
-		
-		
 		if (writer.hasQuest()) {
 			writer.updateQuests(words);
 		}

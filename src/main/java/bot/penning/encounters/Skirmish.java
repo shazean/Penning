@@ -27,5 +27,5 @@ public class Skirmish extends Encounter {
 		}
 		return participantSummary;
 	}
-	
+		
 }

@@ -87,7 +87,7 @@ public class MidnightListener {
 	}
 
 	public void grantRewards() {
-		for (Entry<Optional<Member>, Writer> entry : EncounterInfo.writerIndex.entrySet()) { //all of the writers that have interacted with the bot
+		for (Entry<Member, Writer> entry : EncounterInfo.writerIndex.entrySet()) { //all of the writers that have interacted with the bot
 			Writer writer = entry.getValue();
 			int writerRewards = writer.calculateRewards();
 			writer.clearGoal(); //TODO when multiple goals are added, change this to only clear the daily goal.
@@ -114,7 +114,7 @@ public class MidnightListener {
 	}
 	
 	public void clearGoals() {
-		for (Entry<Optional<Member>, Writer> entry : EncounterInfo.writerIndex.entrySet()) { //all of the writers that have interacted with the bot
+		for (Entry<Member, Writer> entry : EncounterInfo.writerIndex.entrySet()) { //all of the writers that have interacted with the bot
 			Writer writer = entry.getValue();
 			writer.clearGoal(); //TODO when multiple goals are added, change this to only clear the daily goal.
 

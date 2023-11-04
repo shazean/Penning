@@ -18,7 +18,7 @@ public class ChallengeCommand implements SlashCommand {
 	@Override
 	public Mono<Void> handle(ChatInputInteractionEvent event) {
 
-		Optional<Member> user = event.getInteraction().getMember();
+		Member user = event.getInteraction().getMember().get();
 		Writer writer = EncounterInfo.writerIndex.get(user);
 		Writer newWriter;
 		ChallengeQuest quest;

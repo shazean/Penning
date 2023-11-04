@@ -1,8 +1,10 @@
 package bot.penning.encounters;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import bot.penning.encounters.Encounter.Participant;
+import discord4j.core.object.entity.Member;
 
 public class Onslaught extends Encounter {
 
@@ -15,8 +17,8 @@ public class Onslaught extends Encounter {
 		return length;
 	}
 	
-	public void createParticipant(String nickname, Long totalWords, Double averageWPM, Long timeToGoal) {
-		Participant participant = new Participant(nickname, totalWords, averageWPM, timeToGoal);
+	public void createParticipant(Member user, Long totalWords, Double averageWPM, Long timeToGoal) {
+		Participant participant = new Participant(user, totalWords, averageWPM, timeToGoal);
 		enteredParticipants.add(participant);
 	}
 	

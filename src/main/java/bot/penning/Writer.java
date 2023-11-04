@@ -15,7 +15,7 @@ import discord4j.core.object.entity.channel.Channel;
 public class Writer {
 
 	String name;
-	Optional<Member> user;
+	Member user;
 	Goal writerGoal;
 	ArrayList<Double> averageWPM;
 	int averageWPMIndex;
@@ -33,8 +33,8 @@ public class Writer {
 	int dailyRewards;
 	Channel preferedChannel;
 
-	public Writer(Optional<Member> discordUser) {
-		user = discordUser;
+	public Writer(Member member) {
+		this.user = member;
 		hasGoal = false;
 		hasQuest = false;
 		hasChallengeQuest = false;
@@ -43,8 +43,8 @@ public class Writer {
 	}
 
 
-	public Writer(Optional<Member> discordUser, Goal writerGoal) {
-		user = discordUser;
+	public Writer(Member member, Goal writerGoal) {
+		user = member;
 		this.writerGoal = writerGoal;
 		hasGoal = true;
 		hasQuest = false;
@@ -53,7 +53,7 @@ public class Writer {
 		averageWPMIndex = 0;
 	}
 
-	public Optional<Member> getUser() {
+	public Member getUser() {
 		return user;
 	}
 	

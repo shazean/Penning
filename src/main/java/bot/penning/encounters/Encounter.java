@@ -1,10 +1,12 @@
 package bot.penning.encounters;
 
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 import discord4j.core.event.domain.message.MessageCreateEvent;
+import discord4j.core.object.entity.Member;
 
 public class Encounter {
 
@@ -15,7 +17,9 @@ public class Encounter {
 	Boolean expired = false;
 	ScheduledExecutorService schedule = Executors.newScheduledThreadPool(3);
 	public ArrayList<Participant> enteredParticipants = new ArrayList<Participant>();
+	public ArrayList<Member> pingableMembers = new ArrayList<Member>();
 	String participantSummary;
+	String pingList;
 
 
 	public Encounter(Long index, Long length, Long start) {
@@ -68,9 +72,16 @@ public class Encounter {
 		event.getMessage().getChannel().block().createMessage(message).block();
 	}
 	
-	public void createParticipant(String nickname, Long totalWords, Double averageWPM, String writtenType, String writtenTypeAbbr) {
-		Participant participant = new Participant(nickname, totalWords, averageWPM, writtenType, writtenTypeAbbr);
+	public void createParticipant(Member user, Long totalWords, Double averageWPM, String writtenType, String writtenTypeAbbr) {
+		Participant participant = new Participant(user, totalWords, averageWPM, writtenType, writtenTypeAbbr);
 		enteredParticipants.add(participant);
+	}
+	
+	public boolean hasParticipantAlready(Member user) {
+		for (Participant i : enteredParticipants) {
+			if (i.user == user) return true;
+		}
+		return false;
 	}
 	
 	public String createParticipantSummary() {
@@ -82,36 +93,50 @@ public class Encounter {
 		return participantSummary;
 	}	
 	
+	public String getPingableMembers() {
+		pingList = "";
+		for (Member i : pingableMembers) {
+			pingList += (i.getNicknameMention() + " ");
+		}
+		return pingList;
+	}
+	
+	public void addPingableMember(Member user) {
+		pingableMembers.add(user);
+	}
+ 
+	
 	public class Participant {
-		String nickname;
+		String mentionNickname;
 		Long totalWords;
 		Double averageWPM;
 		String writtenType;
 		String writtenTypeAbbr;
 		Long timeToGoal;
+		Member user;
 		
-		public Participant(String nickname, Long totalWords, Double averageWPM, String writtenType, String writtenTypeAbbr) {
-			this.nickname = nickname;
+		public Participant(Member user, Long totalWords, Double averageWPM, String writtenType, String writtenTypeAbbr) {
+			this.user = user;
+			this.mentionNickname = user.getNicknameMention();
 			this.totalWords = totalWords;
 			this.averageWPM = averageWPM;
 			this.writtenType = writtenType;
 			this.writtenTypeAbbr = writtenTypeAbbr;
 		}
 		
-		public Participant(String nickname, Long totalWords, Double averageWPM, Long timeToGoal) {
-			this.nickname = nickname;
+		public Participant(Member user, Long totalWords, Double averageWPM, Long timeToGoal) {
+			this.user = user;
+			this.mentionNickname = user.getNickname().get();
 			this.timeToGoal = timeToGoal;
 		}
 		
 		public String toString() {
-			return nickname + ": " + totalWords + " " + writtenType + " (" + averageWPM + " " + writtenTypeAbbr + ")";
+			return mentionNickname + ": " + totalWords + " " + writtenType + " (" + averageWPM + " " + writtenTypeAbbr + ")";
 			
 		}
 		
 		public String onslaughtToString() {
-			return nickname + ": " + timeToGoal + " minutes (" + averageWPM + " wpm)";
- 		}
-		
+			return mentionNickname + ": " + timeToGoal + " minutes (" + averageWPM + " wpm)";
+ 		}	
 	}
-	
 }

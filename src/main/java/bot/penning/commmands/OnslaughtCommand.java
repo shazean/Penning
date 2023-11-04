@@ -62,7 +62,7 @@ public class OnslaughtCommand implements SlashCommand {
 
 
 
-		//stop user from creating a skirmish with length 0 (because calculating the average for total creates a divide by zero scenario)
+		//stop user from creating an onslaught with length 0 (because calculating the average for total creates a divide by zero scenario)
 		if (target == 0) {
 			return event.reply("Onslaught cannot have a goal of 0 words! Try again!").withEphemeral(true);
 		}
@@ -83,10 +83,10 @@ public class OnslaughtCommand implements SlashCommand {
 		
 		client.on(ButtonInteractionEvent.class, buttonEvent -> {
 			if (buttonEvent.getCustomId().equals("done-button")) {
-				Optional<Member> writer = buttonEvent.getInteraction().getMember();
+				Member writer = buttonEvent.getInteraction().getMember().get();
 				stopwatch.split();;
 				long timeToGoal = stopwatch.getSplitTime() / 60000; //convert from milliseconds to minutes
-				onslaught.createParticipant(writer.get().getDisplayName(), target, (double) target / timeToGoal, timeToGoal);
+				onslaught.createParticipant(writer, target, (double) target / timeToGoal, timeToGoal);
 				buttonCounter++;
 				if (buttonCounter == 1) {
 					return buttonEvent.reply("You have finished the onslaught!").then(Mono.delay(Duration.ofMinutes(1)).then(event.createFollowup(onslaught.createParticipantSummary())).then());

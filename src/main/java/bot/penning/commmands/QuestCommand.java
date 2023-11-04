@@ -25,7 +25,7 @@ public class QuestCommand implements SlashCommand {
 	@Override
 	public Mono<Void> handle(ChatInputInteractionEvent event) {
 
-		Optional<Member> user = event.getInteraction().getMember();
+		Member user = event.getInteraction().getMember().get();
 		Writer writer = EncounterInfo.writerIndex.get(user);
 		Writer newWriter;
 		Quest quest;

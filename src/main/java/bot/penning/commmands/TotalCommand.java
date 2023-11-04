@@ -5,6 +5,7 @@ import java.util.Optional;
 import bot.penning.EncounterInfo;
 import bot.penning.Writer;
 import bot.penning.encounters.Encounter;
+import bot.penning.encounters.Encounter.Participant;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.command.ApplicationCommandInteractionOption;
 import discord4j.core.object.command.ApplicationCommandInteractionOptionValue;
@@ -38,7 +39,10 @@ public class TotalCommand implements SlashCommand {
 		String goalType;
 		String goalTypeAbbr;
 
-		Optional<Member> user = event.getInteraction().getMember();
+		//can only use valid War ID
+		if (EncounterInfo.warRegistry.get(ID % 50) == null) return event.reply("This encounter is invalid! Try again with a valid encounter ID.").withEphemeral(true);
+		
+		Member user = event.getInteraction().getMember().get();
 		Writer writer = EncounterInfo.writerIndex.get(user);
 
 		if (writer == null) {
@@ -46,10 +50,10 @@ public class TotalCommand implements SlashCommand {
 			EncounterInfo.writerIndex.put(user, writer);
 		}
 		
-		//can only use valid War ID
-		if (EncounterInfo.warRegistry.get(ID % 50) == null) return event.reply("This encounter is invalid! Try again with a valid encounter ID.").withEphemeral(true);
 
 		Encounter currentEncounter = EncounterInfo.warRegistry.get(ID % 50);
+		
+		
 		Long length = currentEncounter.getLength();
 		Double wordsPerMin = Math.round((totalWritten / (double) length) * 100.0) / 100.0;
 
@@ -64,16 +68,6 @@ public class TotalCommand implements SlashCommand {
 			goalTypeAbbr = "wpm";
 		}
 				
-//		//get goal if writer has one, else assume they're writing in words
-//		if (writer.hasGoalSet()) {
-//			goalType = writer.getGoal().getGoalType();
-//			goalTypeAbbr = writer.getGoal().getGoalTypeAbbr();
-//		} else {
-//			goalType = "words";
-//			goalTypeAbbr = "wpm";
-//		}
-
-
 		//can only use a completed, & non-expired War ID
 		if (!currentEncounter.isComplete()) return event.reply("This encounter is incomplete! Try again after it has finished.").withEphemeral(true);
 		if (currentEncounter.isExpired()) return event.reply("This encounter is invalid! Try again with a valid encounter ID.").withEphemeral(true);
@@ -84,8 +78,11 @@ public class TotalCommand implements SlashCommand {
 			writer.getGoal().addWords(totalWritten);
 		}
 
-		currentEncounter.createParticipant(user.get().getDisplayName(), totalWritten, wordsPerMin, goalType, goalTypeAbbr);
+		if (currentEncounter.hasParticipantAlready(user)) { return event.reply("You already entered a total for this encounter!").withEphemeral(true); }
+		
+		currentEncounter.createParticipant(user, totalWritten, wordsPerMin, goalType, goalTypeAbbr);
 
+		
 		
 		/* NOTE: to whoever looks at this code, including future me:
 		 * I originally had this all in a bunch of nested if/else-if/else statements,

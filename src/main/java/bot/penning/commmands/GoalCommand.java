@@ -36,7 +36,7 @@ public class GoalCommand implements SlashCommand {
 				.map(ApplicationCommandInteractionOptionValue::asString)
 				.orElse("words");	        
 
-		Optional<Member> user = event.getInteraction().getMember();
+		Member user = event.getInteraction().getMember().get();
 		Goal writerGoal;
 		Writer writer = EncounterInfo.writerIndex.get(user);
 
