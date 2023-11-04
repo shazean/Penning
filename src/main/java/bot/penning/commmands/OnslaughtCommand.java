@@ -50,7 +50,7 @@ public class OnslaughtCommand implements SlashCommand {
 				.get(); //This is warning us that we didn't check if its present, we can ignore this on required options
 
 
-		Optional<Member> user = event.getInteraction().getMember();
+		Member user = event.getInteraction().getMember().get();
 
 		Long warIndex = EncounterInfo.getWarIndex();
 		Onslaught onslaught = new Onslaught(warIndex, target, startTime);
