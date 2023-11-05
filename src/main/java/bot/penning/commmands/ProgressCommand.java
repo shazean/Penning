@@ -28,9 +28,13 @@ public class ProgressCommand implements SlashCommand {
 		Member user = event.getInteraction().getMember().get();
 		Writer writer = EncounterInfo.writerIndex.get(user);
 
-		if (writer == null || !writer.hasGoalSet()) { //if user hasn't created goal, alert them
+		if (writer == null) {
 			return event.reply("Create a goal first!").withEphemeral(true);
-		}	        
+		}
+		
+		if (!writer.hasGoalSet()) {
+			return event.reply("Create a goal first!").withEphemeral(true);
+		}		        
 
 		writer.getGoal().setProgress(words);
 
