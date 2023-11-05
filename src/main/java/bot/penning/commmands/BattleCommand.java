@@ -39,9 +39,9 @@ public class BattleCommand implements SlashCommand {
 				.map(ApplicationCommandInteractionOptionValue::asLong)
 				.get(); //This is warning us that we didn't check if its present, we can ignore this on required options
 
-		Long warIndex = EncounterInfo.getWarIndex();
+		Long warIndex = EncounterInfo.getEncounterIndex();
 		Battle battle = new Battle(warIndex, duration, startTime);
-		EncounterInfo.warRegistry.put(battle.getIndex() % 50, battle);
+		EncounterInfo.encounterRegistry.put(battle.getIndex() % 50, battle);
 		GatewayDiscordClient client = event.getClient();
 		Long finalTime;
 		
@@ -68,7 +68,7 @@ public class BattleCommand implements SlashCommand {
 			finalTime = startTime * 60L;
 		}
 
-		EncounterInfo.incrementWarIndex();
+		EncounterInfo.incrementEncounterIndex();
 
 		//FIXME if adding in a join button ping option
 		//		client.on(ButtonInteractionEvent.class, embedEvent -> {

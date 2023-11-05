@@ -6,6 +6,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 import discord4j.core.event.domain.message.MessageCreateEvent;
+import discord4j.core.object.component.ActionRow;
+import discord4j.core.object.component.Button;
 import discord4j.core.object.entity.Member;
 
 public class Encounter {
@@ -20,6 +22,7 @@ public class Encounter {
 	public ArrayList<Member> pingableMembers = new ArrayList<Member>();
 	String participantSummary;
 	String pingList;
+	boolean isWar = false;
 
 
 	public Encounter(Long index, Long length, Long start) {
@@ -72,20 +75,25 @@ public class Encounter {
 		event.getMessage().getChannel().block().createMessage(message).block();
 	}
 	
+	public void createMessageWithButton(MessageCreateEvent event, String message, Button button) {
+		event.getMessage().getChannel().block().createMessage(message).withComponents(ActionRow.of(button)).block();
+	}
+	
 	public void createParticipant(Member user, Long totalWords, Double averageWPM, String writtenType, String writtenTypeAbbr) {
 		Participant participant = new Participant(user, totalWords, averageWPM, writtenType, writtenTypeAbbr);
 		enteredParticipants.add(participant);
 	}
 	
 	public boolean hasParticipantAlready(Member user) {
+		boolean hasParticipant = false;
 		for (Participant i : enteredParticipants) {
-			if (i.user == user) return true;
+			if (i.user == user) hasParticipant = true;
 		}
-		return false;
+		return hasParticipant;
 	}
 	
 	public String createParticipantSummary() {
-		participantSummary = "**Summary:**\n";
+		participantSummary = "**Encounter #" + index + " Summary:**\n";
 		for (Participant i : enteredParticipants) {
 			participantSummary += (i + "\n");
 		}
@@ -104,8 +112,15 @@ public class Encounter {
 	public void addPingableMember(Member user) {
 		pingableMembers.add(user);
 	}
- 
 	
+	public boolean getIsWar() {
+		return isWar;
+	}
+	
+	public void setIsWar(boolean isWar) {
+		this.isWar = isWar;
+	}
+ 
 	public class Participant {
 		String mentionNickname;
 		Long totalWords;

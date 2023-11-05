@@ -21,7 +21,7 @@ public class Skirmish extends Encounter {
 		
 	@Override
 	public String createParticipantSummary() {
-		participantSummary = "**Skirmish Summary:**\n";
+		participantSummary = "**Skirmish #" + this.index + " Summary:**\n";
 		for (Participant i : enteredParticipants) {
 			participantSummary += (i + "\n");
 		}

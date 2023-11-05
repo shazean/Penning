@@ -40,7 +40,7 @@ public class TotalCommand implements SlashCommand {
 		String goalTypeAbbr;
 
 		//can only use valid War ID
-		if (EncounterInfo.warRegistry.get(ID % 50) == null) return event.reply("This encounter is invalid! Try again with a valid encounter ID.").withEphemeral(true);
+		if (EncounterInfo.encounterRegistry.get(ID % 50) == null) return event.reply("This encounter is invalid! Try again with a valid encounter ID.").withEphemeral(true);
 		
 		Member user = event.getInteraction().getMember().get();
 		Writer writer = EncounterInfo.writerIndex.get(user);
@@ -51,7 +51,7 @@ public class TotalCommand implements SlashCommand {
 		}
 		
 
-		Encounter currentEncounter = EncounterInfo.warRegistry.get(ID % 50);
+		Encounter currentEncounter = EncounterInfo.encounterRegistry.get(ID % 50);
 		
 		
 		Long length = currentEncounter.getLength();
@@ -82,6 +82,9 @@ public class TotalCommand implements SlashCommand {
 		
 		currentEncounter.createParticipant(user, totalWritten, wordsPerMin, goalType, goalTypeAbbr);
 
+		if (currentEncounter.getIsWar()) {
+			EncounterInfo.addToWarSummary(user, totalWritten, wordsPerMin, goalType);
+		}
 		
 		
 		/* NOTE: to whoever looks at this code, including future me:

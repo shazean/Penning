@@ -42,9 +42,9 @@ public class SkirmishCommand implements SlashCommand {
 				.map(ApplicationCommandInteractionOptionValue::asLong)
 				.get(); //This is warning us that we didn't check if its present, we can ignore this on required options
 
-		Long warIndex = EncounterInfo.getWarIndex();
+		Long warIndex = EncounterInfo.getEncounterIndex();
 		Skirmish skirmish = new Skirmish(warIndex, duration, startTime);
-		EncounterInfo.warRegistry.put(skirmish.getIndex() % 50, skirmish);
+		EncounterInfo.encounterRegistry.put(skirmish.getIndex() % 50, skirmish);
 		GatewayDiscordClient client = event.getClient();
 //		Long finalTime;
 
@@ -68,12 +68,12 @@ public class SkirmishCommand implements SlashCommand {
 //			finalTime = startTime * 60L;
 //		}
 
-		Button joinButton = Button.primary("join_button", "Join!");
+		Button joinButton = Button.primary("join_button_" + skirmish.getIndex(), "Join!");
 
-		EncounterInfo.incrementWarIndex();
+		EncounterInfo.incrementEncounterIndex();
 
 		client.on(ButtonInteractionEvent.class, embedEvent -> {
-			if (embedEvent.getCustomId().equals("join_button")) {
+			if (embedEvent.getCustomId().equals("join_button_" + skirmish.getIndex())) {
 				Member writerMention = embedEvent.getInteraction().getMember().get();
 				skirmish.addPingableMember(writerMention);
 				return embedEvent.reply(writerMention.getNicknameMention() + ", you have joined the skirmish!");
@@ -82,7 +82,8 @@ public class SkirmishCommand implements SlashCommand {
 				return Mono.empty();
 			}
 		}).timeout(Duration.ofMinutes(startTime)).subscribe();
-		
+
+		skirmish.setIsWar(false);
 		runSkirmish(event, startTime, skirmish);
 
 		return event.reply("Skirmish #" + skirmish.getIndex() + " created for " + skirmish.getLength() + " minutes, and will start in " + skirmish.getStartTime() + " minutes.")
@@ -115,8 +116,7 @@ public class SkirmishCommand implements SlashCommand {
 
 						skirmish.setComplete();
 						skirmish.createMessage(embedEvent, "Skirmish #" + skirmish.getIndex() + " ends now! " + skirmish.getPingableMembers());
-						skirmish.createMessage(embedEvent, "How much did you write? I wrote " + penningsWords + " words.");
-						skirmish.createMessage(embedEvent, "Use `/total " + skirmish.getIndex() + "` to add your total.");
+						skirmish.createMessage(embedEvent, "How much did you write? I wrote " + penningsWords + " words. Use `/total " + skirmish.getIndex() + "` to add your total.");
 
 						printSummary(embedEvent, skirmish);
 

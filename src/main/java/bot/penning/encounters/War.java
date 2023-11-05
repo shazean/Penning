@@ -1,20 +1,25 @@
 package bot.penning.encounters;
 
+import java.util.ArrayList;
+
 public class War extends Encounter {
 
 	Long quantity;
 	Long remainingQuantity;
+	Long interval;
+	public ArrayList<Skirmish> skirmishes = new ArrayList<Skirmish>();
+
 	
 	public War(Long index, Long length, Long start) {
-		this(index, length, start, 1L);
+		this(index, length, start, 1L, start);
 		// TODO Auto-generated constructor stub
 	}
 
-	public War(Long index, Long length, Long start, Long quantity) {
+	public War(Long index, Long length, Long start, Long quantity, Long interval) {
 		super(index, length, start);
 		setQuantity(quantity);
 		remainingQuantity = quantity;
-		// TODO Auto-generated constructor stub
+		this.interval = interval;
 	}
 
 	public void setQuantity(Long quantity) {
@@ -33,4 +38,15 @@ public class War extends Encounter {
 		return remainingQuantity;
 	}
 
+	public void setInterval(Long interval) {
+		this.interval = interval;
+	}
+	
+	public Long getInterval() {
+		return interval;
+	}
+	
+	public boolean isWar() {
+		return true;
+	}	
 }

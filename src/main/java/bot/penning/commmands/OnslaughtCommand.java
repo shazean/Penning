@@ -52,9 +52,9 @@ public class OnslaughtCommand implements SlashCommand {
 
 		Member user = event.getInteraction().getMember().get();
 
-		Long warIndex = EncounterInfo.getWarIndex();
+		Long warIndex = EncounterInfo.getEncounterIndex();
 		Onslaught onslaught = new Onslaught(warIndex, target, startTime);
-		EncounterInfo.warRegistry.put(onslaught.getIndex() % 50, onslaught);
+		EncounterInfo.encounterRegistry.put(onslaught.getIndex() % 50, onslaught);
 		GatewayDiscordClient client = event.getClient();
 		Long finalTime;
 		Button doneButton = Button.success("done-button", "Word goal reached!");
@@ -106,7 +106,7 @@ public class OnslaughtCommand implements SlashCommand {
 
 		}, target / 20 + 5, TimeUnit.MINUTES);	
 
-		EncounterInfo.incrementWarIndex();
+		EncounterInfo.incrementEncounterIndex();
 
 		return event.reply("Onslaught #" + onslaught.getIndex() + " created with a goal of " + onslaught.getGoal() + " words and will start in " + onslaught.getStartTime() + " minutes.")
 				.then(Mono.delay(Duration.ofSeconds(finalTime)))

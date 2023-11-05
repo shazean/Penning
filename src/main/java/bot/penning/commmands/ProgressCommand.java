@@ -25,7 +25,7 @@ public class ProgressCommand implements SlashCommand {
 				.map(ApplicationCommandInteractionOptionValue::asLong)
 				.get(); //This is warning us that we didn't check if its present, we can ignore this on required options
 
-		Optional<Member> user = event.getInteraction().getMember();
+		Member user = event.getInteraction().getMember().get();
 		Writer writer = EncounterInfo.writerIndex.get(user);
 
 		if (writer == null || !writer.hasGoalSet()) { //if user hasn't created goal, alert them
