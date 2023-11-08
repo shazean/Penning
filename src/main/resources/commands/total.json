@@ -35,7 +35,15 @@
             	{
             		"name": "Minutes",
             		"value": "minutes"
-            	}
+            	},
+                {
+                    "name": "Measures",
+                    "value": "measures"
+                },
+                {
+                    "name": "Periwinkles",
+                    "value": "periwinkles"
+                }
             ]
         }
     ]

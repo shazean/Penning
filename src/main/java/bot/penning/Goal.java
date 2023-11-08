@@ -73,6 +73,10 @@ public class Goal {
 			goalAbbr = "ppm";
 		} else if (goalType.equals("minutes")) {
 			goalAbbr = "minutes";
+		} else if (goalType.equals("periwinkles")) {
+			goalAbbr = "periwinkles per minute";
+		} else if (goalType.equals("measures")) {
+			goalAbbr = "measures per minute";
 		}
 
 		return goalAbbr;

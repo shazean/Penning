@@ -64,6 +64,10 @@ public class TotalCommand implements SlashCommand {
 			goalTypeAbbr = "minutes";
 		} else if (goalType.toUpperCase().equals("PAGES")) {
 			goalTypeAbbr = "ppm";
+		} else if (goalType.toUpperCase().equals("PERIWINKLES")) {
+			goalTypeAbbr = "periwinkles per minute";
+		} else if (goalType.toUpperCase().equals("MEASURES")) {
+			goalTypeAbbr = "measures per minute";
 		} else {
 			goalTypeAbbr = "wpm";
 		}
