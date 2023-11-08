@@ -95,6 +95,10 @@ public class MidnightListener {
 			if (!writer.isUsingFlavorText()) { //user is not using flavor text, and does not get XP rewards
 				return;
 			}
+			
+			if (!writer.hasGoalSet()) {
+				return;
+			}
 
 			double percent = writer.getGoal().getGoalPercent();
 			Random rand = new Random();

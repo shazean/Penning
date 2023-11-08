@@ -10,7 +10,6 @@ import bot.penning.EncounterInfo;
 import bot.penning.Goal;
 import bot.penning.Writer;
 import bot.penning.encounters.Encounter;
-import bot.penning.encounters.Encounter.Participant;
 import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
@@ -48,7 +47,6 @@ public class TotalCommand implements SlashCommand {
 		String goalTypeAbbr;
 
 		Encounter currentEncounter = EncounterInfo.encounterRegistry.get(ID % 50);
-
 		
 		//can only use valid War ID
 		if (currentEncounter == null) return event.reply("This encounter is invalid! Try again with a valid encounter ID.").withEphemeral(true);
@@ -60,10 +58,7 @@ public class TotalCommand implements SlashCommand {
 		if (writer == null) {
 			writer = new Writer(user);
 			EncounterInfo.writerIndex.put(user, writer);
-		}
-		
-
-		
+		}		
 		
 		Long length = currentEncounter.getLength();
 		Double wordsPerMin = Math.round((totalWritten / (double) length) * 100.0) / 100.0;
@@ -105,7 +100,7 @@ public class TotalCommand implements SlashCommand {
 		
 		Random rand = new Random();
 		
-		if (rand.nextInt(100) < 45) {
+		if (rand.nextInt(100) < 20) {
 			String animal = writer.getAnimalData().generateRandomAnimal();
 			ScheduledExecutorService schedule = Executors.newScheduledThreadPool(3);
 			GatewayDiscordClient client = event.getClient();

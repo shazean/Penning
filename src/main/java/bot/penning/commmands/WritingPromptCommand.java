@@ -30,11 +30,21 @@ public class WritingPromptCommand implements SlashCommand {
 	    private String getWritingPrompt(int rand) {
 	    	switch (rand) {
 	    	case 0:
-	    		return "Sample writing prompt #1";
+	    		return "Pick up the book nearest to you and flip to page 37.  Find the 5th word on the page, and incorporate that into your next scene.";
 	    	
 	    	case 1:
-	    		return "Sample writing prompt #2";
-    		
+	    		return "Your protagonist comes up against the thing they fear the most.";
+
+	    	case 2:
+	    		return "Something catches fire.";
+	    		
+	    	case 3:
+	    		return "Something blows up.";
+
+	    	case 4:
+	    		return "Introduce a new character";
+
+	    		
 	    	default:
 	    		return "Sample writing prompt #3";
 	    	

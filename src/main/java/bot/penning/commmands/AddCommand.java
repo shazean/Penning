@@ -35,7 +35,7 @@ public class AddCommand implements SlashCommand {
 		
 		if (!writer.hasGoalSet()) {
 			return event.reply("Create a goal first!").withEphemeral(true);
-		}	 
+		}
 
 		writer.getGoal().addWords(words);
 		

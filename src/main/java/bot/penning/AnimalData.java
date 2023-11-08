@@ -42,10 +42,10 @@ public class AnimalData {
 	public String generateRandomAnimal() {
 		int rand = new Random().nextInt(100);
 		
-		if (rand < 40) {
+		if (rand < 50) {
 			incrementHedgehogs();
 			return "hedgehog";
-		} else if (rand < 80) {
+		} else if (rand < 90) {
 			incrementUnicorns();
 			return "unicorn";
 		} else {
