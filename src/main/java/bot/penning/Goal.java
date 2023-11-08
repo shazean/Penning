@@ -74,9 +74,13 @@ public class Goal {
 		} else if (goalType.equals("minutes")) {
 			goalAbbr = "minutes";
 		} else if (goalType.equals("periwinkles")) {
-			goalAbbr = "periwinkles per minute";
+			goalAbbr = "periwinkles/minute";
 		} else if (goalType.equals("measures")) {
-			goalAbbr = "measures per minute";
+			goalAbbr = "measures/minute";
+		} else if (goalType.equals("screams into the void")) {
+			goalAbbr = "screams/minute";
+		} else if (goalType.equals("keyboard slams")) {
+			goalAbbr = "asdfghjkl/minute";
 		}
 
 		return goalAbbr;

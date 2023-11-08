@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Random;
 import java.util.TimeZone;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -89,14 +90,24 @@ public class MidnightListener {
 	public void grantRewards() {
 		for (Entry<Member, Writer> entry : EncounterInfo.writerIndex.entrySet()) { //all of the writers that have interacted with the bot
 			Writer writer = entry.getValue();
-			int writerRewards = writer.calculateRewards();
-			writer.clearGoal(); //TODO when multiple goals are added, change this to only clear the daily goal.
+//			int writerRewards = writer.calculateRewards();
 
 			if (!writer.isUsingFlavorText()) { //user is not using flavor text, and does not get XP rewards
 				return;
 			}
 
-			if (writerRewards > 0) { //grant rewards FIXME?
+			double percent = writer.getGoal().getGoalPercent();
+			Random rand = new Random();
+			Snowflake channelID = writer.getPreferredChannel().getId();
+
+			if (rand.nextDouble() < percent) {
+				String animal = writer.getAnimalData().generateRandomAnimal();
+				client.getChannelById(channelID).ofType(MessageChannel.class).flatMap(channel -> channel.createMessage(writer.getUser().getMention() + ", you have found a " + animal + "!"))
+				.subscribe();
+				
+			}
+			
+//			if (writerRewards > 0) { //grant rewards FIXME?
 //				String nickname = writer.getUser().get().getDisplayName();
 //				Snowflake channelID = writer.getPreferredChannel().getId();
 //
@@ -104,10 +115,10 @@ public class MidnightListener {
 //
 //				client.getChannelById(channelID).ofType(MessageChannel.class).flatMap(channel -> channel.createMessage(nickname + ", you have earned " + writerRewards + " XP!"))
 //				.subscribe();
-
-			} else {
-				return; //don't send a message with writer rewards if reward is 0
-			}
+//
+//			} else {
+//				return; //don't send a message with writer rewards if reward is 0
+//			}
 
 		}
 

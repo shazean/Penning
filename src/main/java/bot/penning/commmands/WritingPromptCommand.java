@@ -16,7 +16,7 @@ public class WritingPromptCommand implements SlashCommand {
 
 	    	Random rand = new Random(); 
 	    	
-	    	String writingPrompt = getWritingPrompt(rand.nextInt(50));
+	    	String writingPrompt = getWritingPrompt(rand.nextInt(5));
 	    	
 	        //Reply to the slash command, with the name the user supplied
 	    	return event.reply(writingPrompt);

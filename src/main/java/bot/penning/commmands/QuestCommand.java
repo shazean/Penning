@@ -45,7 +45,6 @@ public class QuestCommand implements SlashCommand {
 		}
 
 		writer.addQuest(quest);
-		System.out.println("QUEST GOAL: " + quest.getQuestGoal().getGoal());
 
 		return event.reply(quest.toString());
 	}

@@ -32,6 +32,7 @@ public class Writer {
 	TimeZone timeZone;
 	int dailyRewards;
 	Channel preferedChannel;
+	AnimalData animalData;
 
 	public Writer(Member member) {
 		this.user = member;
@@ -40,6 +41,7 @@ public class Writer {
 		hasChallengeQuest = false;
 		averageWPM = new ArrayList<Double>(10);
 		averageWPMIndex = 0;
+		animalData = new AnimalData();
 	}
 
 
@@ -51,6 +53,7 @@ public class Writer {
 		hasChallengeQuest = false;
 		averageWPM = new ArrayList<Double>(10);
 		averageWPMIndex = 0;
+		animalData = new AnimalData();
 	}
 
 	public Member getUser() {
@@ -63,6 +66,10 @@ public class Writer {
 	
 	public Channel getPreferredChannel() {
 		return preferedChannel;
+	}
+	
+	public AnimalData getAnimalData() {
+		return animalData;
 	}
 
 	public void updateAverageWPM(Double averageWPM) {

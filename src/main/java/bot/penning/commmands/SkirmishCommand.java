@@ -106,7 +106,7 @@ public class SkirmishCommand implements SlashCommand {
 					if (skirmish.getStartTime() > 1) {
 						schedule.schedule(() -> {
 
-							skirmish.createMessage(embedEvent, "Skirmish #" + skirmish.getIndex() + " starts in one minute! " + skirmish.getPingableMembers());
+							skirmish.createMessage(embedEvent, "Skirmish #" + skirmish.getIndex() + " starts in one minute!");
 
 						}, skirmish.getStartTime() - 1, TimeUnit.MINUTES);	
 					}

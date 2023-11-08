@@ -1,15 +1,23 @@
 package bot.penning.commmands;
 
 import java.util.Optional;
+import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import bot.penning.EncounterInfo;
+import bot.penning.Goal;
 import bot.penning.Writer;
 import bot.penning.encounters.Encounter;
 import bot.penning.encounters.Encounter.Participant;
+import discord4j.common.util.Snowflake;
+import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.command.ApplicationCommandInteractionOption;
 import discord4j.core.object.command.ApplicationCommandInteractionOptionValue;
 import discord4j.core.object.entity.Member;
+import discord4j.core.object.entity.channel.MessageChannel;
 import reactor.core.publisher.Mono;
 
 public class TotalCommand implements SlashCommand {
@@ -39,38 +47,43 @@ public class TotalCommand implements SlashCommand {
 		String goalType;
 		String goalTypeAbbr;
 
+		Encounter currentEncounter = EncounterInfo.encounterRegistry.get(ID % 50);
+
+		
 		//can only use valid War ID
-		if (EncounterInfo.encounterRegistry.get(ID % 50) == null) return event.reply("This encounter is invalid! Try again with a valid encounter ID.").withEphemeral(true);
+		if (currentEncounter == null) return event.reply("This encounter is invalid! Try again with a valid encounter ID.").withEphemeral(true);
 		
 		Member user = event.getInteraction().getMember().get();
 		Writer writer = EncounterInfo.writerIndex.get(user);
 
+		
 		if (writer == null) {
 			writer = new Writer(user);
 			EncounterInfo.writerIndex.put(user, writer);
 		}
 		
 
-		Encounter currentEncounter = EncounterInfo.encounterRegistry.get(ID % 50);
 		
 		
 		Long length = currentEncounter.getLength();
 		Double wordsPerMin = Math.round((totalWritten / (double) length) * 100.0) / 100.0;
-
+		
 		goalType = type;
-		if (goalType.toUpperCase().equals("LINES")) {
-			goalTypeAbbr = "lpm";
-		} else if (goalType.toUpperCase().equals("MINUTES")) {
-			goalTypeAbbr = "minutes";
-		} else if (goalType.toUpperCase().equals("PAGES")) {
-			goalTypeAbbr = "ppm";
-		} else if (goalType.toUpperCase().equals("PERIWINKLES")) {
-			goalTypeAbbr = "periwinkles per minute";
-		} else if (goalType.toUpperCase().equals("MEASURES")) {
-			goalTypeAbbr = "measures per minute";
-		} else {
-			goalTypeAbbr = "wpm";
-		}
+//		if (goalType.toUpperCase().equals("LINES")) {
+//			goalTypeAbbr = "lpm";
+//		} else if (goalType.toUpperCase().equals("MINUTES")) {
+//			goalTypeAbbr = "minutes";
+//		} else if (goalType.toUpperCase().equals("PAGES")) {
+//			goalTypeAbbr = "ppm";
+//		} else if (goalType.toUpperCase().equals("PERIWINKLES")) {
+//			goalTypeAbbr = "periwinkles per minute";
+//		} else if (goalType.toUpperCase().equals("MEASURES")) {
+//			goalTypeAbbr = "measures per minute";
+//		} else {
+//			goalTypeAbbr = "wpm";
+//		}
+		
+		goalTypeAbbr = new Goal(1L, goalType).getGoalTypeAbbr();
 				
 		//can only use a completed, & non-expired War ID
 		if (!currentEncounter.isComplete()) return event.reply("This encounter is incomplete! Try again after it has finished.").withEphemeral(true);
@@ -89,6 +102,24 @@ public class TotalCommand implements SlashCommand {
 		if (currentEncounter.getIsWar()) {
 			EncounterInfo.addToWarSummary(user, totalWritten, wordsPerMin, goalType);
 		}
+		
+		Random rand = new Random();
+		
+//		if (rand.nextInt(100) < 45) {
+			String animal = writer.getAnimalData().generateRandomAnimal();
+			ScheduledExecutorService schedule = Executors.newScheduledThreadPool(3);
+			GatewayDiscordClient client = event.getClient();
+			Snowflake channelID = event.getInteraction().getChannelId();
+			String nickname = writer.getUser().getMention();
+
+
+			schedule.schedule(() -> {
+
+				client.getChannelById(channelID).ofType(MessageChannel.class).flatMap(channel -> channel.createMessage(nickname + " You have found a " + animal + "!"))
+				.subscribe();
+			
+			}, 3, TimeUnit.SECONDS);	
+//		}
 		
 		
 		/* NOTE: to whoever looks at this code, including future me:
@@ -187,8 +218,5 @@ public class TotalCommand implements SlashCommand {
 		default: //assume no goal, no quest, no challenge quest
 			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".");
 		}
-
-
 	}
-
 }

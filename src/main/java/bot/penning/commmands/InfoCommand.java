@@ -19,11 +19,12 @@ public class InfoCommand implements SlashCommand {
 
 		Member user = event.getInteraction().getMember().get();
 		Writer writer = EncounterInfo.writerIndex.get(user);
-		String goalInfo = "Current goal: NONE";
-		String questInfo = "Current quest: NONE";
+		String goalInfo = "Current goal: none";
+		String questInfo = "Current quest: none";
+		String animalInfo = "Current animals: none";
 
 		if (writer == null) {
-			return event.reply(goalInfo + "\n" + questInfo);
+			return event.reply(goalInfo + "\n" + questInfo + "\n" + animalInfo);
 		}
 
 		if (writer.hasGoalSet()) {
@@ -32,7 +33,11 @@ public class InfoCommand implements SlashCommand {
 		if (writer.hasQuest()) {
 			questInfo = "Current quest: " + writer.getQuest().getQuestGoal().getProgress() + " words of " + writer.getQuest().getQuestGoal().getGoal();
 		}
+		
+		if (writer.getAnimalData().hasAnyAnimals()) {
+			animalInfo = "Current animals: " + writer.getAnimalData().toString();
+		}
 
-		return event.reply(goalInfo + "\n" + questInfo);
+		return event.reply(goalInfo + "\n" + questInfo + "\n" + animalInfo);
 	}
 }
