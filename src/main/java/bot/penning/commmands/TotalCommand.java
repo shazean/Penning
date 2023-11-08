@@ -105,7 +105,7 @@ public class TotalCommand implements SlashCommand {
 		
 		Random rand = new Random();
 		
-//		if (rand.nextInt(100) < 45) {
+		if (rand.nextInt(100) < 45) {
 			String animal = writer.getAnimalData().generateRandomAnimal();
 			ScheduledExecutorService schedule = Executors.newScheduledThreadPool(3);
 			GatewayDiscordClient client = event.getClient();
@@ -119,7 +119,7 @@ public class TotalCommand implements SlashCommand {
 				.subscribe();
 			
 			}, 3, TimeUnit.SECONDS);	
-//		}
+		}
 		
 		
 		/* NOTE: to whoever looks at this code, including future me:

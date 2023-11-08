@@ -64,9 +64,9 @@ public class AnimalData {
 	
 	public String toString() {
 		String numAnimals = "";
-		if (numHedgehogs > 0) numAnimals += "hedgehogs: + " + numHedgehogs + " ";
-		if (numUnicorns > 0) numAnimals += "unicorns: + " + numUnicorns + " ";
-		if (numDragons > 0) numAnimals += "dragons: + " + numDragons + " ";
+		if (numHedgehogs > 0) numAnimals += "hedgehogs: " + numHedgehogs + " ";
+		if (numUnicorns > 0) numAnimals += "unicorns: " + numUnicorns + " ";
+		if (numDragons > 0) numAnimals += "dragons: " + numDragons + " ";
 
 		return numAnimals;
 	}
