@@ -6,7 +6,7 @@ metadata:
   name: penning
 
 spec:
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels:
       app: penning
