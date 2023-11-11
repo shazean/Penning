@@ -74,7 +74,7 @@ public class MidnightListener {
 		
 		if (currentHour == 00) {
 
-//			grantRewards();
+			grantRewards();
 			clearGoals();
 
 		}
