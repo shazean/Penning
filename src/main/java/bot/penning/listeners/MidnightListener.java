@@ -54,12 +54,11 @@ public class MidnightListener {
 
 	public int doInitialOffset() {
 		rightNow = Calendar.getInstance(currentTimeZone);
-		Date date = rightNow.getTime();
 
-		int timeFromMidnight = 60 - date.getMinutes();
+		int timeFromMidnight = 60 - rightNow.get(Calendar.MINUTE);
 
 		return timeFromMidnight;
-		//		return 2;
+//		return 2;
 	}
 
 	public void beginListening() {
@@ -68,11 +67,12 @@ public class MidnightListener {
 		//wait 60 minutes
 		//repeat
 		rightNow = Calendar.getInstance(currentTimeZone);
-		Date date = rightNow.getTime();
-		int currentHour = date.getHours();
+		
+		int currentHour = rightNow.get(Calendar.HOUR_OF_DAY);
+		
 
 		
-		if (currentHour == 00) {
+		if (currentHour == 0) { //00
 
 			grantRewards();
 			clearGoals();

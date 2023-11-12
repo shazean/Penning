@@ -23,6 +23,7 @@ public class WritersBlockCommand implements SlashCommand {
 
 
 	private String getWritingPrompt(int rand) {
+//		return "hi";
 		switch (rand) {
 		case 0:
 			return "Take a break from writing and go read.";

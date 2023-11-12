@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.LogManager;
+
 import discord4j.core.DiscordClientBuilder;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.interaction.ButtonInteractionEvent;
@@ -30,7 +32,9 @@ public class Bot {
 
 	static Boolean canSubmit = true;
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(Bot.class);
+//	private static final Logger LOGGER = LogManager.getLogger();
+	
+	public static final Logger LOGGER = LoggerFactory.getLogger(Bot.class);
 
 	public static void main(String[] args) {
 
@@ -42,9 +46,12 @@ public class Bot {
 
 		
 		//Call our code to handle creating/deleting/editing our global slash commands.
-		List<String> commands = List.of("add.json", "battle.json", "challenge_quest.json", "clear.json", "greet.json", "goal.json", "hey.json",
-				"info.json", "onslaught.json", "progress.json", "quest.json", "skirmish.json", "total.json", "war.json",
-				"writing_prompt.json", "writers_block_prompt.json");
+		List<String> commands = List.of("add.json", "battle.json", "challenge_quest.json", "clear.json", "goal.json", "info.json", "onslaught.json",
+				"progress.json", "quest.json", "skirmish.json", "total.json", "war.json", "writing_prompt.json", "writers_block_prompt.json");
+
+//				List<String> commands = List.of("add.json", "battle.json", "challenge_quest.json", "clear.json", "goal.json",
+//				"info.json", "onslaught.json", "progress.json", "quest.json", "skirmish.json", "total.json", "war.json",
+//				"writing_prompt.json", "writers_block_prompt.json");
 		try {
 			new GlobalCommandRegistrar(client.getRestClient()).registerCommands(commands);
 		} catch (Exception e) {
@@ -56,7 +63,7 @@ public class Bot {
 			LOGGER.debug("Midnight successfully initialized*******");
 			midnight.begin();
 		} catch (Exception e) {
-			LOGGER.error("Midnight not initialized", e);
+			LOGGER.error("MidnightListener not initialized", e);
 		}
 		
 		// Register our listeners
@@ -64,12 +71,6 @@ public class Bot {
 				.then(client.onDisconnect())
 				.block(); // We use .block() as there is not another non-daemon thread and the jvm would
 							// close otherwise.
-		
-		
-		
-		//"listen" for midnight.
-		//every hour check if anyone is in the registered timezone
-		//and trigger the appropriate responses if applicable.
 		
 		
 	}
