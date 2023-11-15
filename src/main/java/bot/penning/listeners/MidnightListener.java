@@ -104,10 +104,9 @@ public class MidnightListener {
 			Random rand = new Random();
 			Snowflake channelID = writer.getPreferredChannel().getId();
 
-			if (rand.nextDouble() < percent) {
+			if (rand.nextDouble() <= percent) {
 				String animal = writer.getAnimalData().generateRandomAnimal();
-				client.getChannelById(channelID).ofType(MessageChannel.class).flatMap(channel -> channel.createMessage(writer.getUser().getMention() + ", you have found a " + animal + "!"))
-				.subscribe();
+				client.getChannelById(channelID).ofType(MessageChannel.class).flatMap(channel -> channel.createMessage(writer.getUser().getMention() + ", you have found a " + animal + "!")).subscribe();
 				
 			}
 			

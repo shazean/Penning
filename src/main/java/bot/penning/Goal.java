@@ -81,13 +81,15 @@ public class Goal {
 			goalAbbr = "screams/minute";
 		} else if (goalType.equals("keyboard slams")) {
 			goalAbbr = "asdfghjkl/minute";
+		} else if (goalType.equals("chapters")) {
+			goalAbbr = "chapters/minute";
 		}
 
 		return goalAbbr;
 	}
 
 	public double getGoalPercent() {
-		this.progressPercent = (double)this.progress / (double)this.goal * 100.0;
+		this.progressPercent = (double)this.progress / (double)this.goal;
 
 //		if (this.progressPercent == 100) {
 //			goalComplete = true;
