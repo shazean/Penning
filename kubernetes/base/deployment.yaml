@@ -40,3 +40,7 @@ spec:
               memory: "55M"
       restartPolicy: Always
       imagePullPolicy: Always
+  tolerations:
+  - key: node-role.kubernetes.io/control-plane
+    operator: Exists
+    effect: NoSchedule
