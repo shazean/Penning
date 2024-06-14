@@ -15,12 +15,10 @@ public class ChallengeQuest extends Quest {
 
 	public ChallengeQuest(Long questObjective) {
 		super(questObjective);
-		// TODO Auto-generated constructor stub
 	}
 
 	public ChallengeQuest(Long questObjective, String questGoalType) {
 		super(questObjective);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

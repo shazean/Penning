@@ -1,0 +1,126 @@
+{
+    "name": "timezone",
+    "description": "Set your preferred timezone",
+    "options": [
+        {
+            "name": "timezone",
+            "description": "Timezone",
+            "type": 3,
+            "required": true,
+            "choices": [
+                {
+                    "name": "Australia/Darwin (ACT)",
+                    "value": "Australia/Darwin"
+                },
+                {
+                    "name": "Australia/Sydney (AET)",
+                    "value": "Australia/Sydney"
+                },
+                {
+                    "name": "America/Agentina/Buenos_Aires (AGT)",
+                    "value": "America/Agentina/Buenos_Aires"
+                },
+                {
+                    "name": "Africa/Cairo (ART)",
+                    "value": "Africa/Cairo"
+                },
+                {
+                    "name": "America/Anchorage (AST)",
+                    "value": "America/Anchorage"
+                },
+                {
+                    "name": "America/Sao_Paulo (BET)",
+                    "value": "America/Sao_Paulo"
+                },
+                {
+                    "name": "Asia/Dhaka (BST)",
+                    "value": "Asia/Dhaka"
+                },
+                {
+                    "name": "Africa/Harare (CAT)",
+                    "value": "Africa/Harare"
+                },
+                {
+                    "name": "America/St_Johns (CNT)",
+                    "value": "America/St_Johns"
+                },
+                {
+                    "name": "America/Chicago (CST)",
+                    "value": "America/Chicago"
+                },
+                {
+                    "name": "Asia/Shanghai (CTT)",
+                    "value": "Asia/Shanghai"
+                },
+                {
+                    "name": "Africa/Addis_Ababa (EAT)",
+                    "value": "Africa/Addis_Ababa"
+                },
+                {
+                    "name": "Europe/Paris (ECT)",
+                    "value": "Europe/Paris"
+                },
+                {
+                    "name": "America/Indiana/Indianapolis (IET)",
+                    "value": "America/Indiana/Indianapolis"
+                },
+                {
+                    "name": "Asia/Kolkata (IST)",
+                    "value": "Asia/Kolkata"
+                },
+                {
+                    "name": "Asia/Tokyo (JST)",
+                    "value": "Asia/Tokyo"
+                },
+                {
+                    "name": "Pacific/Apia (MIT)",
+                    "value": "Pacific/Apia"
+                },
+                {
+                    "name": "Asia/Yerevan (NET)",
+                    "value": "Asia/Yerevan"
+                },
+                {
+                    "name": "Pacific/Auckland (NST)",
+                    "value": "Pacific/Auckland"
+                },
+                {
+                    "name": "Asia/Karachi (PLT)",
+                    "value": "Asia/Karachi"
+                },
+                {
+                    "name": "America/Phoenix (PNT)",
+                    "value": "America/Phoenix"
+                },
+                {
+                    "name": "America/Puerto_Rico (PRT)",
+                    "value": "America/Puerto_Rico"
+                },
+                {
+                    "name": "America/Los_Angeles (PST)",
+                    "value": "America/Los_Angeles"
+                },
+                {
+                    "name": "Pacific/Guadalcanal (SST)",
+                    "value": "Pacific/Guadalcanal"
+                },
+                {
+                    "name": "Asia/Ho_Chi_Minh (VST)",
+                    "value": "Asia/Ho_Chi_Minh"
+                },
+                {
+                    "name": "America/New_York (EST)",
+                    "value": "America/New_York"
+                },
+                {
+                    "name": "America/Denver (MST)",
+                    "value": "America/Denver"
+                },
+                {
+                    "name": "Pacific/Honolulu (HST)",
+                    "value": "Pacific/Honolulu"
+                }
+            ]
+        }
+    ]
+}

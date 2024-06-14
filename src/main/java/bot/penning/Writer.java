@@ -29,7 +29,7 @@ public class Writer {
 	ChallengeQuest currentChallengeQuest;
 	Boolean hasQuest;
 	Boolean hasChallengeQuest;
-	TimeZone timeZone;
+	TimeZone timeZone = TimeZone.getTimeZone("America/Chicago"); //set default timezone
 	int dailyRewards;
 	Channel preferedChannel;
 	AnimalData animalData;

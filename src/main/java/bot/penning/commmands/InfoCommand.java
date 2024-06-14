@@ -1,7 +1,5 @@
 package bot.penning.commmands;
 
-import java.util.Optional;
-
 import bot.penning.EncounterInfo;
 import bot.penning.Writer;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;

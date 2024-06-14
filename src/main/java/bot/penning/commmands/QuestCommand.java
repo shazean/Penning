@@ -1,18 +1,11 @@
 package bot.penning.commmands;
 
-import java.util.Optional;
-
-import java.util.Random;
-
 import bot.penning.EncounterInfo;
-import bot.penning.Goal;
 import bot.penning.Writer;
 import bot.penning.quests.GenericQuest;
-import bot.penning.quests.Quest;
 import bot.penning.quests.GoalQuest;
+import bot.penning.quests.Quest;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
-import discord4j.core.object.command.ApplicationCommandInteractionOption;
-import discord4j.core.object.command.ApplicationCommandInteractionOptionValue;
 import discord4j.core.object.entity.Member;
 import reactor.core.publisher.Mono;
 

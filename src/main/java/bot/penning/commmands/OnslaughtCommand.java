@@ -1,17 +1,7 @@
 package bot.penning.commmands;
 
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Optional;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
-import org.apache.commons.lang3.time.StopWatch;
-
 import bot.penning.EncounterInfo;
-import bot.penning.Goal;
 import bot.penning.encounters.Onslaught;
-import bot.penning.encounters.Skirmish;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.interaction.ButtonInteractionEvent;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
@@ -20,7 +10,12 @@ import discord4j.core.object.command.ApplicationCommandInteractionOptionValue;
 import discord4j.core.object.component.ActionRow;
 import discord4j.core.object.component.Button;
 import discord4j.core.object.entity.Member;
+import org.apache.commons.lang3.time.StopWatch;
 import reactor.core.publisher.Mono;
+
+import java.time.Duration;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class OnslaughtCommand implements SlashCommand {
 
@@ -60,8 +55,6 @@ public class OnslaughtCommand implements SlashCommand {
 		Button doneButton = Button.success("done-button", "Word goal reached!");
 		ScheduledExecutorService schedule = onslaught.getSchedule();
 
-
-
 		//stop user from creating an onslaught with length 0 (because calculating the average for total creates a divide by zero scenario)
 		if (target == 0) {
 			return event.reply("Onslaught cannot have a goal of 0 words! Try again!").withEphemeral(true);
@@ -75,11 +68,7 @@ public class OnslaughtCommand implements SlashCommand {
 
 		StopWatch stopwatch = StopWatch.create();
 		
-		schedule.schedule(() -> {
-
-			stopwatch.start();
-
-		}, startTime, TimeUnit.MINUTES);	
+		schedule.schedule(stopwatch::start, startTime, TimeUnit.MINUTES);
 		
 		client.on(ButtonInteractionEvent.class, buttonEvent -> {
 			if (buttonEvent.getCustomId().equals("done-button")) {
@@ -100,11 +89,7 @@ public class OnslaughtCommand implements SlashCommand {
 			}
 		}).timeout(Duration.ofMinutes((target / 20) + 5)).subscribe();
 				
-		schedule.schedule(() -> {
-
-			stopwatch.stop();
-
-		}, target / 20 + 5, TimeUnit.MINUTES);	
+		schedule.schedule(stopwatch::stop, target / 20 + 5, TimeUnit.MINUTES);
 
 		EncounterInfo.incrementEncounterIndex();
 

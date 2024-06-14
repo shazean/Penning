@@ -28,6 +28,10 @@
             		"name": "Lines",
             		"value": "lines"
             	},
+                {
+                    "name": "Paragraphs",
+                    "value": "paragraphs"
+                },
             	{
             		"name": "Pages",
             		"value": "pages"
