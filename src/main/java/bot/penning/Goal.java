@@ -69,6 +69,8 @@ public class Goal {
 			goalAbbr = "wpm";
 		} else if (goalType.equals("lines")) {
 			goalAbbr = "lpm";
+		} else if (goalType.equals("paragraphs")) {
+			goalAbbr = "ppm";
 		} else if (goalType.equals("pages")) {
 			goalAbbr = "ppm";
 		} else if (goalType.equals("minutes")) {
@@ -82,7 +84,7 @@ public class Goal {
 		} else if (goalType.equals("keyboard slams")) {
 			goalAbbr = "asdfghjkl/minute";
 		} else if (goalType.equals("chapters")) {
-			goalAbbr = "chapters/minute";
+			goalAbbr = "chapters/hour";
 		}
 
 		return goalAbbr;

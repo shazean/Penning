@@ -21,15 +21,10 @@ public class GoalCommand implements SlashCommand {
 
 	@Override
 	public Mono<Void> handle(ChatInputInteractionEvent event) {
-		/*
-	        Since slash command options are optional according to discord, we will wrap it into the following function
-	        that gets the value of our option as a String without chaining several .get() on all the optional values
-	        In this case, there is no fear it will return empty/null as this is marked "required: true" in our json.
-		 */
 		Long target = event.getOption("target")
 				.flatMap(ApplicationCommandInteractionOption::getValue)
 				.map(ApplicationCommandInteractionOptionValue::asLong)
-				.get(); //This is warning us that we didn't check if its present, we can ignore this on required options
+				.get();
 
 		String type = event.getOption("type")
 				.flatMap(ApplicationCommandInteractionOption::getValue)
@@ -68,7 +63,6 @@ public class GoalCommand implements SlashCommand {
 			} else {
 				writer.addGoal(writerGoal);
 			}
-
 		}
 		
 		EncounterInfo.writerIndex.get(user).setPreferedChannel(event.getInteraction().getChannel().block());

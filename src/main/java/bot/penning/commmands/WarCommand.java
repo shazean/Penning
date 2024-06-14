@@ -136,7 +136,7 @@ public class WarCommand implements SlashCommand {
 
 	public void runNextSkirmish(MessageCreateEvent event, Skirmish skirmish, Long interval, Long totalSkirmishes, Long remainingSkirmishes) {
 
-		Long penningsWords = Math.abs(24 * skirmish.getLength() + ((int)(Math.random() * (50- -50 + 1) + -50)));
+		long penningsWords = Math.abs(24 * skirmish.getLength() + ((int)(Math.random() * (50- -50 + 1) + -50)));
 		ScheduledExecutorService schedule = skirmish.getSchedule();
 		Button joinButton = Button.primary("join_button_" + skirmish.getIndex(), "Join!");
 		GatewayDiscordClient client = event.getClient();
@@ -181,8 +181,6 @@ public class WarCommand implements SlashCommand {
 			if (remainingSkirmishes == 1) { //last skirmish
 				printWarSummary(event, skirmish);
 			}
-			
-
 		}, skirmish.getLength() + skirmish.getStartTime(), TimeUnit.MINUTES);	
 	}
 
@@ -208,5 +206,4 @@ public class WarCommand implements SlashCommand {
 
 		}, 5, TimeUnit.MINUTES);		
 	}
-	
 }

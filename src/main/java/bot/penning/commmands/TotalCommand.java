@@ -1,11 +1,5 @@
 package bot.penning.commmands;
 
-import java.util.Optional;
-import java.util.Random;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
 import bot.penning.EncounterInfo;
 import bot.penning.Goal;
 import bot.penning.Writer;
@@ -18,6 +12,11 @@ import discord4j.core.object.command.ApplicationCommandInteractionOptionValue;
 import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.channel.MessageChannel;
 import reactor.core.publisher.Mono;
+
+import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class TotalCommand implements SlashCommand {
 	@Override
@@ -61,7 +60,14 @@ public class TotalCommand implements SlashCommand {
 		}		
 		
 		Long length = currentEncounter.getLength();
-		Double wordsPerMin = Math.round((totalWritten / (double) length) * 100.0) / 100.0;
+		
+		Double wordsPerMin;
+		
+		if (type.equals("chapters")) {
+			wordsPerMin = Math.round((totalWritten / ((double) length / 60.0)) * 100.0) / 100.0;
+		} else {
+			wordsPerMin = Math.round((totalWritten / (double) length) * 100.0) / 100.0;
+		}
 		
 		goalType = type;
 //		if (goalType.toUpperCase().equals("LINES")) {
@@ -86,7 +92,7 @@ public class TotalCommand implements SlashCommand {
 
 		writer.updateAverageWPM(wordsPerMin);
 		
-		if (writer.hasGoalSet() && writer.getGoal().getGoalType() == type) {
+		if (writer.hasGoalSet() && writer.getGoal().getGoalType().equals(type)) {
 			writer.getGoal().addWords(totalWritten);
 		}
 
@@ -128,12 +134,13 @@ public class TotalCommand implements SlashCommand {
 		 * and anything that comes back true assigns a specific value into the array whichToDo.
 		 * All of said values are specific numbers that have a unique sum no matter how they're added up.
 		 * Then we run the sum through a switch statement for each unique option.
-		 * It's still lengthy, but I think it's easier to follow.*/
+		 * It's still lengthy, but I think it's easier to follow.
+		 * Update: combined the cases that had the same results */
 		
 		int[] whichToDo = new int[] {0,0,0,0,0}; //false values: 0,0,0,0,0 | true values: 1,2,5,11,21
 		//[0] = goal, [1] = quest, [2] = quest completed, [3] = challenge quest, [4] = challenge quest completed
 
-		if (writer.hasGoalSet() && writer.getGoal().getGoalType() == type) whichToDo[0] = 1; //has goal and it's a relevant goal to the war
+		if (writer.hasGoalSet() && writer.getGoal().getGoalType().equals(type)) whichToDo[0] = 1; //has goal and it's a relevant goal to the war
 		
 		if (writer.hasQuest()) {
 			whichToDo[1] = 2;
@@ -161,45 +168,27 @@ public class TotalCommand implements SlashCommand {
 		case(1): //has goal, no quest, no challenge quest
 			return event.reply("You have written " + totalWritten + " " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".")
 					.then(event.createFollowup("Progress updated! You have written " + writer.getGoal().getProgress() + " " + goalType + " of " + writer.getGoalNum() + " " + goalType + ".").then());
-		case(2): //no goal, has incomplete quest, no challenge quest
-			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".");
 		case(3): //has goal, has incomplete quest, no challenge quest
-			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".")
-					.then(event.createFollowup("Progress updated! You have written " + writer.getGoal().getProgress() + " " + goalType + " of " + writer.getGoalNum() + " " + goalType + ".").then());
-		case(5): //no goal, no quest, has incomplete challenge quest
-			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".");
+		case(8): //has goal, has incomplete quest, has incomplete challenge quest
 		case(6): //has goal, no quest, has incomplete challenge quest
-			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".")
-					.then(event.createFollowup("Progress updated! You have written " + writer.getGoal().getProgress() + " " + goalType + " of " + writer.getGoalNum() + " " + goalType + ".").then());
-		case(7): //no goal, has incomplete quest, has incomplete challenge quest
-			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".");
-		case(8): //has goal, has incomplete quest, has incomplete challenge quest	
-			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".")
+				return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".")
 					.then(event.createFollowup("Progress updated! You have written " + writer.getGoal().getProgress() + " " + goalType + " of " + writer.getGoalNum() + " " + goalType + ".").then());
 		case(13): //no goal, has complete quest, no challenge quest
-			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".")
+		case(18): //no goal, has complete quest, has incomplete challenge
+				return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".")
 					.then(event.createFollowup("Quest completed!").then());
 		case(14): //has goal, has complete quest, no challenge quest
-			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".")
-					.then(event.createFollowup("Progress updated! You have written " + writer.getGoal().getProgress() + " " + goalType + " of " + writer.getGoalNum() + " " + goalType + ".").then())
-					.then(event.createFollowup("Quest completed!").then());
 		case(16): //has goal, has complete quest, has incomplete challenge
-			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".")
+				return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".")
 					.then(event.createFollowup("Progress updated! You have written " + writer.getGoal().getProgress() + " " + goalType + " of " + writer.getGoalNum() + " " + goalType + ".").then())
-					.then(event.createFollowup("Quest completed!").then());
-		case(18): //no goal, has complete quest, has incomplete challenge
-			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".")
 					.then(event.createFollowup("Quest completed!").then());
 		case(27): //has goal, no quest, has complete challenge
-			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".")
+		case(29): //has goal, has incomplete quest, has complete challenge
+				return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".")
 					.then(event.createFollowup("Progress updated! You have written " + writer.getGoal().getProgress() + " " + goalType + " of " + writer.getGoalNum() + " " + goalType + ".").then())
 					.then(event.createFollowup("Challenge quest completed!").then());
 		case(28): //no goal, has incomplete quest, has complete challenge
 			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".")
-					.then(event.createFollowup("Challenge quest completed!").then());
-		case(29): //has goal, has incomplete quest, has complete challenge
-			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".")
-					.then(event.createFollowup("Progress updated! You have written " + writer.getGoal().getProgress() + " " + goalType + " of " + writer.getGoalNum() + " " + goalType + ".").then())
 					.then(event.createFollowup("Challenge quest completed!").then());
 		case(39): //no goal, has complete quest, has complete challenge
 			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".")
@@ -210,7 +199,10 @@ public class TotalCommand implements SlashCommand {
 					.then(event.createFollowup("Progress updated! You have written " + writer.getGoal().getProgress() + " " + writer.getGoal().getGoalType() + " of " + writer.getGoalNum() + " " + goalType + ".").then())
 					.then(event.createFollowup("Quest completed!").then())
 					.then(event.createFollowup("Challenge quest completed!").then());
-		default: //assume no goal, no quest, no challenge quest
+		default: //case 2 (no goal, incomplete quest, no challenge quest)
+			//case 5 (no goal, no quest, incomplete challenge)
+			//case 7 (no goal, incomplete quest, incomplete challenge)
+			//assume no goal, no quest, no challenge quest
 			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalTypeAbbr + ".");
 		}
 	}

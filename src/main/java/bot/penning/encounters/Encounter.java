@@ -87,7 +87,10 @@ public class Encounter {
 	public boolean hasParticipantAlready(Member user) {
 		boolean hasParticipant = false;
 		for (Participant i : enteredParticipants) {
-			if (i.user == user) hasParticipant = true;
+			if (i.user == user) {
+				hasParticipant = true;
+				break;
+			}
 		}
 		return hasParticipant;
 	}
@@ -141,13 +144,14 @@ public class Encounter {
 		
 		public Participant(Member user, Long totalWords, Double averageWPM, Long timeToGoal) {
 			this.user = user;
+			this.totalWords = totalWords;
+			this.averageWPM = averageWPM;
 			this.mentionNickname = user.getNickname().get();
 			this.timeToGoal = timeToGoal;
 		}
 		
 		public String toString() {
 			return mentionNickname + ": " + totalWords + " " + writtenType + " (" + averageWPM + " " + writtenTypeAbbr + ")";
-			
 		}
 		
 		public String onslaughtToString() {

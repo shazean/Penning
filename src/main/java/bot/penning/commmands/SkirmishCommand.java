@@ -84,14 +84,14 @@ public class SkirmishCommand implements SlashCommand {
 		}).timeout(Duration.ofMinutes(startTime)).subscribe();
 
 		skirmish.setIsWar(false);
-		runSkirmish(event, startTime, skirmish);
+		runSkirmish(event, skirmish);
 
 		return event.reply("Skirmish #" + skirmish.getIndex() + " created for " + skirmish.getLength() + " minutes, and will start in " + skirmish.getStartTime() + " minutes.")
 				.withComponents(ActionRow.of(joinButton));
 	}
 
 
-	public void runSkirmish(ChatInputInteractionEvent event, Long startTime, Skirmish skirmish) {
+	public void runSkirmish(ChatInputInteractionEvent event, Skirmish skirmish) {
 		GatewayDiscordClient client = event.getClient();
 		Snowflake guildID = event.getInteraction().getGuildId().get();
 
@@ -117,7 +117,7 @@ public class SkirmishCommand implements SlashCommand {
 
 					}, skirmish.getStartTime(), TimeUnit.MINUTES);	
 					
-					Long penningsWords = Math.abs(24 * skirmish.getLength() + ((int)(Math.random() * (50- -50+1)+ -50)));
+					long penningsWords = Math.abs(24 * skirmish.getLength() + ((int)(Math.random() * (50- -50+1)+ -50)));
 //					Button totalButton = Button.primary("total-button", "Add your total!");
 
 					schedule.schedule(() -> {
@@ -138,8 +138,7 @@ public class SkirmishCommand implements SlashCommand {
 	}
 	
 	private int getNumDigits(long num) {
-		int length = (int) (Math.log10(num) + 1);
-		return length;
+		return (int) (Math.log10(num) + 1);
 	}
 
 	public void printSummary(MessageCreateEvent event, Skirmish skirmish) {
