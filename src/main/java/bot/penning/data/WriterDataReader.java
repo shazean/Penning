@@ -3,7 +3,9 @@ package bot.penning.data;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.TimeZone;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -32,6 +34,8 @@ public class WriterDataReader {
 
 		JsonNode arrayNode = jsonNode.get("Writer");
 		
+		if (arrayNode == null || arrayNode.isEmpty()) return;
+		
 		Iterator<JsonNode> iterator = arrayNode.elements();
 		
 		while (iterator.hasNext()) {
@@ -48,9 +52,18 @@ public class WriterDataReader {
 			} else {
 				writer = new Writer(member);
 			}
-
-			writer.getAnimalData().fromJson(node.get("hedgehog").asInt(), node.get("dragon").asInt(), node.get("unicorn").asInt(), 
-					node.get("axolotl").asInt(), node.get("turtle").asInt());
+			
+			Map<String, Integer> animals = new HashMap<>();
+			animals.put("hedgehog", node.get("hedgehog").asInt());
+			animals.put("dragon", node.get("dragon").asInt());
+			animals.put("unicorn", node.get("unicorn").asInt());
+			animals.put("axolotl", node.get("axolotl").asInt());
+			animals.put("turtle", node.get("turtle").asInt());
+			animals.put("griffin", node.get("griffin").asInt());
+			animals.put("fruit_bat", node.get("fruit_bat").asInt());
+			animals.put("fox", node.get("fox").asInt());
+			
+			writer.getAnimalData().fromJson(animals);
 
 			if (node.get("hasQuest").asBoolean()) {
 				Quest quest = new Quest(node.get("questTotal").asLong(), node.get("questType").asText());

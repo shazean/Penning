@@ -32,7 +32,7 @@ public class Bot {
 		//Call our code to handle creating/deleting/editing our global slash commands.
 		List<String> commands = List.of("add.json", "battle.json", "challenge_quest.json", "clear.json", "goal.json", "info.json", "onslaught.json",
 				"progress.json", "quest.json", "skirmish.json", "total.json",
-				"timezone.json",
+//				"timezone.json",
 				"war.json", "writing_prompt.json", "writers_block_prompt.json");
 		
 		try {

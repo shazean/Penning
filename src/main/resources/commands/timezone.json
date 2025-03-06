@@ -9,115 +9,115 @@
             "required": true,
             "choices": [
                 {
-                    "name": "Australia/Darwin-ACT",
+                    "name": "ACT",
                     "value": "Australia/Darwin"
                 },
                 {
-                    "name": "Australia/Sydney-AET",
+                    "name": "AET",
                     "value": "Australia/Sydney"
                 },
                 {
-                    "name": "Argentina/BuenosAires-AGT",
-                    "value": "America/Agentina/Buenos_Aires"
+                    "name": "AGT",
+                    "value": "America/Argentina/Buenos_Aires"
                 },
                 {
-                    "name": "Africa/Cairo-ART",
+                    "name": "ART",
                     "value": "Africa/Cairo"
                 },
                 {
-                    "name": "America/Anchorage-AST",
+                    "name": "AST",
                     "value": "America/Anchorage"
                 },
                 {
-                    "name": "America/SaoPaulo-BET",
+                    "name": "BET",
                     "value": "America/Sao_Paulo"
                 },
                 {
-                    "name": "Asia/Dhaka-BST",
+                    "name": "BST",
                     "value": "Asia/Dhaka"
                 },
                 {
-                    "name": "Africa/Harare-CAT",
+                    "name": "CAT",
                     "value": "Africa/Harare"
                 },
                 {
-                    "name": "America/StJohns-CNT",
+                    "name": "CNT",
                     "value": "America/St_Johns"
                 },
                 {
-                    "name": "America/Chicago-CST",
+                    "name": "CST",
                     "value": "America/Chicago"
                 },
                 {
-                    "name": "Asia/Shanghai-CTT",
+                    "name": "CTT",
                     "value": "Asia/Shanghai"
                 },
                 {
-                    "name": "Africa/AddisAbaba-EAT",
+                    "name": "EAT",
                     "value": "Africa/Addis_Ababa"
                 },
                 {
-                    "name": "Europe/Paris-ECT",
+                    "name": "ECT",
                     "value": "Europe/Paris"
                 },
                 {
-                    "name": "America/Indianapolis-IET",
+                    "name": "IET",
                     "value": "America/Indiana/Indianapolis"
                 },
                 {
-                    "name": "Asia/Kolkata-IST",
+                    "name": "IST",
                     "value": "Asia/Kolkata"
                 },
                 {
-                    "name": "Asia/Tokyo-JST",
+                    "name": "JST",
                     "value": "Asia/Tokyo"
                 },
                 {
-                    "name": "Pacific/Apia-MIT",
+                    "name": "MIT",
                     "value": "Pacific/Apia"
                 },
                 {
-                    "name": "Asia/Yerevan-NET",
+                    "name": "NET",
                     "value": "Asia/Yerevan"
                 },
                 {
-                    "name": "Pacific/Auckland-NST",
+                    "name": "NST",
                     "value": "Pacific/Auckland"
                 },
                 {
-                    "name": "Asia/Karachi-PLT",
+                    "name": "PLT",
                     "value": "Asia/Karachi"
                 },
                 {
-                    "name": "America/Phoenix-PNT",
+                    "name": "PNT",
                     "value": "America/Phoenix"
                 },
                 {
-                    "name": "America/PuertoRico-PRT",
+                    "name": "PRT",
                     "value": "America/Puerto_Rico"
                 },
                 {
-                    "name": "America/LosAngeles-PST",
+                    "name": "PST",
                     "value": "America/Los_Angeles"
                 },
                 {
-                    "name": "Pacific/Guadalcanal-SST",
+                    "name": "SST",
                     "value": "Pacific/Guadalcanal"
                 },
                 {
-                    "name": "Asia/HoChiMinh-VST",
+                    "name": "VST",
                     "value": "Asia/Ho_Chi_Minh"
                 },
                 {
-                    "name": "America/NewYork-EST",
+                    "name": "EST",
                     "value": "America/New_York"
                 },
                 {
-                    "name": "America/Denver-MST",
+                    "name": "MST",
                     "value": "America/Denver"
                 },
                 {
-                    "name": "Pacific/Honolulu-HST",
+                    "name": "HST",
                     "value": "Pacific/Honolulu"
                 }
             ]

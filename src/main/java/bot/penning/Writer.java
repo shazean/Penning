@@ -58,19 +58,6 @@ public class Writer {
 		animalData = new AnimalData();
 	}
 	
-	public Writer(String userId, String guildId, boolean hasGoal, @Nullable Long goalTotal, @Nullable String goalType, @Nullable Long goalProgress,
-			int turtle, int axolotl, int unicorn, int dragon, int hedgehog,
-			boolean hasQuest, @Nullable Long questTotal, @Nullable String questType, @Nullable Long questProgress,
-			boolean hasChallengeQuest, @Nullable Long challengeQuestTotal, @Nullable String challengeQuestType, @Nullable Long challengeQuestProgress,
-			String timezone) {
-	
-		
-		
-		
-		
-		
-	}
-
 	public Member getUser() {
 		return user;
 	}

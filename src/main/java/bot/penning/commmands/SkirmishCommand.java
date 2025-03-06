@@ -135,7 +135,6 @@ public class SkirmishCommand implements SlashCommand {
 			}
 			return Mono.empty();
 		}).timeout(Duration.ofMinutes(skirmish.getLength() + skirmish.getStartTime() + 1)).subscribe();
-
 	}
 	
 	private int getNumDigits(long num) {
@@ -153,5 +152,4 @@ public class SkirmishCommand implements SlashCommand {
 
 		}, 8, TimeUnit.MINUTES);		
 	}
-
 }

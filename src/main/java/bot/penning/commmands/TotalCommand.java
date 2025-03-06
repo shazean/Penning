@@ -142,7 +142,7 @@ public class TotalCommand implements SlashCommand {
 			schedule.schedule(() -> {
 
 				client.getChannelById(channelID).ofType(MessageChannel.class)
-				.flatMap(channel -> channel.createMessage(nickname + " You have found a(n) " + animal + "!"))
+				.flatMap(channel -> channel.createMessage(nickname + " You have found a " + animal + "!"))
 				.subscribe();
 			
 			}, BotUtil.secondDelayBeforeAnimalReward, TimeUnit.SECONDS);	
