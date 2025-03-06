@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
+import bot.penning.WritingType;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.component.ActionRow;
 import discord4j.core.object.component.Button;
@@ -79,8 +80,8 @@ public class Encounter {
 		event.getMessage().getChannel().block().createMessage(message).withComponents(ActionRow.of(button)).block();
 	}
 	
-	public void createParticipant(Member user, Long totalWords, Double averageWPM, String writtenType, String writtenTypeAbbr) {
-		Participant participant = new Participant(user, totalWords, averageWPM, writtenType, writtenTypeAbbr);
+	public void createParticipant(Member user, Long totalWords, Double averageWPM, WritingType writtenType) {
+		Participant participant = new Participant(user, totalWords, averageWPM, writtenType);
 		enteredParticipants.add(participant);
 	}
 	
@@ -128,18 +129,16 @@ public class Encounter {
 		String mentionNickname;
 		Long totalWords;
 		Double averageWPM;
-		String writtenType;
-		String writtenTypeAbbr;
+		WritingType writtenType;
 		Long timeToGoal;
 		Member user;
 		
-		public Participant(Member user, Long totalWords, Double averageWPM, String writtenType, String writtenTypeAbbr) {
+		public Participant(Member user, Long totalWords, Double averageWPM, WritingType writtenType) {
 			this.user = user;
 			this.mentionNickname = user.getNicknameMention();
 			this.totalWords = totalWords;
 			this.averageWPM = averageWPM;
 			this.writtenType = writtenType;
-			this.writtenTypeAbbr = writtenTypeAbbr;
 		}
 		
 		public Participant(Member user, Long totalWords, Double averageWPM, Long timeToGoal) {
@@ -151,7 +150,7 @@ public class Encounter {
 		}
 		
 		public String toString() {
-			return mentionNickname + ": " + totalWords + " " + writtenType + " (" + averageWPM + " " + writtenTypeAbbr + ")";
+			return mentionNickname + ": " + totalWords + " " + writtenType + " (" + averageWPM + " " + writtenType.getAbbreviation() + ")";
 		}
 		
 		public String onslaughtToString() {

@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import bot.penning.Goal;
 import bot.penning.Writer;
+import bot.penning.Bot;
 import bot.penning.EncounterInfo;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.command.ApplicationCommandInteractionOption;
@@ -66,7 +67,8 @@ public class GoalCommand implements SlashCommand {
 		}
 		
 		EncounterInfo.writerIndex.get(user).setPreferedChannel(event.getInteraction().getChannel().block());
-
+		Bot.updateWriterData();
+		
 		return event.reply("Goal of " + writerGoal.getGoal() + " " + writerGoal.getGoalType() + " created!");
 	}
 }

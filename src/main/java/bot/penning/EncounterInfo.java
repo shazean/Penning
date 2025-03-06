@@ -13,28 +13,22 @@ import reactor.core.publisher.Mono;
 
 public class EncounterInfo {
 
-//	public static ArrayList<Skirmish> skirmishes = new ArrayList<Skirmish>();
-//	public static ArrayList<Battle> battles = new ArrayList<Battle>();
-//	public static ArrayList<War> wars = new ArrayList<War>();
-//	public static ArrayList<Sprint> sprints = new ArrayList<Sprint>();
-	public static final Map<Member, Goal> writerIndexTemp = new HashMap<>();
-	
 	public static final Map<Member, Writer> writerIndex = new HashMap<>();
 	public static Map<Long, Encounter> encounterRegistry = new HashMap<>();
 	public static Boolean warRunning = false;
-//	private static WarSummary currentWarSummary;
-//	public ArrayList<Participant> enteredWarriors = new ArrayList<Participant>();
 	public static Map<Member, Warrior> warriorsEntered = new HashMap<>();
 	public static ArrayList<Object> writersEntered = new ArrayList<Object>();
 
 	static Long encounterIndex = 1L;
 
-	public void setEncounterIndex(Long index) {
+	public static void setEncounterIndex(Long index) {
 		encounterIndex = index;
+		Bot.updateEncounterData();
 	}
 
 	public static void incrementEncounterIndex() {
 		encounterIndex++;
+		Bot.updateEncounterData();
 	}
 
 	public static Long getEncounterIndex() {
@@ -53,7 +47,8 @@ public class EncounterInfo {
 		warriorsEntered = new HashMap<>();
 	}
 	
-	public static void addToWarSummary(Member user, Long totalWritten, double wordsPerMin, String goalType) {
+	//FIXME
+	public static void addToWarSummary(Member user, Long totalWritten, double wordsPerMin, WritingType goalType) {
 		if (!warriorsEntered.containsKey(user)) {
 			warriorsEntered.put(user, new Warrior(user));
 		} else {

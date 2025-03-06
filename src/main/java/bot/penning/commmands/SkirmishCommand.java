@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import bot.penning.BotUtil;
 import bot.penning.EncounterInfo;
 import bot.penning.encounters.Skirmish;
 import discord4j.common.util.Snowflake;
@@ -54,12 +55,12 @@ public class SkirmishCommand implements SlashCommand {
 		}
 
 		//Let's user know the length is too long
-		if (duration > 60) {
+		if (duration > BotUtil.maxSkirmishLengthMin) {
 			return event.reply("Length is too long! Try starting a word battle instead.").withEphemeral(true);
 		}
 
-		if (startTime > 30) {
-			return event.reply("Skirmish must be started within 30 minutes!").withEphemeral(true);
+		if (startTime > BotUtil.maxTimeInFutureToStartEvent) {
+			return event.reply("Skirmish must be started within " + BotUtil.maxTimeInFutureToStartEvent + " minutes!").withEphemeral(true);
 		}
 
 //		if (startTime == 15) { //convert startTime to seconds, and remove 1 second if 15 minutes, to stop a timed out token from potentially causing issues
@@ -68,15 +69,15 @@ public class SkirmishCommand implements SlashCommand {
 //			finalTime = startTime * 60L;
 //		}
 
-		Button joinButton = Button.primary("join_button_" + skirmish.getIndex(), "Join!");
+		Button alertButton = Button.primary("alert_button_" + skirmish.getIndex(), "Ping me!");
 
 		EncounterInfo.incrementEncounterIndex();
 
 		client.on(ButtonInteractionEvent.class, embedEvent -> {
-			if (embedEvent.getCustomId().equals("join_button_" + skirmish.getIndex())) {
+			if (embedEvent.getCustomId().equals("alert_button_" + skirmish.getIndex())) {
 				Member writerMention = embedEvent.getInteraction().getMember().get();
 				skirmish.addPingableMember(writerMention);
-				return embedEvent.reply(writerMention.getNicknameMention() + ", you have joined the skirmish!");
+				return embedEvent.reply(writerMention.getNicknameMention() + ", you have joined alerts for the skirmish!");
 			}
 			else {
 				return Mono.empty();
@@ -87,7 +88,7 @@ public class SkirmishCommand implements SlashCommand {
 		runSkirmish(event, skirmish);
 
 		return event.reply("Skirmish #" + skirmish.getIndex() + " created for " + skirmish.getLength() + " minutes, and will start in " + skirmish.getStartTime() + " minutes.")
-				.withComponents(ActionRow.of(joinButton));
+				.withComponents(ActionRow.of(alertButton));
 	}
 
 
@@ -117,14 +118,14 @@ public class SkirmishCommand implements SlashCommand {
 
 					}, skirmish.getStartTime(), TimeUnit.MINUTES);	
 					
-					long penningsWords = Math.abs(24 * skirmish.getLength() + ((int)(Math.random() * (50- -50+1)+ -50)));
+					long penningsWords = Math.abs(BotUtil.PENNING_WRITING_SPEED * skirmish.getLength() + ((int)(Math.random() * (50- -50+1)+ -50)));
 //					Button totalButton = Button.primary("total-button", "Add your total!");
 
 					schedule.schedule(() -> {
 
 						skirmish.setComplete();
 						skirmish.createMessage(embedEvent, "Skirmish #" + skirmish.getIndex() + " ends now! " + skirmish.getPingableMembers());
-						skirmish.createMessage(embedEvent, "How much did you write? I wrote " + penningsWords + " words. Use `/total " + skirmish.getIndex() + "` to add your total.");
+						skirmish.createMessage(embedEvent, "How much did you write? I wrote " + penningsWords + " words. Use `/total " + skirmish.getIndex() + "` to add your total. Summary in 8 minutes.");
 
 						printSummary(embedEvent, skirmish);
 
@@ -150,7 +151,7 @@ public class SkirmishCommand implements SlashCommand {
 			skirmish.setExpired();
 			skirmish.createMessage(event, skirmish.createParticipantSummary());
 
-		}, 5, TimeUnit.MINUTES);		
+		}, 8, TimeUnit.MINUTES);		
 	}
 
 }

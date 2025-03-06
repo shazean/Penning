@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import bot.penning.Goal;
 import bot.penning.Writer;
+import bot.penning.Bot;
 import bot.penning.EncounterInfo;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.command.ApplicationCommandInteractionOption;
@@ -46,6 +47,8 @@ public class AddCommand implements SlashCommand {
 		if (writer.hasChallengeQuest() && !writer.getChallengeQuest().isTimed()) {
 			writer.updateChallengeQuests(false, words);
 		}
+		
+		Bot.updateWriterData();
 
 		if (writer.hasQuest() && writer.getQuest().getQuestGoal().isComplete()) {
 			//quest is complete

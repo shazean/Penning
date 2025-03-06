@@ -2,6 +2,7 @@ package bot.penning.commmands;
 
 import java.util.Optional;
 
+import bot.penning.Bot;
 import bot.penning.EncounterInfo;
 import bot.penning.Writer;
 import bot.penning.quests.ChallengeQuest;
@@ -38,6 +39,7 @@ public class ChallengeCommand implements SlashCommand {
 		}
 
 		writer.addChallengeQuest(quest);
+		Bot.updateWriterData();
 
 		return event.reply(quest.toString());
 	}

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import bot.penning.BotUtil;
 import bot.penning.EncounterInfo;
 import bot.penning.encounters.Battle;
 import bot.penning.encounters.Skirmish;
@@ -51,17 +52,19 @@ public class BattleCommand implements SlashCommand {
 		}
 
 		//Let's user know the length is too long
-		if (duration < 1) {
+		if (duration < BotUtil.minBattleLengthHrs) {
 			return event.reply("Length is too short! Try starting a word skirmish instead.").withEphemeral(true);
 		}
-		if (duration > 12) {
-			return event.reply("Length is too long! A word battle cannot exceed 12 hours.").withEphemeral(true);
+		if (duration > BotUtil.maxBattleLengthHrs) {
+			return event.reply("Length is too long! A word battle cannot exceed " + BotUtil.maxBattleLengthHrs + " hours.").withEphemeral(true);
 		}
 
+		//TODO update to use BotUtil.maxTimeInFutureToStartEvent
 		if (startTime > 15) {
 			return event.reply("Battle must be started within 15 minutes!").withEphemeral(true);
 		}
 
+		//TODO change battle to be able to start beyond 15 minutes from then, to match skirmish
 		if (startTime == 15) { //convert startTime to seconds, and remove 1 second if 15 minutes, to stop a timed out token from causing issues
 			finalTime = 899L;
 		} else {
@@ -118,9 +121,7 @@ public class BattleCommand implements SlashCommand {
 
 						battle.setComplete();
 						battle.createMessage(embedEvent, "Battle #" + battle.getIndex() + " ends now!");
-						battle.createMessage(embedEvent, "How much did you write? I wrote " + penningsWords + " words.");
-
-						battle.createMessage(embedEvent, "Use `/total " + battle.getIndex() + "` to add your total.");
+						battle.createMessage(embedEvent, "How much did you write? I wrote " + penningsWords + " words. Use `/total " + battle.getIndex() + "` to add your total.  Summary in 8 minutes.");
 
 						printSummary(embedEvent, battle);
 
@@ -142,7 +143,7 @@ public class BattleCommand implements SlashCommand {
 			battle.createMessage(event, battle.createParticipantSummary());
 
 
-		}, 5, TimeUnit.MINUTES);		
+		}, 8, TimeUnit.MINUTES);		
 	}
 
 }

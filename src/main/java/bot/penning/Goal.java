@@ -3,10 +3,9 @@ package bot.penning;
 public class Goal {
 
 	Long goal;
-	String goalType = "words";
+	WritingType goalType = WritingType.WORDS;
 	Boolean resetGoal = true;
 	Long progress;
-	String goalAbbr = "wpm";
 	double progressPercent;
 	Boolean goalComplete = false;
 
@@ -18,11 +17,24 @@ public class Goal {
 		setGoal(goalAmount);
 	}
 
-	public Goal(Long goalAmount, String goalType) {
+	public Goal(Long goalAmount, WritingType goalType) {
 		setGoal(goalAmount, goalType);
 	}
+	
+	public Goal(Long goalAmount, String goalType) {
+		setGoal(goalAmount, getGoalType(goalType));
+	}
+	
+	public static WritingType getGoalType(String goalType) {
+		for (WritingType type : WritingType.values()) {
+			if (type.getType().equals(goalType)) 
+				return type;
+		
+		}
+		return WritingType.WORDS;
+	}
 
-	public void setGoal(Long goal, String goalType) {
+	public void setGoal(Long goal, WritingType goalType) {
 		this.goal = goal;
 		this.goalType = goalType;
 		this.progress = 0L;
@@ -37,7 +49,7 @@ public class Goal {
 		return goal;
 	}
 
-	public String getGoalType() {
+	public WritingType getGoalType() {
 		return goalType;
 	}
 
@@ -65,29 +77,30 @@ public class Goal {
 	}
 
 	public String getGoalTypeAbbr() {
-		if (goalType.equals("words")) {
-			goalAbbr = "wpm";
-		} else if (goalType.equals("lines")) {
-			goalAbbr = "lpm";
-		} else if (goalType.equals("paragraphs")) {
-			goalAbbr = "ppm";
-		} else if (goalType.equals("pages")) {
-			goalAbbr = "ppm";
-		} else if (goalType.equals("minutes")) {
-			goalAbbr = "minutes";
-		} else if (goalType.equals("periwinkles")) {
-			goalAbbr = "periwinkles/minute";
-		} else if (goalType.equals("measures")) {
-			goalAbbr = "measures/minute";
-		} else if (goalType.equals("screams into the void")) {
-			goalAbbr = "screams/minute";
-		} else if (goalType.equals("keyboard slams")) {
-			goalAbbr = "asdfghjkl/minute";
-		} else if (goalType.equals("chapters")) {
-			goalAbbr = "chapters/hour";
-		}
-
-		return goalAbbr;
+		return goalType.abbreviation;
+//		if (goalType.equals("words")) {
+//			goalAbbr = "wpm";
+//		} else if (goalType.equals("lines")) {
+//			goalAbbr = "lpm";
+//		} else if (goalType.equals("paragraphs")) {
+//			goalAbbr = "ppm";
+//		} else if (goalType.equals("pages")) {
+//			goalAbbr = "ppm";
+//		} else if (goalType.equals("minutes")) {
+//			goalAbbr = "minutes";
+//		} else if (goalType.equals("periwinkles")) {
+//			goalAbbr = "periwinkles/minute";
+//		} else if (goalType.equals("measures")) {
+//			goalAbbr = "measures/minute";
+//		} else if (goalType.equals("screams into the void")) {
+//			goalAbbr = "screams/minute";
+//		} else if (goalType.equals("keyboard slams")) {
+//			goalAbbr = "asdfghjkl/minute";
+//		} else if (goalType.equals("chapters")) {
+//			goalAbbr = "chapters/hour";
+//		}
+//
+//		return goalAbbr;
 	}
 
 	public double getGoalPercent() {

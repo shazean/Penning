@@ -192,7 +192,7 @@ public class WarCommand implements SlashCommand {
 			skirmish.setExpired();
 			skirmish.createMessage(event, skirmish.createParticipantSummary());
 
-		}, 5, TimeUnit.MINUTES);		
+		}, 8, TimeUnit.MINUTES);		
 	}
 	
 	public void printWarSummary(MessageCreateEvent event, Skirmish skirmish) {
@@ -204,6 +204,6 @@ public class WarCommand implements SlashCommand {
 			skirmish.createMessage(event, EncounterInfo.createWarSummary());
 			EncounterInfo.resetWarSummary();
 
-		}, 5, TimeUnit.MINUTES);		
+		}, 8, TimeUnit.MINUTES);		
 	}
 }

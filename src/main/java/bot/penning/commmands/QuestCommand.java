@@ -1,5 +1,6 @@
 package bot.penning.commmands;
 
+import bot.penning.Bot;
 import bot.penning.EncounterInfo;
 import bot.penning.Writer;
 import bot.penning.quests.GenericQuest;
@@ -38,6 +39,7 @@ public class QuestCommand implements SlashCommand {
 		}
 
 		writer.addQuest(quest);
+		Bot.updateWriterData();
 
 		return event.reply(quest.toString());
 	}

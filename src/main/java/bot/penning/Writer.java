@@ -7,10 +7,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import bot.penning.collectibles.AnimalData;
 import bot.penning.quests.ChallengeQuest;
 import bot.penning.quests.Quest;
 import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.channel.Channel;
+import reactor.util.annotation.Nullable;
 
 public class Writer {
 
@@ -54,6 +56,19 @@ public class Writer {
 		averageWPM = new ArrayList<Double>(10);
 		averageWPMIndex = 0;
 		animalData = new AnimalData();
+	}
+	
+	public Writer(String userId, String guildId, boolean hasGoal, @Nullable Long goalTotal, @Nullable String goalType, @Nullable Long goalProgress,
+			int turtle, int axolotl, int unicorn, int dragon, int hedgehog,
+			boolean hasQuest, @Nullable Long questTotal, @Nullable String questType, @Nullable Long questProgress,
+			boolean hasChallengeQuest, @Nullable Long challengeQuestTotal, @Nullable String challengeQuestType, @Nullable Long challengeQuestProgress,
+			String timezone) {
+	
+		
+		
+		
+		
+		
 	}
 
 	public Member getUser() {

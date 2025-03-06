@@ -2,6 +2,7 @@ package bot.penning.commmands;
 
 import java.util.Optional;
 
+import bot.penning.Bot;
 import bot.penning.EncounterInfo;
 import bot.penning.Goal;
 import bot.penning.Writer;
@@ -29,7 +30,8 @@ public class ClearCommand implements SlashCommand {
 		}
 
 		writer.clearGoal();
-
+		Bot.updateWriterData();
+		
 		return event.reply("Goal cleared!");
 	}
 }

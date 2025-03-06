@@ -2,6 +2,7 @@ package bot.penning.commmands;
 
 import java.util.Optional;
 
+import bot.penning.Bot;
 import bot.penning.EncounterInfo;
 import bot.penning.Writer;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
@@ -45,6 +46,8 @@ public class ProgressCommand implements SlashCommand {
 		if (writer.hasChallengeQuest() && !writer.getChallengeQuest().isTimed()) {
 			writer.updateChallengeQuests(false, writer.getGoalNum() - words);
 		}
+		
+		Bot.updateWriterData();
 
 		if (writer.hasQuest() && writer.getQuest().getQuestGoal().isComplete()) {
 			//quest is complete

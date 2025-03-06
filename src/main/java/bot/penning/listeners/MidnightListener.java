@@ -2,6 +2,7 @@ package bot.penning.listeners;
 
 import bot.penning.Bot;
 import bot.penning.EncounterInfo;
+import bot.penning.TaskType;
 import bot.penning.Writer;
 import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
@@ -45,8 +46,8 @@ public class MidnightListener {
 
 	public int getInitialOffset() {
 		rightNow = Calendar.getInstance(TimeZone.getTimeZone("America/Chicago"));
-//		return 60 - rightNow.get(Calendar.MINUTE);
-		return 2;
+		return 60 - rightNow.get(Calendar.MINUTE);
+//		return 2;
 
 	}
 
@@ -57,6 +58,8 @@ public class MidnightListener {
 		//repeat
 //		TimeZone currentZone = getTimezoneClosestToMidnight();
 //		rightNow = Calendar.getInstance(currentZone);
+//		rightNow = Calendar.getInstance(TimeZone.getTimeZone("America/Chicago"));
+//
 //		int currentHour = rightNow.get(Calendar.HOUR_OF_DAY);
 //		int currentMin = rightNow.get(Calendar.MINUTE);
 //
@@ -65,7 +68,9 @@ public class MidnightListener {
 			grantRewards();
 //		}
 
-		schedule.schedule(this::listen, 5, TimeUnit.MINUTES); //1, HOURS
+//		schedule.schedule(this::listen, 5, TimeUnit.MINUTES); //1, HOURS
+		schedule.schedule(this::listen, 1, TimeUnit.HOURS); //1, HOURS
+
 	}
 	
 	public TimeZone getTimezoneClosestToMidnight() {
@@ -87,7 +92,6 @@ public class MidnightListener {
 	public void grantRewards() {
 		Random rand = new Random();
 
-//		for (Writer writer : timezoneMap.get(timeZone)) {
 		for (Entry<Member, Writer> entry : EncounterInfo.writerIndex.entrySet()) { //all of the writers that have interacted with the bot
 			Writer writer = entry.getValue();
 
@@ -104,8 +108,8 @@ public class MidnightListener {
 			Snowflake channelID = writer.getPreferredChannel().getId();
 
 			if (rand.nextDouble() <= percent) {
-				String animal = writer.getAnimalData().generateRandomAnimal();
-				client.getChannelById(channelID).ofType(MessageChannel.class).flatMap(channel -> channel.createMessage(writer.getUser().getMention() + ", you have found a " + animal + "!")).subscribe();
+				String animal = writer.getAnimalData().generateRandomAnimal(TaskType.GOAL);
+				client.getChannelById(channelID).ofType(MessageChannel.class).flatMap(channel -> channel.createMessage(writer.getUser().getMention() + ", you have found a(n) " + animal + "!")).subscribe();
 			}
 
 			writer.clearGoal(); //TODO when multiple goals are added, change this to only clear the daily goal.

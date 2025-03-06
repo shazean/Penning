@@ -2,6 +2,7 @@ package bot.penning.commmands;
 
 import java.util.TimeZone;
 
+import bot.penning.Bot;
 import bot.penning.EncounterInfo;
 import bot.penning.Writer;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
@@ -28,6 +29,7 @@ public class TimezoneCommand implements SlashCommand {
 		Writer writer = EncounterInfo.writerIndex.get(user);
 		
 		writer.setTimezone(TimeZone.getTimeZone(timezone));
+		Bot.updateWriterData();
 
 		return event.reply("Timezone set to " + timezone);
 	}
