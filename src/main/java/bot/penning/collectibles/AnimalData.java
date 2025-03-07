@@ -12,16 +12,17 @@ public class AnimalData {
 	
 	private Map<Animal, Integer> animals = new HashMap<>(); //animal, count
 	private static final Animal HEDGEHOG = new Animal("hedgehog", 50, 30, 10, 20, 30);
-	  private static final Animal UNICORN = new Animal("unicorn", 10, 10, 50, 30, 30);
+	  private static final Animal UNICORN = new Animal("unicorn", 10, 10, 50, 30, 30);;
 	    private static final Animal DRAGON = new Animal("dragon", 10, 50, 30, 30, 10);
 	  private static final Animal GRIFFIN = new Animal("griffin", 30, 50, 30, 20, 10);
-  private static final Animal FRUIT_BAT = new Animal("fruit_bat", 30, 10, 50, 10, 30);
+  private static final Animal FRUIT_BAT = new Animal("fruit bat", 30, 10, 50, 10, 30);
   	  private static final Animal AXOLOTL = new Animal("axolotl", 30, 30, 10, 20, 50);
 	      private static final Animal FOX = new Animal("fox", 50, 30, 30, 10, 10);
-	      
 	private static final Animal TURTLE = new Animal("turtle", 5, 5, 5, 5, 5);
 
 	public AnimalData() {
+		UNICORN.setArticleToAn();
+		AXOLOTL.setArticleToAn();
 		animals.put(HEDGEHOG, 0);
 		animals.put(UNICORN, 0);
 		animals.put(DRAGON, 0);
@@ -41,7 +42,7 @@ public class AnimalData {
 		return 0;
 	}
 	
-	public String generateRandomAnimal(TaskType type) {
+	public Animal generateRandomAnimal(TaskType type) {
 		int totalWeight = 0;
 		int currentWeight = 0;
 
@@ -56,16 +57,16 @@ public class AnimalData {
 			if (currentWeight > rand) {
 				
 				animals.replace(animal, animals.get(animal) + 1);
-				return animal.animalType;
+				return animal;
 			}
 		}
  				
-		return "";
+		return null;
 	}
 	
-	public String rewardTurtle() {
+	public Animal rewardTurtle() {
 		animals.replace(TURTLE, animals.get(TURTLE) + 1);
-		return TURTLE.animalType;
+		return TURTLE;
 	}
 	
 	
@@ -102,18 +103,7 @@ public class AnimalData {
 		this.animals.put(AXOLOTL, animals.get("axolotl"));
 		this.animals.put(TURTLE, animals.get("turtle"));
 		this.animals.put(GRIFFIN, animals.get("griffin"));
-		this.animals.put(FRUIT_BAT, animals.get("fruit_bat"));
+		this.animals.put(FRUIT_BAT, animals.get("fruit bat"));
 		this.animals.put(FOX, animals.get("fox"));
 	}
-	
-	@Deprecated
-	public void fromJson(int hedgehogCount, int dragonCount, int unicornCount, int axolotlCount, int turtleCount) {
-		animals = new HashMap<>();
-		animals.put(HEDGEHOG, hedgehogCount);
-		animals.put(UNICORN, unicornCount);
-		animals.put(DRAGON, dragonCount);
-		animals.put(AXOLOTL, axolotlCount);
-		animals.put(TURTLE, turtleCount);
-	}
-	
 }

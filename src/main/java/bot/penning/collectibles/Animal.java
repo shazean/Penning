@@ -10,6 +10,7 @@ public class Animal {
 	WeightedChance questWeight;
 	WeightedChance challengeWeight;
 	WeightedChance goalWeight;
+	String defaultArticle = "a";
 	
 	public Animal(String animalType, int skirmishChance, int onslaughtChance, int questChance, int challengeChance, int goalChance) {
 		this.animalType = animalType;
@@ -36,5 +37,17 @@ public class Animal {
 		default:
 			return skirmishWeight;
 		}
-	}	
+	}
+	
+	public void setArticleToAn() {
+		this.defaultArticle = "an";
+	}
+	
+	public String getArticle() {
+		return this.defaultArticle;
+	}
+	
+	public String toString() {
+		return this.animalType;
+	}
 }

@@ -29,9 +29,13 @@ public class Goal {
 		for (WritingType type : WritingType.values()) {
 			if (type.getType().equals(goalType)) 
 				return type;
-		
 		}
 		return WritingType.WORDS;
+	}
+	
+	public boolean doesGoalTypeMatch(String goalType) {
+		if (this.goalType.getType().equals(goalType)) return true;
+		else return false;
 	}
 
 	public void setGoal(Long goal, WritingType goalType) {

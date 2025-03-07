@@ -4,6 +4,7 @@ import bot.penning.Bot;
 import bot.penning.EncounterInfo;
 import bot.penning.TaskType;
 import bot.penning.Writer;
+import bot.penning.collectibles.Animal;
 import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.object.entity.Member;
@@ -63,13 +64,16 @@ public class MidnightListener {
 //		int currentHour = rightNow.get(Calendar.HOUR_OF_DAY);
 //		int currentMin = rightNow.get(Calendar.MINUTE);
 //
+		createMessage(847148917056602132L, "listening. grant rewards now.");
+
+		
 //		if ((currentMin / 4) == 0) { //currentHour == 0
 //			Bot.LOGGER.log(Level.WARNING, "listening" );
 			grantRewards();
 //		}
 
-//		schedule.schedule(this::listen, 5, TimeUnit.MINUTES); //1, HOURS
-		schedule.schedule(this::listen, 1, TimeUnit.HOURS); //1, HOURS
+//		schedule.schedule(this::listen, 5, TimeUnit.MINUTES);
+		schedule.schedule(this::listen, 1, TimeUnit.HOURS);
 
 	}
 	
@@ -91,6 +95,9 @@ public class MidnightListener {
 
 	public void grantRewards() {
 		Random rand = new Random();
+		
+		createMessage(847148917056602132L, "grant rewards.");
+
 
 		for (Entry<Member, Writer> entry : EncounterInfo.writerIndex.entrySet()) { //all of the writers that have interacted with the bot
 			Writer writer = entry.getValue();
@@ -106,13 +113,25 @@ public class MidnightListener {
 
 			double percent = writer.getGoal().getGoalPercent();
 			Snowflake channelID = writer.getPreferredChannel().getId();
+			
+			double chanceOfAnimal = rand.nextDouble();
 
-			if (rand.nextDouble() <= percent) {
-				String animal = writer.getAnimalData().generateRandomAnimal(TaskType.GOAL);
-				client.getChannelById(channelID).ofType(MessageChannel.class).flatMap(channel -> channel.createMessage(writer.getUser().getMention() + ", you have found a(n) " + animal + "!")).subscribe();
-			}
+//			if (chanceOfAnimal <= percent) {
+				Animal animal = writer.getAnimalData().generateRandomAnimal(TaskType.GOAL);
+				client.getChannelById(channelID).ofType(MessageChannel.class).flatMap(channel -> channel.createMessage(writer.getUser().getMention() + ", you have found " + animal.getArticle() + " " + animal.toString() + "!")).subscribe();
+//			}
+			
+			createMessage(847148917056602132L, writer.getUser().getDisplayName() + " goal: " + writer.getGoal().getProgress() + "/" + writer.getGoal().getGoal() + " " + writer.getGoal().getGoalType() + ", chance of animal: " + chanceOfAnimal + "vs " + writer.getGoal().getGoalPercent() + "% of goal");
+			
 
 			writer.clearGoal(); //TODO when multiple goals are added, change this to only clear the daily goal.
+			createMessage(847148917056602132L,writer.getUser().getDisplayName() + " goal cleared: " + writer.hasGoalSet());
+
 		}
+	}
+	
+	public void createMessage(Long channelId, String message) {
+		client.getChannelById(Snowflake.of(channelId)).ofType(MessageChannel.class).flatMap(channel -> channel.createMessage(message)).subscribe();
+
 	}
 }

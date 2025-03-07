@@ -7,6 +7,7 @@ import bot.penning.Bot;
 import bot.penning.BotUtil;
 import bot.penning.Writer;
 import bot.penning.WritingType;
+import bot.penning.collectibles.Animal;
 import bot.penning.encounters.Battle;
 import bot.penning.encounters.Encounter;
 import bot.penning.encounters.Onslaught;
@@ -27,9 +28,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class TotalCommand implements SlashCommand {
-	
-	String animal = null;
-	
+
 	@Override
 	public String getName() {
 		return "total";
@@ -56,10 +55,10 @@ public class TotalCommand implements SlashCommand {
 		WritingType goalType = Goal.getGoalType(type);
 
 		Encounter currentEncounter = EncounterInfo.encounterRegistry.get(ID % BotUtil.encountersBeforeReset);
-		
+
 		//can only use valid War ID
 		if (currentEncounter == null) return event.reply("This encounter is invalid! Try again with a valid encounter ID.").withEphemeral(true);
-		
+
 		Member user = event.getInteraction().getMember().get();
 		Writer writer = EncounterInfo.writerIndex.get(user);
 
@@ -67,89 +66,93 @@ public class TotalCommand implements SlashCommand {
 			writer = new Writer(user);
 			EncounterInfo.writerIndex.put(user, writer);
 		}		
-		
+
 		Long length = currentEncounter.getLength();
-		
+
 		Double wordsPerMin;
-		
+
 		if (goalType.getCalculateByHour()) {
 			wordsPerMin = Math.round((totalWritten / ((double) length / 60.0)) * 100.0) / 100.0;
 		} else {
 			wordsPerMin = Math.round((totalWritten / (double) length) * 100.0) / 100.0;
 		}
-		
-		
-//		goalType = type;
-//		if (goalType.toUpperCase().equals("LINES")) {
-//			goalTypeAbbr = "lpm";
-//		} else if (goalType.toUpperCase().equals("MINUTES")) {
-//			goalTypeAbbr = "minutes";
-//		} else if (goalType.toUpperCase().equals("PAGES")) {
-//			goalTypeAbbr = "ppm";
-//		} else if (goalType.toUpperCase().equals("PERIWINKLES")) {
-//			goalTypeAbbr = "periwinkles per minute";
-//		} else if (goalType.toUpperCase().equals("MEASURES")) {
-//			goalTypeAbbr = "measures per minute";
-//		} else {
-//			goalTypeAbbr = "wpm";
-//		}
-		
-//		goalTypeAbbr = new Goal(1L, goalType).getGoalTypeAbbr();
-				
+
+
+		//		goalType = type;
+		//		if (goalType.toUpperCase().equals("LINES")) {
+		//			goalTypeAbbr = "lpm";
+		//		} else if (goalType.toUpperCase().equals("MINUTES")) {
+		//			goalTypeAbbr = "minutes";
+		//		} else if (goalType.toUpperCase().equals("PAGES")) {
+		//			goalTypeAbbr = "ppm";
+		//		} else if (goalType.toUpperCase().equals("PERIWINKLES")) {
+		//			goalTypeAbbr = "periwinkles per minute";
+		//		} else if (goalType.toUpperCase().equals("MEASURES")) {
+		//			goalTypeAbbr = "measures per minute";
+		//		} else {
+		//			goalTypeAbbr = "wpm";
+		//		}
+
+		//		goalTypeAbbr = new Goal(1L, goalType).getGoalTypeAbbr();
+
 		//can only use a completed, & non-expired encounter ID
 		if (!currentEncounter.isComplete()) return event.reply("This encounter is incomplete! Try again after it has finished.").withEphemeral(true);
 		if (currentEncounter.isExpired()) return event.reply("This encounter is invalid! Try again with a valid encounter ID.").withEphemeral(true);
 
 		writer.updateAverageWPM(wordsPerMin);
-		
-		if (writer.hasGoalSet() && writer.getGoal().getGoalType().equals(type)) {
+
+		if (writer.hasGoalSet() && writer.getGoal().doesGoalTypeMatch(type)) {
 			writer.getGoal().addWords(totalWritten);
 		}
 
 		if (currentEncounter.hasParticipantAlready(user)) { return event.reply("You already entered a total for this encounter!").withEphemeral(true); }
-		
+
 		currentEncounter.createParticipant(user, totalWritten, wordsPerMin, goalType);
 
 		if (currentEncounter.getIsWar()) {
 			EncounterInfo.addToWarSummary(user, totalWritten, wordsPerMin, goalType);
 		}
-		
+
 		Random rand = new Random();
-		
-		if (goalType.equals(WritingType.WORDS) && rand.nextInt(100) < 30 && wordsPerMin <= (double) BotUtil.PENNING_WRITING_SPEED) {
-			animal = writer.getAnimalData().rewardTurtle();
-		} else if (rand.nextInt(100) < 20) {
-			
-			if (currentEncounter instanceof Skirmish) {
-				animal = writer.getAnimalData().generateRandomAnimal(TaskType.SKIRMISH);
-			} else if (currentEncounter instanceof Onslaught) {
-				animal = writer.getAnimalData().generateRandomAnimal(TaskType.ONSLAUGHT);
-			} else if (currentEncounter instanceof Battle) {
-				animal = writer.getAnimalData().generateRandomAnimal(TaskType.BATTLE);
-			} else if (currentEncounter instanceof War) {
-				animal = writer.getAnimalData().generateRandomAnimal(TaskType.WAR);
+
+		if (rand.nextInt(100) < 20) {
+			Animal animal;
+			if (goalType.equals(WritingType.WORDS) && wordsPerMin <= (double) BotUtil.PENNING_WRITING_SPEED) {
+				animal = writer.getAnimalData().rewardTurtle();				
 			} else {
-				animal = writer.getAnimalData().generateRandomAnimal(TaskType.SKIRMISH);
+
+				if (currentEncounter instanceof Skirmish) {
+					animal = writer.getAnimalData().generateRandomAnimal(TaskType.SKIRMISH);
+				} else if (currentEncounter instanceof Onslaught) {
+					animal = writer.getAnimalData().generateRandomAnimal(TaskType.ONSLAUGHT);
+				} else if (currentEncounter instanceof Battle) {
+					animal = writer.getAnimalData().generateRandomAnimal(TaskType.BATTLE);
+				} else if (currentEncounter instanceof War) {
+					animal = writer.getAnimalData().generateRandomAnimal(TaskType.WAR);
+				} else {
+					animal = writer.getAnimalData().generateRandomAnimal(TaskType.SKIRMISH);
+				}
+			}
+
+
+			if (animal != null) {
+				ScheduledExecutorService schedule = Executors.newScheduledThreadPool(3);
+				GatewayDiscordClient client = event.getClient();
+				Snowflake channelID = event.getInteraction().getChannelId();
+				String nickname = writer.getUser().getMention();
+
+				schedule.schedule(() -> {
+
+					client.getChannelById(channelID).ofType(MessageChannel.class)
+					.flatMap(channel -> channel.createMessage(nickname + " You have found " + animal.getArticle() + " " + animal.toString() + "!"))
+					.subscribe();
+
+				}, BotUtil.secondDelayBeforeAnimalReward, TimeUnit.SECONDS);	
 			}
 		}
-		
-		if (animal != null) {
-			ScheduledExecutorService schedule = Executors.newScheduledThreadPool(3);
-			GatewayDiscordClient client = event.getClient();
-			Snowflake channelID = event.getInteraction().getChannelId();
-			String nickname = writer.getUser().getMention();
 
-			schedule.schedule(() -> {
-
-				client.getChannelById(channelID).ofType(MessageChannel.class)
-				.flatMap(channel -> channel.createMessage(nickname + " You have found a " + animal + "!"))
-				.subscribe();
-			
-			}, BotUtil.secondDelayBeforeAnimalReward, TimeUnit.SECONDS);	
-		}
-		
 		Bot.updateWriterData();
-		
+
 		/* NOTE: to whoever looks at this code, including future me:
 		 * I originally had this all in a bunch of nested if/else-if/else statements,
 		 * looking one at a time at if the writer had a goal, had a quest, if the quest was complete,
@@ -163,12 +166,12 @@ public class TotalCommand implements SlashCommand {
 		 * Then we run the sum through a switch statement for each unique option.
 		 * It's still lengthy, but I think it's easier to follow.
 		 * Update: combined the cases that had the same results */
-		
+
 		int[] whichToDo = new int[] {0,0,0,0,0}; //false values: 0,0,0,0,0 | true values: 1,2,5,11,21
 		//[0] = goal, [1] = quest, [2] = quest completed, [3] = challenge quest, [4] = challenge quest completed
 
 		if (writer.hasGoalSet() && writer.getGoal().getGoalType().equals(type)) whichToDo[0] = 1; //has goal and it's a relevant goal to the war
-		
+
 		if (writer.hasQuest()) {
 			whichToDo[1] = 2;
 			writer.updateQuests(totalWritten);
@@ -176,7 +179,7 @@ public class TotalCommand implements SlashCommand {
 				whichToDo[3] = 11;
 			}
 		}
-		
+
 		if (writer.hasChallengeQuest()) {
 			whichToDo[2] = 5;
 			if (writer.getChallengeQuest().isTimed() && writer.getChallengeQuest().getTimeLimit() <= currentEncounter.getLength()) { //current encounter is long enough to qualify for timed quest
@@ -188,7 +191,7 @@ public class TotalCommand implements SlashCommand {
 			}
 		}
 		int totalToDo = whichToDo[0] + whichToDo[1] + whichToDo[2] + whichToDo[3] + whichToDo[4];
-		
+
 		switch (totalToDo) {
 		case(0): //no goal, no quest, no challenge quest
 			return event.reply("You have written " + totalWritten + " " + goalType + " for an average of " + wordsPerMin + " " + goalType.getAbbreviation() + ".");
@@ -198,20 +201,20 @@ public class TotalCommand implements SlashCommand {
 		case(3): //has goal, has incomplete quest, no challenge quest
 		case(8): //has goal, has incomplete quest, has incomplete challenge quest
 		case(6): //has goal, no quest, has incomplete challenge quest
-				return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalType.getAbbreviation() + ".")
+			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalType.getAbbreviation() + ".")
 					.then(event.createFollowup("Progress updated! You have written " + writer.getGoal().getProgress() + " " + goalType + " of " + writer.getGoalNum() + " " + goalType + ".").then());
 		case(13): //no goal, has complete quest, no challenge quest
 		case(18): //no goal, has complete quest, has incomplete challenge
-				return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalType.getAbbreviation() + ".")
+			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalType.getAbbreviation() + ".")
 					.then(event.createFollowup("Quest completed!").then());
 		case(14): //has goal, has complete quest, no challenge quest
 		case(16): //has goal, has complete quest, has incomplete challenge
-				return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalType.getAbbreviation() + ".")
+			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalType.getAbbreviation() + ".")
 					.then(event.createFollowup("Progress updated! You have written " + writer.getGoal().getProgress() + " " + goalType + " of " + writer.getGoalNum() + " " + goalType + ".").then())
 					.then(event.createFollowup("Quest completed!").then());
 		case(27): //has goal, no quest, has complete challenge
 		case(29): //has goal, has incomplete quest, has complete challenge
-				return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalType.getAbbreviation() + ".")
+			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalType.getAbbreviation() + ".")
 					.then(event.createFollowup("Progress updated! You have written " + writer.getGoal().getProgress() + " " + goalType + " of " + writer.getGoalNum() + " " + goalType + ".").then())
 					.then(event.createFollowup("Challenge quest completed!").then());
 		case(28): //no goal, has incomplete quest, has complete challenge

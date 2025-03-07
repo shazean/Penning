@@ -1,7 +1,5 @@
 package bot.penning.commmands;
 
-import java.util.Optional;
-
 import bot.penning.Goal;
 import bot.penning.Writer;
 import bot.penning.Bot;
@@ -10,7 +8,6 @@ import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.command.ApplicationCommandInteractionOption;
 import discord4j.core.object.command.ApplicationCommandInteractionOptionValue;
 import discord4j.core.object.entity.Member;
-import discord4j.core.object.entity.User;
 import reactor.core.publisher.Mono;
 
 public class GoalCommand implements SlashCommand {
