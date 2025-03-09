@@ -56,7 +56,7 @@ public class TotalCommand implements SlashCommand {
 
 		Encounter currentEncounter = EncounterInfo.encounterRegistry.get(ID % BotUtil.encountersBeforeReset);
 
-		//can only use valid War ID
+		//can only use valid encounter ID
 		if (currentEncounter == null) return event.reply("This encounter is invalid! Try again with a valid encounter ID.").withEphemeral(true);
 
 		Member user = event.getInteraction().getMember().get();
@@ -100,6 +100,13 @@ public class TotalCommand implements SlashCommand {
 		if (currentEncounter.isExpired()) return event.reply("This encounter is invalid! Try again with a valid encounter ID.").withEphemeral(true);
 
 		writer.updateAverageWPM(wordsPerMin);
+		
+		if (writer.hasGoalSet()) {
+			Writer writer1 = writer;
+			event.getClient().getChannelById(Snowflake.of(847148917056602132L)).ofType(MessageChannel.class).flatMap(channel -> channel.createMessage("writers goal: " + writer1.getGoal() + " type: " + type + " goalTypeMatches: " + writer1.getGoal().doesGoalTypeMatch(type))).subscribe();
+
+
+		}
 
 		if (writer.hasGoalSet() && writer.getGoal().doesGoalTypeMatch(type)) {
 			writer.getGoal().addWords(totalWritten);
@@ -170,7 +177,7 @@ public class TotalCommand implements SlashCommand {
 		int[] whichToDo = new int[] {0,0,0,0,0}; //false values: 0,0,0,0,0 | true values: 1,2,5,11,21
 		//[0] = goal, [1] = quest, [2] = quest completed, [3] = challenge quest, [4] = challenge quest completed
 
-		if (writer.hasGoalSet() && writer.getGoal().getGoalType().equals(type)) whichToDo[0] = 1; //has goal and it's a relevant goal to the war
+		if (writer.hasGoalSet() && writer.getGoal().doesGoalTypeMatch(type)) whichToDo[0] = 1; //has goal and it's a relevant goal to the war
 
 		if (writer.hasQuest()) {
 			whichToDo[1] = 2;
@@ -192,6 +199,10 @@ public class TotalCommand implements SlashCommand {
 		}
 		int totalToDo = whichToDo[0] + whichToDo[1] + whichToDo[2] + whichToDo[3] + whichToDo[4];
 
+		
+		event.getClient().getChannelById(Snowflake.of(847148917056602132L)).ofType(MessageChannel.class).flatMap(channel -> channel.createMessage("totalToDo: " + totalToDo)).subscribe();
+
+		
 		switch (totalToDo) {
 		case(0): //no goal, no quest, no challenge quest
 			return event.reply("You have written " + totalWritten + " " + goalType + " for an average of " + wordsPerMin + " " + goalType.getAbbreviation() + ".");

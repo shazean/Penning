@@ -121,4 +121,8 @@ public class Goal {
 		return goalComplete;
 	}
 
+	public String toString() {
+		return progress + "/" + goal + " " + goalType.type + " (" + (progressPercent * 100) + "%)";
+	}
+	
 }

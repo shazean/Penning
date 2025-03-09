@@ -45,6 +45,15 @@ public class Writer {
 		averageWPMIndex = 0;
 		animalData = new AnimalData();
 	}
+	
+	public String toString() {
+		if (hasGoal) {
+			return "@" + user.getDisplayName() + ", goal: " + writerGoal.toString() + ", timezone: " + timeZone.getDisplayName() + ", animals: " + animalData.toString();
+		} else {
+			
+			return "@" + user.getDisplayName() + ", timezone: " + timeZone.getDisplayName() + ", animals: " + animalData.toString();
+		}
+	}
 
 
 	public Writer(Member member, Goal writerGoal) {
@@ -172,7 +181,8 @@ public class Writer {
 	}
 
 	public void updateChallengeQuests(Boolean isTimed, Long words) {
-		if (isTimed) { //assume we only get this far if the words were written in the needed time frame
+		if (isTimed) { 
+			//assume we only get this far if the words were written in the needed time frame
 			if (words > currentChallengeQuest.getQuestGoal().getGoal()) { //quest only updated if needed words were written
 				currentChallengeQuest.getQuestGoal().addWords(words);
 				if (currentChallengeQuest.getQuestGoal().isComplete()) {

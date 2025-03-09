@@ -21,7 +21,6 @@ public class AnimalData {
 	private static final Animal TURTLE = new Animal("turtle", 5, 5, 5, 5, 5);
 
 	public AnimalData() {
-		UNICORN.setArticleToAn();
 		AXOLOTL.setArticleToAn();
 		animals.put(HEDGEHOG, 0);
 		animals.put(UNICORN, 0);

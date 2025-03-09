@@ -2,8 +2,10 @@ package bot.penning.commmands;
 
 import bot.penning.EncounterInfo;
 import bot.penning.Writer;
+import discord4j.common.util.Snowflake;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.entity.Member;
+import discord4j.core.object.entity.channel.MessageChannel;
 import reactor.core.publisher.Mono;
 
 public class InfoCommand implements SlashCommand {
@@ -36,6 +38,8 @@ public class InfoCommand implements SlashCommand {
 			animalInfo = "Current animals: " + writer.getAnimalData().toString();
 		}
 
+		event.getClient().getChannelById(Snowflake.of(847148917056602132L)).ofType(MessageChannel.class).flatMap(channel -> channel.createMessage("writers interacted with bot: " + EncounterInfo.writerIndex.values())).subscribe();
+		
 		return event.reply(goalInfo + "\n" + questInfo + "\n" + animalInfo);
 	}
 }

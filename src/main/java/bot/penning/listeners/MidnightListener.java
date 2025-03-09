@@ -97,10 +97,10 @@ public class MidnightListener {
 		Random rand = new Random();
 		
 		createMessage(847148917056602132L, "grant rewards.");
+		createMessage(847148917056602132L, "writers interacted with bot: " + EncounterInfo.writerIndex.values());
 
 
-		for (Entry<Member, Writer> entry : EncounterInfo.writerIndex.entrySet()) { //all of the writers that have interacted with the bot
-			Writer writer = entry.getValue();
+		for (Writer writer : EncounterInfo.writerIndex.values()) { //all of the writers that have interacted with the bot
 
 			TimeZone zone = writer.getTimeZone();
 			if (Calendar.getInstance(zone).get(Calendar.HOUR_OF_DAY) != 0) {
@@ -121,11 +121,11 @@ public class MidnightListener {
 				client.getChannelById(channelID).ofType(MessageChannel.class).flatMap(channel -> channel.createMessage(writer.getUser().getMention() + ", you have found " + animal.getArticle() + " " + animal.toString() + "!")).subscribe();
 //			}
 			
-			createMessage(847148917056602132L, writer.getUser().getDisplayName() + " goal: " + writer.getGoal().getProgress() + "/" + writer.getGoal().getGoal() + " " + writer.getGoal().getGoalType() + ", chance of animal: " + chanceOfAnimal + "vs " + writer.getGoal().getGoalPercent() + "% of goal");
+			createMessage(847148917056602132L, writer.getUser().getDisplayName() + " goal: " + writer.getGoal().getProgress() + "/" + writer.getGoal().getGoal() + " " + writer.getGoal().getGoalType() + ", chance of animal: " + chanceOfAnimal + " vs " + writer.getGoal().getGoalPercent() + " of goal");
 			
 
 			writer.clearGoal(); //TODO when multiple goals are added, change this to only clear the daily goal.
-			createMessage(847148917056602132L,writer.getUser().getDisplayName() + " goal cleared: " + writer.hasGoalSet());
+			createMessage(847148917056602132L,writer.getUser().getDisplayName() + "has goal: " + writer.hasGoalSet());
 
 		}
 	}

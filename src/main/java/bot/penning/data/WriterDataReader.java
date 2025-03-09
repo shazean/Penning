@@ -60,7 +60,7 @@ public class WriterDataReader {
 			animals.put("axolotl", node.get("axolotl").asInt());
 			animals.put("turtle", node.get("turtle").asInt());
 			animals.put("griffin", node.get("griffin").asInt());
-			animals.put("fruit_bat", node.get("fruit_bat").asInt());
+			animals.put("fruit bat", node.get("fruit bat").asInt());
 			animals.put("fox", node.get("fox").asInt());
 			
 			writer.getAnimalData().fromJson(animals);

@@ -4,10 +4,12 @@ import bot.penning.Goal;
 import bot.penning.Writer;
 import bot.penning.Bot;
 import bot.penning.EncounterInfo;
+import discord4j.common.util.Snowflake;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.command.ApplicationCommandInteractionOption;
 import discord4j.core.object.command.ApplicationCommandInteractionOptionValue;
 import discord4j.core.object.entity.Member;
+import discord4j.core.object.entity.channel.MessageChannel;
 import reactor.core.publisher.Mono;
 
 public class GoalCommand implements SlashCommand {
@@ -65,7 +67,9 @@ public class GoalCommand implements SlashCommand {
 		
 		EncounterInfo.writerIndex.get(user).setPreferedChannel(event.getInteraction().getChannel().block());
 		Bot.updateWriterData();
-		
+
+		event.getClient().getChannelById(Snowflake.of(847148917056602132L)).ofType(MessageChannel.class).flatMap(channel -> channel.createMessage("writers interacted with bot: " + EncounterInfo.writerIndex.values())).subscribe();
+
 		return event.reply("Goal of " + writerGoal.getGoal() + " " + writerGoal.getGoalType() + " created!");
 	}
 }
