@@ -8,8 +8,8 @@ public enum WritingType {
 	MINUTES("minutes", "minutes"),
 	CHAPTERS("chapters", "chapters/hour", true),
 	PERIWINKLES("periwinkles", "periwinkles/minute"),
-	KEYBOARD_SLAMS("asdfghjkl", "keyboard slams/minute"),
-	SCREAMS("screams", "screams/minute"),
+	ASDFGHJKL("keyboard slams", "keyboard slams/minute"),
+	SCREAMS("screams into the void", "screams/minute"),
 	MEASURES("measures", "measures/minute");
 	
 	final String type;
@@ -28,7 +28,7 @@ public enum WritingType {
 		this.calculateByHour = calculateByHour;
 	}
 	
-	public boolean getCalculateByHour() {
+	public boolean shouldCalculateByHour() {
 		return calculateByHour;
 	}
 	

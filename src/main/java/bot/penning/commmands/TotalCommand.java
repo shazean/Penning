@@ -71,7 +71,7 @@ public class TotalCommand implements SlashCommand {
 
 		Double wordsPerMin;
 
-		if (goalType.getCalculateByHour()) {
+		if (goalType.shouldCalculateByHour()) {
 			wordsPerMin = Math.round((totalWritten / ((double) length / 60.0)) * 100.0) / 100.0;
 		} else {
 			wordsPerMin = Math.round((totalWritten / (double) length) * 100.0) / 100.0;
@@ -101,13 +101,6 @@ public class TotalCommand implements SlashCommand {
 
 		writer.updateAverageWPM(wordsPerMin);
 		
-		if (writer.hasGoalSet()) {
-			Writer writer1 = writer;
-			event.getClient().getChannelById(Snowflake.of(847148917056602132L)).ofType(MessageChannel.class).flatMap(channel -> channel.createMessage("writers goal: " + writer1.getGoal() + " type: " + type + " goalTypeMatches: " + writer1.getGoal().doesGoalTypeMatch(type))).subscribe();
-
-
-		}
-
 		if (writer.hasGoalSet() && writer.getGoal().doesGoalTypeMatch(type)) {
 			writer.getGoal().addWords(totalWritten);
 		}
@@ -198,10 +191,6 @@ public class TotalCommand implements SlashCommand {
 			}
 		}
 		int totalToDo = whichToDo[0] + whichToDo[1] + whichToDo[2] + whichToDo[3] + whichToDo[4];
-
-		
-		event.getClient().getChannelById(Snowflake.of(847148917056602132L)).ofType(MessageChannel.class).flatMap(channel -> channel.createMessage("totalToDo: " + totalToDo)).subscribe();
-
 		
 		switch (totalToDo) {
 		case(0): //no goal, no quest, no challenge quest
