@@ -6,6 +6,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import bot.penning.BotUtil;
 import bot.penning.EncounterInfo;
 import bot.penning.encounters.Skirmish;
 import bot.penning.encounters.War;
@@ -16,6 +17,7 @@ import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.command.ApplicationCommandInteractionOption;
 import discord4j.core.object.command.ApplicationCommandInteractionOptionValue;
+import discord4j.core.object.component.ActionRow;
 import discord4j.core.object.component.Button;
 import discord4j.core.object.entity.Member;
 import reactor.core.publisher.Mono;
@@ -52,12 +54,9 @@ public class WarCommand implements SlashCommand {
 				.map(ApplicationCommandInteractionOptionValue::asLong)
 				.get();
 
-//		Long encounterIndex = EncounterInfo.getEncounterIndex();
-//		War war = new War(encounterIndex, duration, startTime, quantity, interval);
-//		EncounterInfo.encounterRegistry.put(war.getIndex() % 50, war);
-//		GatewayDiscordClient client = event.getClient();
-//		Long finalTime;
-//		numSkirmishes = quantity; 
+
+		GatewayDiscordClient client = event.getClient();
+		Long index = EncounterInfo.getEncounterIndex();
 
 		if (EncounterInfo.isWarRunning()) {
 			return event.reply("You cannot run two wars at once! Try creating an individual skirmish or battle instead!").withEphemeral(true);
@@ -79,29 +78,54 @@ public class WarCommand implements SlashCommand {
 			return event.reply("War must be started within 30 minutes!").withEphemeral(true);
 		}
 
+		if ((duration + interval) * quantity - interval + startTime > 720) {
+			return event.reply("Length is too long! Total time of war cannot exceed 12 hours.").withEphemeral(true);
+		}
+
+		
 		//		if (startTime == 15) { //convert startTime to seconds, and remove 1 second if 15 minutes, to stop a timed out token from causing issues
 		//			finalTime = 899L;
 		//		} else {
 		//			finalTime = startTime * 60L;
 		//		}
 
-		if ((duration + interval) * quantity - interval + startTime > 720) {
-			return event.reply("Length is too long! Total time of war cannot exceed 12 hours.").withEphemeral(true);
-		}
+		
+		War war = new War(index, duration, startTime, quantity, interval);
+//		EncounterInfo.encounterRegistry.put(war.getIndex() % 50, war);
 
-//		EncounterInfo.incrementEncounterIndex();
+		EncounterInfo.currentWar = war;
 		EncounterInfo.setWarRunning(true);
 
-		runWar(event, duration, startTime, interval, quantity);
+		EncounterInfo.incrementEncounterIndex();
 
-		return event.reply("War created! " + quantity + " skirmishes will run for " + duration + " minutes each, in " + interval + " minute intervals, beginning in " + startTime + " minutes.");
+		runWar(war, event, duration, startTime, interval, quantity);
+
+		
+		Button alertButton = Button.primary("alert_button_" + war.getIndex(), "Ping me!");
+		
+
+		client.on(ButtonInteractionEvent.class, embedEvent -> {
+			if (embedEvent.getCustomId().equals("alert_button_" + war.getIndex())) {
+				Member writerMention = embedEvent.getInteraction().getMember().get();
+				war.addPingableMember(writerMention);
+				return embedEvent.reply(writerMention.getNicknameMention() + ", you have joined alerts for the war!");
+			}
+			else {
+				return Mono.empty();
+			}
+		}).timeout(Duration.ofMinutes(startTime)).subscribe();
+		
+		
+		//TODO add join war alerts button
+		return event.reply("War created!" + quantity + " skirmishes will run for " + duration + " minutes each, in " + interval + " minute intervals, beginning in " + startTime + " minutes.")
+				.withComponents(ActionRow.of(alertButton));
 		//				.then(Mono.delay(Duration.ofSeconds(finalTime)))
 		//				.then(event.createFollowup("Skirmish #" + war.getIndex() + " starts now!")
 		//						.then());
 	}
 
 
-	public void runWar(ChatInputInteractionEvent event, Long duration, Long startTime, Long interval, Long quantity) {
+	public void runWar(War war, ChatInputInteractionEvent event, Long duration, Long startTime, Long interval, Long quantity) {
 		GatewayDiscordClient client = event.getClient();
 		Snowflake guildID = event.getInteraction().getGuildId().get();
 		ScheduledExecutorService schedule = Executors.newScheduledThreadPool(3);
@@ -113,17 +137,18 @@ public class WarCommand implements SlashCommand {
 					Long encounterIndex = EncounterInfo.getEncounterIndex();
 					Skirmish skirmish = new Skirmish(encounterIndex, duration, startTime);
 					EncounterInfo.encounterRegistry.put(skirmish.getIndex() % 50, skirmish);
+					
 					skirmish.setIsWar(true);
 
 //					war.skirmishes.add(new Skirmish(war.getIndex(), war.getLength(), war.getInterval()));
-					runNextSkirmish(embedEvent, skirmish, interval, quantity, quantity);
+					runNextSkirmish(war, embedEvent, skirmish);
 					EncounterInfo.incrementEncounterIndex();
 
 //					numSkirmishes--;
 				}	
 			}
 			return Mono.empty();
-		}).timeout(Duration.ofMinutes(721)).subscribe();
+		}).timeout(Duration.ofMinutes((duration + interval) * quantity - interval + startTime + 1)).subscribe();
 
 		schedule.schedule(() -> {
 
@@ -134,52 +159,45 @@ public class WarCommand implements SlashCommand {
 
 	}
 
-	public void runNextSkirmish(MessageCreateEvent event, Skirmish skirmish, Long interval, Long totalSkirmishes, Long remainingSkirmishes) {
+	public void runNextSkirmish(War war, MessageCreateEvent event, Skirmish skirmish) {
 
-		long penningsWords = Math.abs(24 * skirmish.getLength() + ((int)(Math.random() * (50- -50 + 1) + -50)));
+		long penningsWords = Math.abs(BotUtil.PENNING_WRITING_SPEED * skirmish.getLength() + ((int)(Math.random() * (50- -50 + 1) + -50)));
 		ScheduledExecutorService schedule = skirmish.getSchedule();
-		Button joinButton = Button.primary("join_button_" + skirmish.getIndex(), "Join!");
-		GatewayDiscordClient client = event.getClient();
+//		GatewayDiscordClient client = event.getClient();  
+		Long currentIndex = war.getQuantity() - war.getRemainingQty() + 1;		
 		
-		client.on(ButtonInteractionEvent.class, embedEvent -> {
-			if (embedEvent.getCustomId().equals("join_button_" + skirmish.getIndex())) {
-				Member writerMention = embedEvent.getInteraction().getMember().get();
-				skirmish.addPingableMember(writerMention);
-				return embedEvent.reply(writerMention.getNicknameMention() + ", you have joined the skirmish!");
-			}
-			else {
-				return Mono.empty();
-			}
-		}).timeout(Duration.ofMinutes(skirmish.getStartTime() + 1)).subscribe();
 		
-		skirmish.createMessageWithButton(event, "Skirmish #" + skirmish.getIndex() + ", part " + (totalSkirmishes - remainingSkirmishes + 1) + " of " + totalSkirmishes + " starts in " + skirmish.getStartTime() + " minutes!", joinButton);
+		schedule.schedule(() -> {
+
+			skirmish.createMessage(event, "Skirmish #" + skirmish.getIndex() + ", part " + currentIndex + " of " + war.getQuantity() + " starts in 1 minute!"  + war.getPingableMembers());
+
+		}, skirmish.getStartTime() - 1, TimeUnit.MINUTES);	
+		
+//		skirmish.createMessage(event, "Skirmish #" + skirmish.getIndex() + ", part " + (war.getQuantity() - remainingSkirmishes + 1) + " of " + war.getQuantity() + " starts in " + skirmish.getStartTime() + " minutes!");
 
 		schedule.schedule(() -> {
 
-			//				war.setComplete();
-			skirmish.createMessage(event, "Skirmish #" + skirmish.getIndex() + ", part " + (totalSkirmishes - remainingSkirmishes + 1) + " of " + totalSkirmishes + " starts now! "  + skirmish.getPingableMembers());
+			skirmish.createMessage(event, "Skirmish #" + skirmish.getIndex() + ", part " + currentIndex + " of " + war.getQuantity() + " starts now! "  + war.getPingableMembers());
 
-		}, skirmish.getStartTime() , TimeUnit.MINUTES);		
+		}, skirmish.getStartTime() , TimeUnit.MINUTES);
 
 		schedule.schedule(() -> {
 
 			skirmish.setComplete();
-			skirmish.createMessage(event, "Skirmish #" + skirmish.getIndex() + ", part " + (totalSkirmishes - remainingSkirmishes + 1) + " of " + totalSkirmishes + " ends now! " + skirmish.getPingableMembers());
+			skirmish.createMessage(event, "Skirmish #" + skirmish.getIndex() + ", part " + currentIndex + " of " + war.getQuantity() + " ends now! " + war.getPingableMembers());
 			skirmish.createMessage(event, "How much did you write? I wrote " + penningsWords + " words. Use `/total " + skirmish.getIndex() + "` to add your total.");
 
 			printSkirmishSummary(event, skirmish);
+			war.reduceRemainingQty();
 
-
-			if (remainingSkirmishes > 1) {
-				Skirmish newSkirmish = new Skirmish(EncounterInfo.getEncounterIndex(), skirmish.getLength(), interval);
+			if (war.getRemainingQty() > 0) {
+				Skirmish newSkirmish = new Skirmish(EncounterInfo.getEncounterIndex(), skirmish.getLength(), war.getInterval());
 				EncounterInfo.encounterRegistry.put(newSkirmish.getIndex() % 50, newSkirmish);
 				newSkirmish.setIsWar(true);
-				runNextSkirmish(event, newSkirmish, interval, totalSkirmishes, remainingSkirmishes - 1);
-//				EncounterInfo.incrementEncounterIndex();
-			}
-			
-			if (remainingSkirmishes == 1) { //last skirmish
-				printWarSummary(event, skirmish);
+				runNextSkirmish(war, event, newSkirmish);
+				EncounterInfo.incrementEncounterIndex();
+			} else { //last skirmish
+				printWarSummary(event, war);
 			}
 		}, skirmish.getLength() + skirmish.getStartTime(), TimeUnit.MINUTES);	
 	}
@@ -192,18 +210,19 @@ public class WarCommand implements SlashCommand {
 			skirmish.setExpired();
 			skirmish.createMessage(event, skirmish.createParticipantSummary());
 
-		}, 8, TimeUnit.MINUTES);		
+		}, BotUtil.MINUTES_TO_SUMMARY, TimeUnit.MINUTES);		
 	}
 	
-	public void printWarSummary(MessageCreateEvent event, Skirmish skirmish) {
-		ScheduledExecutorService schedule = skirmish.getSchedule();
+	public void printWarSummary(MessageCreateEvent event, War war) {
+		ScheduledExecutorService schedule = war.getSchedule();
 
 		schedule.schedule(() -> {
 
-			skirmish.setExpired();
-			skirmish.createMessage(event, EncounterInfo.createWarSummary());
+			war.setExpired();
+			EncounterInfo.currentWar = null;
+			war.createMessage(event, war.createParticipantSummary());
 			EncounterInfo.resetWarSummary();
 
-		}, 8, TimeUnit.MINUTES);		
+		}, BotUtil.MINUTES_TO_SUMMARY, TimeUnit.MINUTES);		
 	}
 }

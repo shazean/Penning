@@ -1,6 +1,8 @@
 package bot.penning.encounters;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -95,7 +97,7 @@ public class Encounter {
 		}
 		return hasParticipant;
 	}
-	
+		
 	public String createParticipantSummary() {
 		participantSummary = "**Encounter #" + index + " Summary:**\n";
 		for (Participant i : enteredParticipants) {
@@ -132,6 +134,8 @@ public class Encounter {
 		WritingType writtenType;
 		Long timeToGoal;
 		Member user;
+		Map<WritingType, Long> writtenInWar = new HashMap<>();
+
 		
 		public Participant(Member user, Long totalWords, Double averageWPM, WritingType writtenType) {
 			this.user = user;
@@ -148,13 +152,36 @@ public class Encounter {
 			this.mentionNickname = user.getNickname().get();
 			this.timeToGoal = timeToGoal;
 		}
-		
+
 		public String toString() {
-			return mentionNickname + ": " + totalWords + " " + writtenType + " (" + averageWPM + " " + writtenType.getAbbreviation() + ")";
+			return mentionNickname + ": " + WritingType.getSummaryString(writtenType, totalWords, averageWPM);
 		}
+		
+//		public String toString() {
+//			return mentionNickname + ": " + totalWords + " " + writtenType + " (" + averageWPM + " " + writtenType.getAbbreviation() + ")";
+//		}
 		
 		public String onslaughtToString() {
 			return mentionNickname + ": " + timeToGoal + " minutes (" + averageWPM + " wpm)";
- 		}	
+ 		}
+		
+		public String warToString() {
+			String warString = "";
+			
+			for (WritingType type : writtenInWar.keySet()) {
+				warString += " " + writtenInWar.get(type) + " " + type;
+			}
+			
+			return mentionNickname + ":" + warString;
+		}
+		
+		public void updateWrittenInWar(WritingType type, Long written) {
+			if (writtenInWar.containsKey(type)) {
+				writtenInWar.replace(type, writtenInWar.get(type) + written);
+			} else {
+				writtenInWar.put(type, written);
+			}
+			
+		}
 	}
 }

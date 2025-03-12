@@ -64,7 +64,7 @@ public class MidnightListener {
 //		int currentHour = rightNow.get(Calendar.HOUR_OF_DAY);
 //		int currentMin = rightNow.get(Calendar.MINUTE);
 //
-		createMessage(847148917056602132L, "listening. grant rewards now.");
+//		createMessage(847148917056602132L, "listening. grant rewards now.");
 
 		
 //		if ((currentMin / 4) == 0) { //currentHour == 0
@@ -86,7 +86,7 @@ public class MidnightListener {
 			currentTimeZone = TimeZone.getTimeZone(timezoneIds.get(i));
 			rightNow = Calendar.getInstance(currentTimeZone);
 			currentHour = rightNow.get(Calendar.HOUR_OF_DAY);
-			Bot.LOGGER.log(Level.INFO, "timezone: " + currentTimeZone.toZoneId().toString() + ", currentHour: " + currentHour + ", i: " + i + "/" + timezoneIds.size());
+//			Bot.LOGGER.log(Level.INFO, "timezone: " + currentTimeZone.toZoneId().toString() + ", currentHour: " + currentHour + ", i: " + i + "/" + timezoneIds.size());
 			i++;
 		}
 		
@@ -95,12 +95,12 @@ public class MidnightListener {
 
 	public void grantRewards() {
 		
-		createMessage(847148917056602132L, "grant rewards.");
-		createMessage(847148917056602132L, "writers interacted with bot: " + EncounterInfo.writerIndex.values());
+//		createMessage(847148917056602132L, "grant rewards.");
+//		createMessage(847148917056602132L, "writers interacted with bot: " + EncounterInfo.writerIndex.values());
 
 
 		for (Writer writer : EncounterInfo.writerIndex.values()) { //all of the writers that have interacted with the bot
-			createMessage(847148917056602132L, "grantRewards loop, current writer: " + writer.getUser().getDisplayName());
+//			createMessage(847148917056602132L, "grantRewards loop, current writer: " + writer.getUser().getDisplayName());
 
 			rewardWriter(writer);
 
@@ -126,16 +126,16 @@ public class MidnightListener {
 		
 		double chanceOfAnimal = rand.nextDouble();
 
-//		if (chanceOfAnimal <= percent) {
+		if (chanceOfAnimal <= percent) {
 			Animal animal = writer.getAnimalData().generateRandomAnimal(TaskType.GOAL);
 			client.getChannelById(channelID).ofType(MessageChannel.class).flatMap(channel -> channel.createMessage(writer.getUser().getMention() + ", you have found " + animal.getArticle() + " " + animal.toString() + "!")).subscribe();
-//		}
-		
-		createMessage(847148917056602132L, writer.getUser().getDisplayName() + " goal: " + writer.getGoal().getProgress() + "/" + writer.getGoal().getGoal() + " " + writer.getGoal().getGoalType() + ", chance of animal: " + chanceOfAnimal + " vs " + writer.getGoal().getGoalPercent() + " of goal");
+		}
+//		
+//		createMessage(847148917056602132L, writer.getUser().getDisplayName() + " goal: " + writer.getGoal().getProgress() + "/" + writer.getGoal().getGoal() + " " + writer.getGoal().getGoalType() + ", chance of animal: " + chanceOfAnimal + " vs " + writer.getGoal().getGoalPercent() + " of goal");
 		
 
 		writer.clearGoal(); //TODO when multiple goals are added, change this to only clear the daily goal.
-		createMessage(847148917056602132L,writer.getUser().getDisplayName() + "has goal: " + writer.hasGoalSet());
+//		createMessage(847148917056602132L,writer.getUser().getDisplayName() + "has goal: " + writer.hasGoalSet());
 	}
 	
 	public void createMessage(Long channelId, String message) {

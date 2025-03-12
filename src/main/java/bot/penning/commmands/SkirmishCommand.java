@@ -35,19 +35,17 @@ public class SkirmishCommand implements SlashCommand {
 
 		Long duration = event.getOption("time") //duration of skirmish
 				.flatMap(ApplicationCommandInteractionOption::getValue)
-				.map(ApplicationCommandInteractionOptionValue::asLong)
-				.get(); //This is warning us that we didn't check if its present, we can ignore this on required options
+				.map(ApplicationCommandInteractionOptionValue::asLong).get();
 
 		Long startTime = event.getOption("start") //how long from now the skirmish should begin
 				.flatMap(ApplicationCommandInteractionOption::getValue)
-				.map(ApplicationCommandInteractionOptionValue::asLong)
-				.get(); //This is warning us that we didn't check if its present, we can ignore this on required options
+				.map(ApplicationCommandInteractionOptionValue::asLong).get();
 
 		Long warIndex = EncounterInfo.getEncounterIndex();
 		Skirmish skirmish = new Skirmish(warIndex, duration, startTime);
 		EncounterInfo.encounterRegistry.put(skirmish.getIndex() % 50, skirmish);
 		GatewayDiscordClient client = event.getClient();
-//		Long finalTime;
+
 
 		//stop user from creating a skirmish with length 0 (because calculating the average for total creates a divide by zero scenario)
 		if (duration == 0) {
@@ -55,19 +53,14 @@ public class SkirmishCommand implements SlashCommand {
 		}
 
 		//Let's user know the length is too long
-		if (duration > BotUtil.maxSkirmishLengthMin) {
+		if (duration > BotUtil.MAX_SKIRMISH_LENGTH_MINUTES) {
 			return event.reply("Length is too long! Try starting a word battle instead.").withEphemeral(true);
 		}
 
-		if (startTime > BotUtil.maxTimeInFutureToStartEvent) {
-			return event.reply("Skirmish must be started within " + BotUtil.maxTimeInFutureToStartEvent + " minutes!").withEphemeral(true);
+		if (startTime > BotUtil.MAX_EVENT_START_OFFSET) {
+			return event.reply("Skirmish must be started within " + BotUtil.MAX_EVENT_START_OFFSET + " minutes!").withEphemeral(true);
 		}
 
-//		if (startTime == 15) { //convert startTime to seconds, and remove 1 second if 15 minutes, to stop a timed out token from potentially causing issues
-//			finalTime = 899L;
-//		} else {
-//			finalTime = startTime * 60L;
-//		}
 
 		Button alertButton = Button.primary("alert_button_" + skirmish.getIndex(), "Ping me!");
 
@@ -150,6 +143,6 @@ public class SkirmishCommand implements SlashCommand {
 			skirmish.setExpired();
 			skirmish.createMessage(event, skirmish.createParticipantSummary());
 
-		}, 8, TimeUnit.MINUTES);		
+		}, BotUtil.MINUTES_TO_SUMMARY, TimeUnit.MINUTES);		
 	}
 }

@@ -1,6 +1,6 @@
 {
     "name": "progress",
-    "description": "Set a goal",
+    "description": "Set total progress on a goal",
     "options": [
         {
             "name": "words",

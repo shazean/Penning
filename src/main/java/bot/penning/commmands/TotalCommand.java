@@ -54,7 +54,7 @@ public class TotalCommand implements SlashCommand {
 
 		WritingType goalType = Goal.getGoalType(type);
 
-		Encounter currentEncounter = EncounterInfo.encounterRegistry.get(ID % BotUtil.encountersBeforeReset);
+		Encounter currentEncounter = EncounterInfo.encounterRegistry.get(ID % BotUtil.MAX_ENCOUNTERS);
 
 		//can only use valid encounter ID
 		if (currentEncounter == null) return event.reply("This encounter is invalid! Try again with a valid encounter ID.").withEphemeral(true);
@@ -69,13 +69,13 @@ public class TotalCommand implements SlashCommand {
 
 		Long length = currentEncounter.getLength();
 
-		Double wordsPerMin;
+		Double wordsPerMin = WritingType.getWordsPerMin(goalType, totalWritten, length);
 
-		if (goalType.shouldCalculateByHour()) {
-			wordsPerMin = Math.round((totalWritten / ((double) length / 60.0)) * 100.0) / 100.0;
-		} else {
-			wordsPerMin = Math.round((totalWritten / (double) length) * 100.0) / 100.0;
-		}
+//		if (goalType.shouldCalculateByHour()) {
+//			wordsPerMin = Math.round((totalWritten / ((double) length / 60.0)) * 100.0) / 100.0;
+//		} else {
+//			wordsPerMin = Math.round((totalWritten / (double) length) * 100.0) / 100.0;
+//		}
 
 
 		//		goalType = type;
@@ -110,7 +110,11 @@ public class TotalCommand implements SlashCommand {
 		currentEncounter.createParticipant(user, totalWritten, wordsPerMin, goalType);
 
 		if (currentEncounter.getIsWar()) {
-			EncounterInfo.addToWarSummary(user, totalWritten, wordsPerMin, goalType);
+			War war = EncounterInfo.getCurrentWar();
+			war.createParticipant(user, totalWritten, wordsPerMin, goalType);
+			
+			event.getClient().getChannelById(Snowflake.of(847148917056602132L)).ofType(MessageChannel.class).flatMap(channel -> channel.createMessage("Is war! war participants: " + war.warriors)).subscribe();
+
 		}
 
 		Random rand = new Random();
@@ -147,7 +151,7 @@ public class TotalCommand implements SlashCommand {
 					.flatMap(channel -> channel.createMessage(nickname + " You have found " + animal.getArticle() + " " + animal.toString() + "!"))
 					.subscribe();
 
-				}, BotUtil.secondDelayBeforeAnimalReward, TimeUnit.SECONDS);	
+				}, BotUtil.SECONDS_BEFORE_REWARD, TimeUnit.SECONDS);	
 			}
 		}
 
@@ -194,38 +198,38 @@ public class TotalCommand implements SlashCommand {
 		
 		switch (totalToDo) {
 		case(0): //no goal, no quest, no challenge quest
-			return event.reply("You have written " + totalWritten + " " + goalType + " for an average of " + wordsPerMin + " " + goalType.getAbbreviation() + ".");
+			return event.reply("You have written " + totalWritten + " " + goalType + WritingType.getAverageText(goalType, wordsPerMin, length));
 		case(1): //has goal, no quest, no challenge quest
-			return event.reply("You have written " + totalWritten + " " + goalType + " for an average of " + wordsPerMin + " " + goalType.getAbbreviation() + ".")
+			return event.reply("You have written " + totalWritten + " " + goalType + WritingType.getAverageText(goalType, wordsPerMin, length))
 					.then(event.createFollowup("Progress updated! You have written " + writer.getGoal().getProgress() + " " + goalType + " of " + writer.getGoalNum() + " " + goalType + ".").then());
 		case(3): //has goal, has incomplete quest, no challenge quest
 		case(8): //has goal, has incomplete quest, has incomplete challenge quest
 		case(6): //has goal, no quest, has incomplete challenge quest
-			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalType.getAbbreviation() + ".")
+			return event.reply("You have written " + totalWritten + "  " + goalType + WritingType.getAverageText(goalType, wordsPerMin, length))
 					.then(event.createFollowup("Progress updated! You have written " + writer.getGoal().getProgress() + " " + goalType + " of " + writer.getGoalNum() + " " + goalType + ".").then());
 		case(13): //no goal, has complete quest, no challenge quest
 		case(18): //no goal, has complete quest, has incomplete challenge
-			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalType.getAbbreviation() + ".")
+			return event.reply("You have written " + totalWritten + "  " + goalType + WritingType.getAverageText(goalType, wordsPerMin, length))
 					.then(event.createFollowup("Quest completed!").then());
 		case(14): //has goal, has complete quest, no challenge quest
 		case(16): //has goal, has complete quest, has incomplete challenge
-			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalType.getAbbreviation() + ".")
+			return event.reply("You have written " + totalWritten + "  " + goalType + WritingType.getAverageText(goalType, wordsPerMin, length))
 					.then(event.createFollowup("Progress updated! You have written " + writer.getGoal().getProgress() + " " + goalType + " of " + writer.getGoalNum() + " " + goalType + ".").then())
 					.then(event.createFollowup("Quest completed!").then());
 		case(27): //has goal, no quest, has complete challenge
 		case(29): //has goal, has incomplete quest, has complete challenge
-			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalType.getAbbreviation() + ".")
+			return event.reply("You have written " + totalWritten + "  " + goalType + WritingType.getAverageText(goalType, wordsPerMin, length))
 					.then(event.createFollowup("Progress updated! You have written " + writer.getGoal().getProgress() + " " + goalType + " of " + writer.getGoalNum() + " " + goalType + ".").then())
 					.then(event.createFollowup("Challenge quest completed!").then());
 		case(28): //no goal, has incomplete quest, has complete challenge
-			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalType.getAbbreviation() + ".")
+			return event.reply("You have written " + totalWritten + "  " + goalType + WritingType.getAverageText(goalType, wordsPerMin, length))
 					.then(event.createFollowup("Challenge quest completed!").then());
 		case(39): //no goal, has complete quest, has complete challenge
-			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalType.getAbbreviation() + ".")
+			return event.reply("You have written " + totalWritten + "  " + goalType + WritingType.getAverageText(goalType, wordsPerMin, length))
 					.then(event.createFollowup("Quest completed!").then())
 					.then(event.createFollowup("Challenge quest completed!").then());
 		case(40): //has goal, has complete quest, has complete challenge
-			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalType.getAbbreviation() + ".")
+			return event.reply("You have written " + totalWritten + "  " + goalType + WritingType.getAverageText(goalType, wordsPerMin, length))
 					.then(event.createFollowup("Progress updated! You have written " + writer.getGoal().getProgress() + " " + writer.getGoal().getGoalType() + " of " + writer.getGoalNum() + " " + goalType + ".").then())
 					.then(event.createFollowup("Quest completed!").then())
 					.then(event.createFollowup("Challenge quest completed!").then());
@@ -233,7 +237,7 @@ public class TotalCommand implements SlashCommand {
 			//case 5 (no goal, no quest, incomplete challenge)
 			//case 7 (no goal, incomplete quest, incomplete challenge)
 			//assume no goal, no quest, no challenge quest
-			return event.reply("You have written " + totalWritten + "  " + goalType + " for an average of " + wordsPerMin + " " + goalType.getAbbreviation() + ".");
+			return event.reply("You have written " + totalWritten + "  " + goalType + WritingType.getAverageText(goalType, wordsPerMin, length));
 		}
 	}
 }

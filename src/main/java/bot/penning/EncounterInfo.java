@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import bot.penning.encounters.Encounter;
 import bot.penning.encounters.Encounter.Participant;
+import bot.penning.encounters.War;
 import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.User;
 import reactor.core.publisher.Mono;
@@ -15,6 +16,7 @@ public class EncounterInfo {
 
 	public static final Map<Member, Writer> writerIndex = new HashMap<>();
 	public static Map<Long, Encounter> encounterRegistry = new HashMap<>();
+	public static War currentWar = null;
 	public static Boolean warRunning = false;
 	public static Map<Member, Warrior> warriorsEntered = new HashMap<>();
 	public static ArrayList<Object> writersEntered = new ArrayList<Object>();
@@ -47,32 +49,36 @@ public class EncounterInfo {
 		warriorsEntered = new HashMap<>();
 	}
 	
-	//FIXME
-	public static void addToWarSummary(Member user, Long totalWritten, double wordsPerMin, WritingType goalType) {
-		if (!warriorsEntered.containsKey(user)) {
-			warriorsEntered.put(user, new Warrior(user));
-		} else {
-			if (goalType.equals("words")) {
-				warriorsEntered.get(user).addWords(totalWritten, wordsPerMin);
-			} else if (goalType.equals("lines")) {
-				warriorsEntered.get(user).addLines(totalWritten, wordsPerMin);
-			} else if (goalType.equals("pages")) {
-				warriorsEntered.get(user).addPages(totalWritten, wordsPerMin);
-			} else {
-				warriorsEntered.get(user).addMinutes(totalWritten);
-			}
-		}
+	public static War getCurrentWar() {
+		return currentWar;
 	}
 	
-	public static String createWarSummary() {
-		String warSummary = "**War Summary:**\n";
-		
-		for (Warrior i : warriorsEntered.values()) {
-			warSummary += (i.toString() + "\n");
-		}
-		
-		return warSummary;
-	}
+	//FIXME
+//	public static void addToWarSummary(Member user, Long totalWritten, double wordsPerMin, WritingType goalType) {
+//		if (!warriorsEntered.containsKey(user)) {
+//			warriorsEntered.put(user, new Warrior(user));
+//		} else {
+//			if (goalType.equals("words")) {
+//				warriorsEntered.get(user).addWords(totalWritten, wordsPerMin);
+//			} else if (goalType.equals("lines")) {
+//				warriorsEntered.get(user).addLines(totalWritten, wordsPerMin);
+//			} else if (goalType.equals("pages")) {
+//				warriorsEntered.get(user).addPages(totalWritten, wordsPerMin);
+//			} else {
+//				warriorsEntered.get(user).addMinutes(totalWritten);
+//			}
+//		}
+//	}
+//	
+//	public static String createWarSummary() {
+//		String warSummary = "**War Summary:**\n";
+//		
+//		for (Warrior i : warriorsEntered.values()) {
+//			warSummary += (i.toString() + "\n");
+//		}
+//		
+//		return warSummary;
+//	}
 		
 	protected static class Warrior {
 		Member user;

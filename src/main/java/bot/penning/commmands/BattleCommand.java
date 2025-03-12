@@ -8,14 +8,16 @@ import java.util.concurrent.TimeUnit;
 import bot.penning.BotUtil;
 import bot.penning.EncounterInfo;
 import bot.penning.encounters.Battle;
-import bot.penning.encounters.Skirmish;
 import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
+import discord4j.core.event.domain.interaction.ButtonInteractionEvent;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.command.ApplicationCommandInteractionOption;
 import discord4j.core.object.command.ApplicationCommandInteractionOptionValue;
+import discord4j.core.object.component.ActionRow;
 import discord4j.core.object.component.Button;
+import discord4j.core.object.entity.Member;
 import reactor.core.publisher.Mono;
 
 public class BattleCommand implements SlashCommand {
@@ -30,15 +32,13 @@ public class BattleCommand implements SlashCommand {
 	@Override
 	public Mono<Void> handle(ChatInputInteractionEvent event) {
 
-		Double duration = event.getOption("time") //duration of skirmish
+		Double duration = event.getOption("time") //duration of battle
 				.flatMap(ApplicationCommandInteractionOption::getValue)
-				.map(ApplicationCommandInteractionOptionValue::asDouble)
-				.get(); //This is warning us that we didn't check if its present, we can ignore this on required options
+				.map(ApplicationCommandInteractionOptionValue::asDouble).get();
 
-		Long startTime = event.getOption("start") //how long from now the skirmish should begin
+		Long startTime = event.getOption("start") //how long from now the battle should begin
 				.flatMap(ApplicationCommandInteractionOption::getValue)
-				.map(ApplicationCommandInteractionOptionValue::asLong)
-				.get(); //This is warning us that we didn't check if its present, we can ignore this on required options
+				.map(ApplicationCommandInteractionOptionValue::asLong).get();
 
 		Long warIndex = EncounterInfo.getEncounterIndex();
 		Battle battle = new Battle(warIndex, duration, startTime);
@@ -52,86 +52,84 @@ public class BattleCommand implements SlashCommand {
 		}
 
 		//Let's user know the length is too long
-		if (duration < BotUtil.minBattleLengthHrs) {
-			return event.reply("Length is too short! Try starting a word skirmish instead.").withEphemeral(true);
+		if (duration < BotUtil.MIN_BATTLE_LENGTH_HRS) {
+			return event.reply("Length is too short! Try starting a word battle instead.").withEphemeral(true);
 		}
-		if (duration > BotUtil.maxBattleLengthHrs) {
-			return event.reply("Length is too long! A word battle cannot exceed " + BotUtil.maxBattleLengthHrs + " hours.").withEphemeral(true);
-		}
-
-		//TODO update to use BotUtil.maxTimeInFutureToStartEvent
-		if (startTime > 15) {
-			return event.reply("Battle must be started within 15 minutes!").withEphemeral(true);
+		if (duration > BotUtil.MAX_BATTLE_LENGTH_HRS) {
+			return event.reply("Length is too long! A word battle cannot exceed " + BotUtil.MAX_BATTLE_LENGTH_HRS + " hours.").withEphemeral(true);
 		}
 
-		//TODO change battle to be able to start beyond 15 minutes from then, to match skirmish
-		if (startTime == 15) { //convert startTime to seconds, and remove 1 second if 15 minutes, to stop a timed out token from causing issues
-			finalTime = 899L;
-		} else {
-			finalTime = startTime * 60L;
-		}
+
+		Button alertButton = Button.primary("alert_button_" + battle.getIndex(), "Ping me!");
 
 		EncounterInfo.incrementEncounterIndex();
 
-		//FIXME if adding in a join button ping option
-		//		client.on(ButtonInteractionEvent.class, embedEvent -> {
-		//			if (embedEvent.getCustomId().equals("join_button")) {
-		//				Optional<Member> writer = embedEvent.getInteraction().getMember();
-		//				writersEntered.add(writer);
-		//				return embedEvent.reply("You have joined the skirmish!");
-		//			}
-		//			else if (embedEvent.getCustomId().equals("total button")) {
-		//				return embedEvent.reply("Total! //FIXME"); //FIXME
-		//			}
-		//			else {
-		//				return embedEvent.reply("Else! //FIXME"); //FIXME
-		//			}
-		//		}).timeout(Duration.ofMinutes(startTime)).subscribe();
+		client.on(ButtonInteractionEvent.class, embedEvent -> {
+			if (embedEvent.getCustomId().equals("alert_button_" + battle.getIndex())) {
+				Member writerMention = embedEvent.getInteraction().getMember().get();
+				battle.addPingableMember(writerMention);
+				return embedEvent.reply(writerMention.getNicknameMention() + ", you have joined alerts for the battle!");
+			}
+			else {
+				return Mono.empty();
+			}
+		}).timeout(Duration.ofMinutes(startTime)).subscribe();
 
+		battle.setIsWar(false);
+		runBattle(event, battle);
 
-		//		String pingList = ""; //FIXME
-		//		for (int i = 0; i < writersEntered.size(); i++) {
-		//			pingList += "@" + writersEntered.get(i).toString() + " ";
-		//			System.out.print(writersEntered.get(i).toString() + " ");
-		//		}
-
-		runBattle(event, startTime, battle);
-
-		return event.reply("Battle #" + battle.getIndex() + " created for " + battle.getLengthHours() + " hours and " + battle.getLengthMinutes() + " minutes, and will start in " + battle.getStartTime() + " minutes.")
-				.then(Mono.delay(Duration.ofSeconds(finalTime)))
-				.then(event.createFollowup("Battle #" + battle.getIndex() + " starts now!")
-						.then());
+		return event.reply("Battle #" + battle.getIndex() + " created for " + battle.getLength() + " minutes, and will start in " + battle.getStartTime() + " minutes.")
+				.withComponents(ActionRow.of(alertButton));
 	}
 
 
-	public void runBattle(ChatInputInteractionEvent event, Long startTime, Battle battle) {
+	public void runBattle(ChatInputInteractionEvent event, Battle battle) {
 		GatewayDiscordClient client = event.getClient();
 		Snowflake guildID = event.getInteraction().getGuildId().get();
 
 		client.on(MessageCreateEvent.class, embedEvent -> {
 			if (embedEvent.getMember().get().equals(client.getSelfMember(guildID).block())) { //if message was sent by ourselves
-				String botMessage = embedEvent.getMessage().getContent();
-				if (botMessage.equals("Battle #" + battle.getIndex() + " starts now!")) {
+				String botMessage = embedEvent.getMessage().getContent().substring(0, 22 + getNumDigits(battle.getIndex())); //length based off how many digits the battle index is
 
-					Long penningsWords = Math.abs(19 * battle.getLength() + ((int)(Math.random() * (50- -50+1)+ -50)));
-					//					Button totalButton = Button.primary("total-button", "Add your total!");
+				if (botMessage.equals("Battle #" + battle.getIndex() + " created for")) {
+
 					ScheduledExecutorService schedule = battle.getSchedule();
+
+					if (battle.getStartTime() > 1) {
+						schedule.schedule(() -> {
+
+							battle.createMessage(embedEvent, "Battle #" + battle.getIndex() + " starts in one minute!");
+
+						}, battle.getStartTime() - 1, TimeUnit.MINUTES);	
+					}
+					
+					schedule.schedule(() -> {
+
+						battle.createMessage(embedEvent, "Battle #" + battle.getIndex() + " starts now! " + battle.getPingableMembers());
+
+					}, battle.getStartTime(), TimeUnit.MINUTES);	
+					
+					long penningsWords = Math.abs(BotUtil.PENNING_WRITING_SPEED * battle.getLength() + ((int)(Math.random() * (50- -50+1)+ -50)));
+//					Button totalButton = Button.primary("total-button", "Add your total!");
 
 					schedule.schedule(() -> {
 
 						battle.setComplete();
-						battle.createMessage(embedEvent, "Battle #" + battle.getIndex() + " ends now!");
-						battle.createMessage(embedEvent, "How much did you write? I wrote " + penningsWords + " words. Use `/total " + battle.getIndex() + "` to add your total.  Summary in 8 minutes.");
+						battle.createMessage(embedEvent, "Battle #" + battle.getIndex() + " ends now! " + battle.getPingableMembers());
+						battle.createMessage(embedEvent, "How much did you write? I wrote " + penningsWords + " words. Use `/total " + battle.getIndex() + "` to add your total. Summary in 8 minutes.");
 
 						printSummary(embedEvent, battle);
 
-					}, battle.getLength(), TimeUnit.MINUTES);		
+					}, battle.getLength() + battle.getStartTime(), TimeUnit.MINUTES);		
 
 				}	
 			}
 			return Mono.empty();
-		}).timeout(Duration.ofMinutes(12 * 60 + 1)).subscribe(); //battles' length capped at 12 hours, but an additional minute added for wiggle room
-
+		}).timeout(Duration.ofMinutes(battle.getLength() + battle.getStartTime() + 1)).subscribe();
+	}
+	
+	private int getNumDigits(long num) {
+		return (int) (Math.log10(num) + 1);
 	}
 
 	public void printSummary(MessageCreateEvent event, Battle battle) {
@@ -139,11 +137,10 @@ public class BattleCommand implements SlashCommand {
 
 		schedule.schedule(() -> {
 
+			//compile battle info TODO
 			battle.setExpired();
 			battle.createMessage(event, battle.createParticipantSummary());
 
-
-		}, 8, TimeUnit.MINUTES);		
+		}, BotUtil.MINUTES_TO_SUMMARY, TimeUnit.MINUTES);		
 	}
-
 }

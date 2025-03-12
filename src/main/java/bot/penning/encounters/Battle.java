@@ -27,38 +27,11 @@ public class Battle extends Encounter {
 		return participantSummary;
 	}
 	
-	public Long getLengthHours() {
-		return (long) Math.floor(getLength() / 60);
-	}
-	
-	public Long getLengthMinutes() {
-		return getLength() % 60;
-	}
- 
-//	public void runBattle(Battle battle, MessageCreateEvent event) {
-//		//FIXME
-//		
-//		int penningsWords;
-//		Random random = new Random();
-//		penningsWords = Math.abs(29 * battle.getLength() + ((int)(Math.random() * (50- -50 + 1) + -50)));
-//		
-//		
-//		createMessage(event, "Battle #" + battle.getIndex() + " created for " + battle.getLength() + " minutes, and will start in " + battle.getStartTime() + " minutes.");
-//
-//		schedule.schedule(() -> {
-//
-//			createMessage(event, "Battle #" + battle.getIndex() + " starts now!");
-//
-//		}, battle.getStartTime(), TimeUnit.MINUTES);
-//		
-//		schedule.schedule(() -> {
-//
-//			createMessage(event, "Battle #" + battle.getIndex() + " ends now!");
-//			createMessage(event, "How much did you write? I wrote " + penningsWords + " words.");
-//			createMessage(event, "Use `'!total " + battle.getIndex() + " [amount written]'` to add your total.");
-//
-//		}, battle.getLength() + battle.getStartTime(), TimeUnit.MINUTES);
-//		
-//	}	
-	
+//	public Long getLengthHours() {
+//		return (long) Math.floor(getLength() / 60);
+//	}
+//	
+//	public Long getLengthMinutes() {
+//		return getLength() % 60;
+//	}
 }
